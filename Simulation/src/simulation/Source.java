@@ -54,7 +54,7 @@ public class Source implements CProcess
 		name = n;
 		meanArrTime=m;
 		// put first event in list for initialization
-		list.add(this,0,drawRandomExponential(meanArrTime)); //target,type,time
+		list.add(this,0,drawRandomExponential(meanArrTime,0)); //target,type,time
 	}
 
 	/**
@@ -89,7 +89,7 @@ public class Source implements CProcess
 		// generate duration
 		if(meanArrTime>0)
 		{
-			double duration = drawRandomExponential(meanArrTime);
+			double duration = drawRandomExponential(getAverageArrivalRate(type,tme));
 			// Create a new event in the eventlist
 			list.add(this,0,tme+duration); //target,type,time
 		}
@@ -106,12 +106,22 @@ public class Source implements CProcess
 			}
 		}
 	}
-	
+
+	public static double getAverageArrivalRate(int type,double tme){
+		//TODO
+		if (type == 1){
+
+		}
+	}
+
+
 	public static double drawRandomExponential(double mean)
 	{
+		//TODO make mean dependent on time of the day
+
 		// draw a [0,1] uniform distributed number
 		double u = Math.random();
-		// Convert it into a exponentially distributed random variate with mean 33
+		// Convert it into a exponentially distributed random variate with mean "mean"
 		double res = -mean*Math.log(u);
 		return res;
 	}
