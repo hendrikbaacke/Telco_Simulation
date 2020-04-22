@@ -14,7 +14,7 @@ public class Queue implements ProductAcceptor
 	/** Requests from machine that will be handling the products */
 	private ArrayList<Machine> requests;
 	
-	/**R
+	/**
 	*	Initializes the queue and introduces a dummy machine
 	*	the machine has to be specified later
 	*/

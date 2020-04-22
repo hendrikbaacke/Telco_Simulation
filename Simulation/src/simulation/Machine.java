@@ -164,8 +164,6 @@ public class Machine implements CProcess,ProductAcceptor
 		}
 	}
 
-	//TODO
-	//replace by truncated normal draw
 	public static double drawRandomExponential(double mean)
 	{
 		// draw a [0,1] uniform distributed number

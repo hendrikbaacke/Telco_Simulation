@@ -13,24 +13,22 @@ public class Simulation {
     public Source source;
     public Sink sink;
     public Machine mach;
+	
 
         /**
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        // Create an eventlist
+    	// Create an eventlist
 	CEventList l = new CEventList();
 	// A queue for the machine
-	Queue q1 = new Queue();
-    Queue q2 = new Queue();
+	Queue q = new Queue();
 	// A source
-	Source calls_corporate = new Source(q1,l,"Source 1");
-    Source calls_customers = new Source(q2,l,"Source 2");
+	Source s = new Source(q,l,"Source 1");
 	// A sink
 	Sink si = new Sink("Sink 1");
 	// A machine
-    Machine CSA_corporate = new Machine(q1,si,l,"CSA_corporate");
-    Machine CSA = new Machine(q2,si,l,"CSA");
+	Machine m = new Machine(q,si,l,"Machine 1");
 	// start the eventlist
 	l.start(2000); // 2000 is maximum time
     }
