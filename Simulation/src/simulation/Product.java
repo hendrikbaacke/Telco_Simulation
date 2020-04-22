@@ -16,7 +16,6 @@ class Product
 	/** 
 	*	Constructor for the product
 	*	Mark the time at which it is created
-	*	@param create The current time
 	*/
 	public Product()
 	{
