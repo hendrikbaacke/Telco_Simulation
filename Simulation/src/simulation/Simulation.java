@@ -22,6 +22,8 @@ public class Simulation {
     	// Create an eventlist
 	CEventList l = new CEventList();
 	// Two queues for the machine
+
+
         Queue q1 = new Queue();
         Queue q2 = new Queue();
 	// A source
@@ -30,8 +32,10 @@ public class Simulation {
 	// A sink
 	Sink si = new Sink("Sink 1");
 	// A machine
-        Machine CSA_corporate = new Machine(q1,si,l,"CSA_corporate");  //TODO: CSA Corporate should be able to get cust from q1 and q2
-        Machine CSA = new Machine(q2,si,l,"CSA");
+        Machine CSA_corporate = new Machine(q1,q2,si,l,"CSA_corporate");  //TODO: CSA Corporate should be able to get cust from q1 and q2
+        Machine CSA = new Machine(q2,null,si,l,"CSA");
+
+
 	// start the eventlist
 	l.start(2000); // 2000 is maximum time
     }

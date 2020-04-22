@@ -54,7 +54,7 @@ public class Source implements CProcess
 		name = n;
 		meanArrTime=m;
 		// put first event in list for initialization
-		list.add(this,0,drawRandomExponential(meanArrTime,0)); //target,type,time
+		list.add(this,0,drawRandomExponential(meanArrTime)); //target,type,time
 	}
 
 	/**

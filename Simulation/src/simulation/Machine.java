@@ -35,10 +35,11 @@ public class Machine implements CProcess,ProductAcceptor
 	*	@param e	Eventlist that will manage events
 	*	@param n	The name of the machine
 	*/
-	public Machine(Queue q, ProductAcceptor s, CEventList e, String n)
+	public Machine(Queue q,Queue q2, ProductAcceptor s, CEventList e, String n)
 	{
 		status='i';
 		queue=q;
+		queue=q2;
 		sink=s;
 		eventlist=e;
 		name=n;
@@ -55,10 +56,11 @@ public class Machine implements CProcess,ProductAcceptor
 	*	@param n	The name of the machine
 	*        @param m	Mean processing time
 	*/
-	public Machine(Queue q, ProductAcceptor s, CEventList e, String n, double m)
+	public Machine(Queue q ,Queue q2, ProductAcceptor s, CEventList e, String n, double m)
 	{
 		status='i';
-		queue=q;
+		queue = q;
+		queue = q2;
 		sink=s;
 		eventlist=e;
 		name=n;
