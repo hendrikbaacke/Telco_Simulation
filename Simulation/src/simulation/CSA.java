@@ -118,8 +118,10 @@ public class CSA implements CProcess, CallAcceptor
 		// Only accept something if the csa is idle
 		if(status=='i')
 		{
+			int type = p.getType();
+			System.out.println("CSA receives a call of type " +type);
 			// accept the call
-			call =p;
+			call = p;
 			// mark starting time
 			call.stamp(eventlist.getTime(),"Call started",name);
 			// start calls

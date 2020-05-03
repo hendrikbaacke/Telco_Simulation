@@ -105,7 +105,7 @@ public class Source implements CProcess
 		// show arrival
 		System.out.println("Arrival of type "+ type +" at time = " + tme);
 		// give arrived call to queue
-		Call p = new Call();
+		Call p = new Call(type);
 		p.stamp(tme,"Creation",name);
 		queue.giveCall(p);
 

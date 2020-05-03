@@ -12,7 +12,7 @@ class Call
 	private ArrayList<Double> times;
 	private ArrayList<String> events;
 	private ArrayList<String> stations;
-
+	private int type;
 
 	/** 
 	*	Constructor for the call
@@ -24,7 +24,19 @@ class Call
 		events = new ArrayList<>();
 		stations = new ArrayList<>();
 	}
-	
+
+	/**
+	 *	Constructor for the call
+	 *	Mark the time at which it is created
+	 * @param tp the type of call (customer/corporate)
+	 */
+	public Call(int tp)
+	{
+		times = new ArrayList<>();
+		events = new ArrayList<>();
+		stations = new ArrayList<>();
+		type = tp;
+	}
 	
 	public void stamp(double time,String event,String station)
 	{
@@ -46,6 +58,10 @@ class Call
 	public ArrayList<String> getStations()
 	{
 		return stations;
+	}
+	public int getType()
+	{
+		return type;
 	}
 	
 	public double[] getTimesAsArray()
