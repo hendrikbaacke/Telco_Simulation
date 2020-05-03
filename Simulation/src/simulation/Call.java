@@ -28,7 +28,7 @@ class Call
 	/**
 	 *	Constructor for the call
 	 *	Mark the time at which it is created
-	 * @param tp the type of call (customer/corporate)
+	 * @param tp the type of call (consumer/corporate)
 	 */
 	public Call(int tp)
 	{

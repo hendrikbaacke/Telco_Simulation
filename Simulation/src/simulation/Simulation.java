@@ -24,7 +24,7 @@ public class Simulation {
     public static void main(String[] args) throws IOException {
         //a shift consists of:
         //[start hour,finish hour,amount of agents type 1, amount of agents type 2]
-        int[][] shifts = {{6,14,10,0},{14,22,15,0},{22,30,10,0}};
+        int[][] shifts = {{6,14,10,5},{14,22,15,5},{22,30,10,5}};
 
         //flag defining if CSA agents of type 2 are allowed to handle calls of type 1
         boolean handle_both = false;
@@ -41,8 +41,8 @@ public class Simulation {
             // Two queues for the csa
             Queue q1 = new Queue();
 
-            //type 0 means customer calls and type 1 means corporate calls
-            Source calls_customer = new Source(q1, l, "Source 1", 0);
+            //type 0 means consumer calls and type 1 means corporate calls
+            Source calls_consumer = new Source(q1, l, "Source 1", 0);
             Source calls_corporate = new Source(q1, l, "Source 2", 1);
 
             // A sink
@@ -50,8 +50,12 @@ public class Simulation {
 
             for (int i = 0; i < n_agents; i++) {
                 // A csa
-                CSA CSA_corporate = new CSA(q1, si, l, "corporate CSA nr " + i, 2,handle_both);
-                CSA CSA_customer = new CSA(q1, si, l, "customer CSA nr " + i, 1);
+                CSA CSA_consumer= new CSA(q1, si, l, "consumer CSA nr " + i, 0);
+            }
+
+            for (int i = 0; i < n_agents_corp; i++) {
+                // A csa
+                CSA CSA_corporate = new CSA(q1, si, l, "corporate CSA nr " + i, 1,handle_both);
             }
 
             // start the eventlist

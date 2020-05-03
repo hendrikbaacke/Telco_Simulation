@@ -25,7 +25,7 @@ public class CSA implements CProcess, CallAcceptor
 	private double[] processingTimes;
 	/** Processing time iterator */
 	private int procCnt;
-	/** CSA type (customer/corporate) */
+	/** CSA type (consumer/corporate) */
 	private int type;
 	/** if CSA is allowed to handle all kind of calls */
 	private boolean handle_both;
@@ -56,7 +56,7 @@ public class CSA implements CProcess, CallAcceptor
 	 *	@param s	Where to send the completed calls
 	 *	@param e	Eventlist that will manage events
 	 *	@param n	The name of the csa
-	 *  @param tp	The type of the csa (customer/corporate)
+	 *  @param tp	The type of the csa (consumer/corporate)
 	 *  @param hb flag if agent is allowed to handle all kinds of calls
 	 */
 	public CSA(Queue q, CallAcceptor s, CEventList e, String n, int tp)
@@ -79,7 +79,7 @@ public class CSA implements CProcess, CallAcceptor
 	 *	@param s	Where to send the completed calls
 	 *	@param e	Eventlist that will manage events
 	 *	@param n	The name of the csa
-	 *  @param tp	The type of the csa (customer/corporate)
+	 *  @param tp	The type of the csa (consumer/corporate)
 	 *  @param hb flag if agent is allowed to handle all kinds of calls
 	 */
 	public CSA(Queue q, CallAcceptor s, CEventList e, String n, int tp, boolean hb)

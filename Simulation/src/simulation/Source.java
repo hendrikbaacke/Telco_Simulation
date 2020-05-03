@@ -57,6 +57,7 @@ public class Source implements CProcess
 		name = n;
 		type = tp;
 		meanArrTime=getAverageArrivalRate(type, l.getTime());
+		System.out.println(meanArrTime);
 		// put first event in list for initialization
 		list.add(this,type,drawRandomExponential(meanArrTime)+l.getTime()); //target,type,time
 	}
@@ -108,7 +109,7 @@ public class Source implements CProcess
 		Call p = new Call(type);
 		p.stamp(tme,"Creation",name);
 		queue.giveCall(p);
-
+		System.out.println(meanArrTime);
 		// generate duration
 		if(meanArrTime>0)
 		{
@@ -135,15 +136,26 @@ public class Source implements CProcess
 
 	public static double getAverageArrivalRate(int type,double tme){
 		double avgtme = 0;
-		//TODO: implement properly
-		//customer calls
-		if (type == 0){
-			avgtme = 5;
-		}
 
+		//time in hours
+		double tme_h = tme / 3600;
+
+		//handle clock when one day is over
+		if (tme_h > 24) tme = tme_h - 24;
+
+		//consumer calls
+		if (type == 0){
+			// 60 divided by rate per minute to get avg arrival time in seconds
+			avgtme = 60 / (1.8 * Math.sin((2*Math.PI/24)*(tme_h+15))+2);
+		}
 		//corporate calls
 		if (type == 1) {
-			avgtme = 10;
+			if (8 < tme_h && tme_h < 18){
+				avgtme = 60;
+			}
+			if (18 < tme_h || tme_h < 8){
+				avgtme = 60/0.2;
+			}
 		}
 
 		return avgtme;
@@ -153,9 +165,6 @@ public class Source implements CProcess
 
 	public static double drawRandomExponential(double mean)
 	{
-
-		//TODO make mean dependent on time of the day
-
 		// draw a [0,1] uniform distributed number
 		double u = Math.random();
 		// Convert it into a exponentially distributed random variate with mean "mean"
