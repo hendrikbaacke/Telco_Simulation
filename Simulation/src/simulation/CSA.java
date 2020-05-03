@@ -194,7 +194,7 @@ public class CSA implements CProcess, CallAcceptor
 		// generate duration
 		if(meanProcTime>0)
 		{
-			double duration = drawRandomExponential(meanProcTime);
+			double duration = drawTruncatedNormal(meanProcTime);
 			// Create a new event in the eventlist
 			double tme = eventlist.getTime();
 			eventlist.add(this,0,tme+duration); //target,type,time
@@ -227,4 +227,18 @@ public class CSA implements CProcess, CallAcceptor
 		double res = -mean*Math.log(u);
 		return res;
 	}
+
+    public static double drawTruncatedNormal(double mean)
+    {
+        // draw a [0,1] uniform distributed number
+        double u = Math.random();
+        while(u < .045){
+            u = Math.random();
+        }
+        // Convert it into a normally distributed random variate
+        double res = mean*u;
+        return res;
+    }
+
+
 }
