@@ -1,6 +1,10 @@
 package simulation;
 
 import java.util.ArrayList;
+import java.io.IOException;
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+
 /**
  *	A sink
  *	@author Joel Karel
@@ -35,14 +39,14 @@ public class Sink implements CallAcceptor
 	}
 	
         @Override
-	public boolean giveCall(Call p)
+	public boolean giveCall(Call c)
 	{
 		number++;
-		calls.add(p);
+		calls.add(c);
 		// store stamps
-		ArrayList<Double> t = p.getTimes();
-		ArrayList<String> e = p.getEvents();
-		ArrayList<String> s = p.getStations();
+		ArrayList<Double> t = c.getTimes();
+		ArrayList<String> e = c.getEvents();
+		ArrayList<String> s = c.getStations();
 		for(int i=0;i<t.size();i++)
 		{
 			numbers.add(number);
@@ -87,5 +91,20 @@ public class Sink implements CallAcceptor
 		String[] tmp = new String[stations.size()];
 		tmp = stations.toArray(tmp);
 		return tmp;
+	}
+
+	public void toFile(String filename) throws IOException
+	{
+
+
+		BufferedWriter outputWriter = null;
+		outputWriter = new BufferedWriter(new FileWriter(filename));
+		for (int i = 0; i < calls.size(); i++) {
+			outputWriter.write(numbers.get(i)+" "+events.get(i)
+					+" "+times.get(i)+" "+stations.get(i));
+			outputWriter.newLine();
+		}
+		outputWriter.flush();
+		outputWriter.close();
 	}
 }

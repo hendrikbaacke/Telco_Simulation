@@ -119,7 +119,7 @@ public class CSA implements CProcess, CallAcceptor
 		if(status=='i')
 		{
 			int type = p.getType();
-			System.out.println("CSA receives a call of type " +type);
+			System.out.println(this.name+" receives a call of type " +type);
 			// accept the call
 			call = p;
 			// mark starting time
