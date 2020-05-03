@@ -6,8 +6,6 @@
 
 package simulation;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
 
 public class Simulation {
 
@@ -16,17 +14,20 @@ public class Simulation {
     public Source source;
     public Sink sink;
     public CSA mach;
-	
+
+
+
 
         /**
      * @param args the command line arguments
      */
     public static void main(String[] args) throws IOException {
-        //TODO adjusting the code to allow to either let CSA agents help out or not
-
         //a shift consists of:
         //[start hour,finish hour,amount of agents type 1, amount of agents type 2]
         int[][] shifts = {{6,14,10,0},{14,22,15,0},{22,30,10,0}};
+
+        //flag defining if CSA agents of type 2 are allowed to handle calls of type 1
+        boolean handle_both = false;
 
         for (int j = 0; j < shifts.length; j++) {
             //shift start in seconds
@@ -49,7 +50,8 @@ public class Simulation {
 
             for (int i = 0; i < n_agents; i++) {
                 // A csa
-                CSA CSA_corporate = new CSA(q1, si, l, "corporate CSA nr " + i);
+                CSA CSA_corporate = new CSA(q1, si, l, "corporate CSA nr " + i, 2,handle_both);
+                CSA CSA_customer = new CSA(q1, si, l, "customer CSA nr " + i, 1);
             }
 
             // start the eventlist
