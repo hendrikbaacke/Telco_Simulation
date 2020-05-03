@@ -21,8 +21,8 @@ public class Source implements CProcess
 	private double[] interarrivalTimes;
 	/** Interarrival time iterator */
 	private int interArrCnt;
-
-
+	/** type of the source*/
+	private int type;
 
 	/**
 	*	Constructor, creates objects
@@ -48,17 +48,17 @@ public class Source implements CProcess
 	 *	@param q	The receiver of the calls
 	 *	@param l	The eventlist that is requested to construct events
 	 *	@param n	Name of object
-	 *  @param type   type of the object
+	 *  @param tp   type of the object
 	 */
-	public Source(CallAcceptor q, CEventList l, String n, int type)
+	public Source(CallAcceptor q, CEventList l, String n, int tp)
 	{
 		list = l;
 		queue = q;
 		name = n;
-		type =
-		meanArrTime=getAverageArrivalRate(type);
+		type = tp;
+		meanArrTime=getAverageArrivalRate(type, l.getTime());
 		// put first event in list for initialization
-		list.add(this,0,drawRandomExponential(meanArrTime)); //target,type,time
+		list.add(this,type,drawRandomExponential(meanArrTime)+l.getTime()); //target,type,time
 	}
 
 	/**
@@ -103,7 +103,7 @@ public class Source implements CProcess
 	public void execute(int type, double tme)
 	{
 		// show arrival
-		System.out.println("Arrival at time = " + tme);
+		System.out.println("Arrival of type "+ type +" at time = " + tme);
 		// give arrived call to queue
 		Call p = new Call();
 		p.stamp(tme,"Creation",name);
@@ -134,17 +134,19 @@ public class Source implements CProcess
 	}
 
 	public static double getAverageArrivalRate(int type,double tme){
+		double avgtme = 0;
+		//TODO: implement properly
 		//customer calls
 		if (type == 0){
-
+			avgtme = 5;
 		}
 
 		//corporate calls
 		if (type == 1) {
-
+			avgtme = 10;
 		}
 
-		return 0;    //TODO: return arrival rate drawn from distribution
+		return avgtme;
 	}
 
 

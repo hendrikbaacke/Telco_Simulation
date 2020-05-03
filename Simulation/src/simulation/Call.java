@@ -12,7 +12,8 @@ class Call
 	private ArrayList<Double> times;
 	private ArrayList<String> events;
 	private ArrayList<String> stations;
-	
+
+
 	/** 
 	*	Constructor for the call
 	*	Mark the time at which it is created

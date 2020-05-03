@@ -100,7 +100,7 @@ public class CSA implements CProcess, CallAcceptor
 		// Remove call from system
 		call.stamp(tme,"Call finished",name);
 		sink.giveCall(call);
-		call =null;
+		call = null;
 		// set csa status to idle
 		status='i';
 		// Ask the queue for calls

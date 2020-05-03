@@ -1,5 +1,6 @@
 package simulation;
 
+import java.awt.*;
 import java.util.ArrayList;
 
 /**
@@ -28,7 +29,19 @@ public class CEventList implements CProcess
 		stopFlag = false;
 		events = new ArrayList<>();
 	}
-	
+
+	/**
+	 *	Standard constructor
+	 *	Create an CEventList object
+	 */
+	public CEventList(double start_time)
+	{
+		currentTime = start_time;
+		System.out.println(currentTime);
+		stopFlag = false;
+		events = new ArrayList<>();
+	}
+
 	/**
 	*	Method for the construction of a new event.
 	*	@param target The object that will process the event
