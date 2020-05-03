@@ -1,5 +1,7 @@
 package simulation;
 
+import java.util.ArrayList;
+
 /**
  *	csa in a factory
  *	@author Joel Karel
@@ -29,6 +31,10 @@ public class CSA implements CProcess, CallAcceptor
 	private int type;
 	/** if CSA is allowed to handle all kind of calls */
 	private boolean handle_both;
+
+	private double std;
+
+	private double threshold;
 
 	/**
 	*	Constructor
@@ -65,8 +71,18 @@ public class CSA implements CProcess, CallAcceptor
 		sink=s;
 		eventlist=e;
 		name=n;
-		meanProcTime=30;
 		type = tp;
+		if(tp == 0){
+		    std = 35;
+            meanProcTime=72;
+            threshold = 25;
+
+        }
+        else{
+            std = 35;
+            meanProcTime=216;
+            threshold = 45;
+        }
 		handle_both = false;
 		queue.askCall(this);
 	}
@@ -88,7 +104,17 @@ public class CSA implements CProcess, CallAcceptor
 		sink=s;
 		eventlist=e;
 		name=n;
-		meanProcTime=30;
+        if(tp == 0){
+            std = 35;
+            meanProcTime=72;
+            threshold = 25;
+
+        }
+        else{
+            std = 35;
+            meanProcTime=216;
+            threshold = 45;
+        }
 		type = tp;
 		handle_both = hb;
 		queue.askCall(this);
@@ -223,20 +249,63 @@ public class CSA implements CProcess, CallAcceptor
 		}
 	}
 
-    public static double drawTruncatedNormal(double mean)
-    {
-        // draw a [0,1] uniform distributed number
-        double u = Math.random();
-        while(u < .045){
-            u = Math.random();
+	//TODO
+	//replace by truncated normal draw
+	public double drawRandomExponential(double mean)
+	{
+		// draw a [0,1] uniform distributed number
+		double u = Math.random();
+		// Convert it into a exponentially distributed random variate with mean 33
+		double res = -mean*Math.log(u);
+		return res;
+	}
+
+	public double truncated_pdf(double x){
+        double value;
+
+	    if( x < this.threshold){
+	        value = -1;
         }
-        // Convert it into a normally distributed random variate
-        double res = mean*u;
-        return res;
+
+        else{
+	        value = (1 / (this.std*Math.sqrt(2*Math.PI)))*Math.exp(-.5*Math.pow((x-this.meanProcTime/this.std),2));
+        }
+
+        return value;
+
+    }
+
+    public double drawTruncatedNormal(double mean)
+    {
+        //find possible values that are under the normal distribution pdf
+        ArrayList<Double> accepted_values = new ArrayList();
+        while (accepted_values.size() < 100){
+            // get random variables for rejection sampling
+            double x = Math.random()*600;
+            double y = Math.random()*0.007;
+            double trunc_pdf = truncated_pdf(x);
+
+
+            if(trunc_pdf > 0){
+                if(y <= trunc_pdf ){
+                    accepted_values.add(x);
+                }
+            }
+
+        }
+
+        //now we randomly select which accepted value will be used
+        int chosen = (int)Math.random()*accepted_values.size();
+
+        return accepted_values.get(chosen);
     }
 
     public String toString()
 	{
 		return "csa status" + status + " name " + name;
 	}
+
+	public double getMeanProcTime(){
+	    return this.meanProcTime;
+    }
 }
