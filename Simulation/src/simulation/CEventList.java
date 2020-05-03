@@ -37,7 +37,6 @@ public class CEventList implements CProcess
 	public CEventList(double start_time)
 	{
 		currentTime = start_time;
-		System.out.println(currentTime);
 		stopFlag = false;
 		events = new ArrayList<>();
 	}
@@ -140,4 +139,6 @@ public class CEventList implements CProcess
 		if(type==-1)
 			stop();
 	}
+
+	public String toString() {return "event list time " + currentTime;}
 }

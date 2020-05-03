@@ -23,10 +23,10 @@ public class Simulation {
      */
     public static void main(String[] args) throws IOException {
         //a shift consists of:
-        //[start hour,finish hour,amount of agents type 1, amount of agents type 2]
-        int[][] shifts = {{6,14,10,5},{14,22,15,5},{22,30,10,5}};
+        //[start hour,finish hour,amount of agents type 0, amount of agents type 1]
+        int[][] shifts = {{6,14,100,50},{14,22,150,150},{22,30,100,50}};
 
-        //flag defining if CSA agents of type 2 are allowed to handle calls of type 1
+        //flag defining if CSA agents of type 1 are allowed to handle calls of type 0
         boolean handle_both = false;
 
         for (int j = 0; j < shifts.length; j++) {
@@ -57,6 +57,7 @@ public class Simulation {
                 // A csa
                 CSA CSA_corporate = new CSA(q1, si, l, "corporate CSA nr " + i, 1,handle_both);
             }
+
 
             // start the eventlist
             l.start(finish);

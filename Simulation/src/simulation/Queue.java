@@ -28,23 +28,26 @@ public class Queue implements CallAcceptor
 	*	Asks a queue to give a call to a csa
 	*	True is returned if a call could be delivered; false if the request is queued
 	*/
-	public boolean askCall(CSA CSA)
+	public boolean askCall(CSA csa)
 	{
 		// This is only possible with a non-empty queue
 		if(row.size()>0)
 		{
 			// If the csa accepts the call
-			if(CSA.giveCall(row.get(0)))
+			if(csa.giveCall(row.get(0)))
 			{
 				row.remove(0);// Remove it from the queue
 				return true;
 			}
-			else
+			else{
+				System.out.println(csa.getName()+" call request rejected");
 				return false; // csa rejected; don't queue request
+			}
 		}
 		else
 		{
-			requests.add(CSA);
+			System.out.println(csa.getName()+" requests calls");
+			requests.add(csa);
 			return false; // queue request
 		}
 	}
@@ -61,14 +64,22 @@ public class Queue implements CallAcceptor
 		else
 		{
 			boolean delivered = false;
+
+			ArrayList<CSA> list_rejected = new ArrayList<>();
 			while(!delivered & (requests.size()>0))
 			{
-				delivered=requests.get(0).giveCall(p);
+				delivered = requests.get(0).giveCall(p);
 				// remove the request regardless of whether or not the call has been accepted
-				requests.remove(0);
+				CSA removed = requests.remove(0);
+				if(!delivered)
+					list_rejected.add(removed);// Otherwise store it
 			}
 			if(!delivered)
 				row.add(p); // Otherwise store it
+
+			for (CSA csa : list_rejected){
+				requests.add(csa);
+			}
 		}
 		return true;
 	}

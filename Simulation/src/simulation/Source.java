@@ -57,7 +57,6 @@ public class Source implements CProcess
 		name = n;
 		type = tp;
 		meanArrTime=getAverageArrivalRate(type, l.getTime());
-		System.out.println(meanArrTime);
 		// put first event in list for initialization
 		list.add(this,type,drawRandomExponential(meanArrTime)+l.getTime()); //target,type,time
 	}
@@ -104,23 +103,21 @@ public class Source implements CProcess
 	public void execute(int type, double tme)
 	{
 		// show arrival
-		System.out.println("Arrival of type "+ type +" at time = " + tme);
+		System.out.println("Arrival of type "+ type +" at time in hours " + tme /3600+ " in secs " + tme);
 		// give arrived call to queue
 		Call p = new Call(type);
 		p.stamp(tme,"Creation",name);
 		queue.giveCall(p);
-		System.out.println(meanArrTime);
 		// generate duration
 		if(meanArrTime>0)
 		{
 			double duration = drawRandomExponential(getAverageArrivalRate(type,tme));
 			// Create a new event in the eventlist
 			list.add(this,type,tme+duration); //target,type,time
-			System.out.println("Duration till next event = " + duration);
+			System.out.println("Duration till next call in hours " + duration/3600 +" in secs " + duration);
 		}
 		else
 		{
-			System.out.println("=============================");
 			interArrCnt++;
 			if(interarrivalTimes.length>interArrCnt)
 			{
@@ -170,5 +167,9 @@ public class Source implements CProcess
 		// Convert it into a exponentially distributed random variate with mean "mean"
 		double res = -mean*Math.log(u);
 		return res;
+	}
+
+	public String toString(){
+		return "source " + type + " ma " + meanArrTime;
 	}
 }

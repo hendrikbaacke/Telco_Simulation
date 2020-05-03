@@ -57,7 +57,6 @@ public class CSA implements CProcess, CallAcceptor
 	 *	@param e	Eventlist that will manage events
 	 *	@param n	The name of the csa
 	 *  @param tp	The type of the csa (consumer/corporate)
-	 *  @param hb flag if agent is allowed to handle all kinds of calls
 	 */
 	public CSA(Queue q, CallAcceptor s, CEventList e, String n, int tp)
 	{
@@ -145,13 +144,13 @@ public class CSA implements CProcess, CallAcceptor
 	public void execute(int type, double tme)
 	{
 		// show arrival
-		System.out.println("Call finished at time = " + tme);
+		System.out.println("Call finished at time in hours" + tme / 3600+" in sec "+tme);
 		// Remove call from system
 		call.stamp(tme,"Call finished",name);
 		sink.giveCall(call);
 		call = null;
 		// set csa status to idle
-		status='i';
+		status = 'i';
 		// Ask the queue for calls
 		queue.askCall(this);
 	}
@@ -178,12 +177,18 @@ public class CSA implements CProcess, CallAcceptor
 				// Flag that the call has arrived
 				return true;
 			}
-			else return false;
+			else {
+				return false;
+			}
 		}
 		// Flag that the call has been rejected
-		else return false;
+		else {
+			return false;
+		}
 	}
-	
+
+	public String getName(){ return name;}
+
 	/**
 	*	Starting routine for the call
 	*	Start the handling of the current call with an exponentionally distributed processingtime with average 30
@@ -195,9 +200,10 @@ public class CSA implements CProcess, CallAcceptor
 		if(meanProcTime>0)
 		{
 			double duration = drawTruncatedNormal(meanProcTime);
+			System.out.println("call will take in hours "+duration/3600 + " in secs "+duration);
 			// Create a new event in the eventlist
 			double tme = eventlist.getTime();
-			eventlist.add(this,0,tme+duration); //target,type,time
+			eventlist.add(this,type,tme+duration); //target,type,time
 			// set status to busy
 			status='b';
 		}
@@ -217,17 +223,6 @@ public class CSA implements CProcess, CallAcceptor
 		}
 	}
 
-	//TODO
-	//replace by truncated normal draw
-	public static double drawRandomExponential(double mean)
-	{
-		// draw a [0,1] uniform distributed number
-		double u = Math.random();
-		// Convert it into a exponentially distributed random variate with mean 33
-		double res = -mean*Math.log(u);
-		return res;
-	}
-
     public static double drawTruncatedNormal(double mean)
     {
         // draw a [0,1] uniform distributed number
@@ -240,5 +235,8 @@ public class CSA implements CProcess, CallAcceptor
         return res;
     }
 
-
+    public String toString()
+	{
+		return "csa status" + status + " name " + name;
+	}
 }

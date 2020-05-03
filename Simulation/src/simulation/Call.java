@@ -88,4 +88,6 @@ class Call
 		tmp = stations.toArray(tmp);
 		return tmp;
 	}
+
+	public String toString(){return "call type"+ type+" times "+ times;}
 }
