@@ -34,7 +34,7 @@ public class CSA implements CProcess, CallAcceptor
 
 	private double std;
 
-	private double threshold;
+	private double truncation;
 
 	/**
 	*	Constructor
@@ -75,13 +75,13 @@ public class CSA implements CProcess, CallAcceptor
 		if(tp == 0){
 		    std = 35;
             meanProcTime=72;
-            threshold = 25;
+            truncation = 25;
 
         }
         else{
-            std = 35;
+            std = 72;
             meanProcTime=216;
-            threshold = 45;
+            truncation = 45;
         }
 		handle_both = false;
 		queue.askCall(this);
@@ -107,13 +107,13 @@ public class CSA implements CProcess, CallAcceptor
         if(tp == 0){
             std = 35;
             meanProcTime=72;
-            threshold = 25;
+            truncation = 25;
 
         }
         else{
-            std = 35;
+            std = 72;
             meanProcTime=216;
-            threshold = 45;
+            truncation = 45;
         }
 		type = tp;
 		handle_both = hb;
@@ -225,7 +225,7 @@ public class CSA implements CProcess, CallAcceptor
 		// generate duration
 		if(meanProcTime>0)
 		{
-			double duration = drawTruncatedNormal(meanProcTime);
+			double duration = drawTruncatedNormal();
 			System.out.println("call will take in hours "+duration/3600 + " in secs "+duration);
 			// Create a new event in the eventlist
 			double tme = eventlist.getTime();
@@ -249,8 +249,7 @@ public class CSA implements CProcess, CallAcceptor
 		}
 	}
 
-	//TODO
-	//replace by truncated normal draw
+
 	public double drawRandomExponential(double mean)
 	{
 		// draw a [0,1] uniform distributed number
@@ -260,52 +259,127 @@ public class CSA implements CProcess, CallAcceptor
 		return res;
 	}
 
-	public double truncated_pdf(double x){
-        double value;
 
-	    if( x < this.threshold){
-	        value = -1;
-        }
+	public double BoxMuller1(double u1,double u2){
 
-        else{
-	        value = (1 / (this.std*Math.sqrt(2*Math.PI)))*Math.exp(-.5*Math.pow((x-this.meanProcTime/this.std),2));
-        }
+		double x1;
+		//transform the by the Box-Muller method generated standard normal r.v. to a normally distributed
+		// r.v. with the desired mean and std:
+		x1 = getMeanProcTime() + getStd()*(Math.sqrt(-2* Math.log(u1)) * (Math.cos((2*Math.PI)*u2)));
 
-        return value;
+		//check whether the generated value is below the truncation threshold
+	    if (x1< getTruncation()){
+
+	    	//if yes, then return 'dummy' value -1
+	    	x1 = -1;
+	    	return x1;
+		}
+		//otherwise propagate the truncated normally distributed r.v.
+	    else {
+	    	return x1;
+	    }
 
     }
 
-    public double drawTruncatedNormal(double mean)
-    {
-        //find possible values that are under the normal distribution pdf
-        ArrayList<Double> accepted_values = new ArrayList();
-        while (accepted_values.size() < 100){
-            // get random variables for rejection sampling
-            double x = Math.random()*600;
-            double y = Math.random()*0.007;
-            double trunc_pdf = truncated_pdf(x);
+
+	public double BoxMuller2(double u1,double u2){
+		double x2;
+		//transform the by the Box-Muller method generated standard normal r.v. to a normally distributed
+		// r.v. with the desired mean and std:
+		x2 = getMeanProcTime() + getStd()*(Math.sqrt(-2* Math.log(u1)) * (Math.sin((2*Math.PI)*u2)));
+
+		//check whether the generated value is below the truncation threshold
+		if (x2 < getTruncation())
+		{
+
+			//if yes, then return 'dummy' value -1
+			x2 = -1;
+			return x2;
+		}
+		//otherwise propagate the truncated normally distributed r.v.
+		else {
+			return x2;
+		}
 
 
-            if(trunc_pdf > 0){
-                if(y <= trunc_pdf ){
-                    accepted_values.add(x);
-                }
-            }
+	}
 
-        }
 
-        //now we randomly select which accepted value will be used
-        int chosen = (int)Math.random()*accepted_values.size();
+    public double drawTruncatedNormal()
+	{
+	/*Sampling from the truncated normal distribution is conducted according to following algorithm which imposes the truncation interval by rejection::
+		1. Generate 2 Uniform(0,1) random variates U1, U2
+		2. Use U1 and U2 to generate pairs Z1,Z2 of independent, standard, normally distributed (zero expectation, 1 variance) random numbers with to Box-Muller transform method
+		3. Transform the 2 newly created r.v.s to normal distribution with desired parameters according to (X_i = this.mean + this.std*Z_i)
+		4. until a<=(X1,X2)<=b (within truncation range)
 
-        return accepted_values.get(chosen);
+
+		The algorithm is efficient in the simulation context, as the truncation interval represents a large part of the normal probability mass for the given param and truncation ranges:
+		For corporate service times the truncated interval >45 represents 99.12% of normal probability mass.
+		For consumer service times the truncated interval >25 represents 91.03% of normal probability mass.
+
+		This means that it is very unlikely that the algorithm needs to loop more than once in order to find a valid sample with the desired underlying truncated normal distribution.
+		Hence, the algorithm is more efficient than a 'pure' Acceptance-Rejection method and exploits the fact that we can make use of the Box-Muller transform by scaling the output
+		according to desired parameters and reject if the generated values are outside of the truncation range.
+	*/
+
+		double U1 = Math.random();
+		double U2 = Math.random();
+
+		//get random variables for inverse transform method with imposed truncation interval by rejection
+		double rv1 = BoxMuller1(U1,U2);
+		double rv2 = BoxMuller2(U1,U2);
+
+		//return rv2 if rv1 falls within the truncated range
+		if (rv1 < 0 && rv2 > 0)
+		{
+
+			return rv2;
+		}
+		//return rv1 if rv2 falls within the truncated range
+
+		if(rv1 > 0 && rv2 < 0)
+		{
+
+			return rv1;
+		}
+
+
+		//accounting for the unlikely case
+		if (rv1 < 0 && rv2 < 0)
+		{
+			//go to step 1 of algo
+			drawTruncatedNormal();
+
+		}
+
+		//otherwise both values are valid, so randomly decide which to return
+		if(Math.random()<=0.5)
+		{
+			return rv1;
+		}
+		else {
+			return rv2;
+		}
+
     }
+
 
     public String toString()
 	{
 		return "csa status" + status + " name " + name;
 	}
 
+
 	public double getMeanProcTime(){
 	    return this.meanProcTime;
     }
+
+    public double getStd(){
+		return this.std;
+	}
+
+	public double getTruncation(){
+		return this.truncation;
+	}
 }
