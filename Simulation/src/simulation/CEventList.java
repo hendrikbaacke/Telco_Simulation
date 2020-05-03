@@ -32,7 +32,7 @@ public class CEventList implements CProcess
 	/**
 	*	Method for the construction of a new event.
 	*	@param target The object that will process the event
-	*	@param type A type indicator of the event for objects that can process multiple types of events.
+	*	@param type A type indicator of the event for objects that can process multiple s of events.
 	*	@param tme The time at which the event will be executed
 	*/
 	public void add(CProcess target, int type, double tme)
@@ -86,6 +86,7 @@ public class CEventList implements CProcess
 	*/
 	public void start(double mx)
 	{
+		//appends an event at finish time 'mx' to the list that will stop the simulation
 		add(this,-1,mx);
 		// stop criterion
 		while((events.size()>0)&&(!stopFlag))
@@ -120,7 +121,7 @@ public class CEventList implements CProcess
 	*	@param type	The type of the event that has to be executed
 	*	@param tme	The current time
 	*/
-        @Override
+	@Override
 	public void execute(int type, double tme)
 	{
 		if(type==-1)

@@ -1,23 +1,23 @@
 package simulation;
 
 /**
- *	Machine in a factory
+ *	csa in a factory
  *	@author Joel Karel
  *	@version %I%, %G%
  */
-public class Machine implements CProcess,ProductAcceptor
+public class CSA implements CProcess, CallAcceptor
 {
-	/** Product that is being handled  */
-	private Product product;
+	/** call that is being handled  */
+	private Call call;
 	/** Eventlist that will manage events */
 	private final CEventList eventlist;
-	/** Queue from which the machine has to take products */
+	/** Queue from which the csa has to take calls */
 	private Queue queue;
-	/** Sink to dump products */
-	private ProductAcceptor sink;
-	/** Status of the machine (b=busy, i=idle) */
+	/** Sink to dump calls */
+	private CallAcceptor sink;
+	/** Status of the csa (b=busy, i=idle) */
 	private char status;
-	/** Machine name */
+	/** csa name */
 	private final String name;
 	/** Mean processing time */
 	private double meanProcTime;
@@ -30,54 +30,52 @@ public class Machine implements CProcess,ProductAcceptor
 	/**
 	*	Constructor
 	*        Service times are exponentially distributed with mean 30
-	*	@param q	Queue from which the machine has to take products
-	*	@param s	Where to send the completed products
+	*	@param q	Queue from which the csa has to take calls
+	*	@param s	Where to send the completed calls
 	*	@param e	Eventlist that will manage events
-	*	@param n	The name of the machine
+	*	@param n	The name of the csa
 	*/
-	public Machine(Queue q,Queue q2, ProductAcceptor s, CEventList e, String n)
+	public CSA(Queue q, CallAcceptor s, CEventList e, String n)
 	{
 		status='i';
 		queue=q;
-		queue=q2;
 		sink=s;
 		eventlist=e;
 		name=n;
 		meanProcTime=30;
-		queue.askProduct(this);
+		queue.askCall(this);
 	}
 
 	/**
 	*	Constructor
 	*        Service times are exponentially distributed with specified mean
-	*	@param q	Queue from which the machine has to take products
-	*	@param s	Where to send the completed products
+	*	@param q	Queue from which the csa has to take calls
+	*	@param s	Where to send the completed calls
 	*	@param e	Eventlist that will manage events
-	*	@param n	The name of the machine
+	*	@param n	The name of the csa
 	*        @param m	Mean processing time
 	*/
-	public Machine(Queue q ,Queue q2, ProductAcceptor s, CEventList e, String n, double m)
+	public CSA(Queue q, CallAcceptor s, CEventList e, String n, double m)
 	{
 		status='i';
 		queue = q;
-		queue = q2;
 		sink=s;
 		eventlist=e;
 		name=n;
 		meanProcTime=m;
-		queue.askProduct(this);
+		queue.askCall(this);
 	}
 	
 	/**
 	*	Constructor
 	*        Service times are pre-specified
-	*	@param q	Queue from which the machine has to take products
-	*	@param s	Where to send the completed products
+	*	@param q	Queue from which the csa has to take calls
+	*	@param s	Where to send the completed calls
 	*	@param e	Eventlist that will manage events
-	*	@param n	The name of the machine
+	*	@param n	The name of the csa
 	*        @param st	service times
 	*/
-	public Machine(Queue q, ProductAcceptor s, CEventList e, String n, double[] st)
+	public CSA(Queue q, CallAcceptor s, CEventList e, String n, double[] st)
 	{
 		status='i';
 		queue=q;
@@ -87,7 +85,7 @@ public class Machine implements CProcess,ProductAcceptor
 		meanProcTime=-1;
 		processingTimes=st;
 		procCnt=0;
-		queue.askProduct(this);
+		queue.askCall(this);
 	}
 
 	/**
@@ -98,47 +96,47 @@ public class Machine implements CProcess,ProductAcceptor
 	public void execute(int type, double tme)
 	{
 		// show arrival
-		System.out.println("Product finished at time = " + tme);
-		// Remove product from system
-		product.stamp(tme,"Production complete",name);
-		sink.giveProduct(product);
-		product=null;
-		// set machine status to idle
+		System.out.println("Call finished at time = " + tme);
+		// Remove call from system
+		call.stamp(tme,"Call finished",name);
+		sink.giveCall(call);
+		call =null;
+		// set csa status to idle
 		status='i';
-		// Ask the queue for products
-		queue.askProduct(this);
+		// Ask the queue for calls
+		queue.askCall(this);
 	}
 	
 	/**
-	*	Let the machine accept a product and let it start handling it
-	*	@param p	The product that is offered
-	*	@return	true if the product is accepted and started, false in all other cases
+	*	Let the csa accept a call and let it start handling it
+	*	@param p	The call that is offered
+	*	@return	true if the call is accepted and started, false in all other cases
 	*/
         @Override
-	public boolean giveProduct(Product p)
+	public boolean giveCall(Call p)
 	{
-		// Only accept something if the machine is idle
+		// Only accept something if the csa is idle
 		if(status=='i')
 		{
-			// accept the product
-			product=p;
+			// accept the call
+			call =p;
 			// mark starting time
-			product.stamp(eventlist.getTime(),"Production started",name);
-			// start production
-			startProduction();
-			// Flag that the product has arrived
+			call.stamp(eventlist.getTime(),"Call started",name);
+			// start calls
+			startCall();
+			// Flag that the call has arrived
 			return true;
 		}
-		// Flag that the product has been rejected
+		// Flag that the call has been rejected
 		else return false;
 	}
 	
 	/**
-	*	Starting routine for the production
-	*	Start the handling of the current product with an exponentionally distributed processingtime with average 30
+	*	Starting routine for the call
+	*	Start the handling of the current call with an exponentionally distributed processingtime with average 30
 	*	This time is placed in the eventlist
 	*/
-	private void startProduction()
+	private void startCall()
 	{
 		// generate duration
 		if(meanProcTime>0)

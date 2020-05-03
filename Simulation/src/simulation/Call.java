@@ -2,22 +2,22 @@ package simulation;
 
 import java.util.ArrayList;
 /**
- *	Product that is send trough the system
+ *	Call that is send trough the system
  *	@author Joel Karel
  *	@version %I%, %G%
  */
-class Product
+class Call
 {
-	/** Stamps for the products */
+	/** Stamps for the calls */
 	private ArrayList<Double> times;
 	private ArrayList<String> events;
 	private ArrayList<String> stations;
 	
 	/** 
-	*	Constructor for the product
+	*	Constructor for the call
 	*	Mark the time at which it is created
 	*/
-	public Product()
+	public Call()
 	{
 		times = new ArrayList<>();
 		events = new ArrayList<>();

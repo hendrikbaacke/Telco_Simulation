@@ -6,16 +6,16 @@ import java.util.ArrayList;
  *	@author Joel Karel
  *	@version %I%, %G%
  */
-public class Sink implements ProductAcceptor
+public class Sink implements CallAcceptor
 {
-	/** All products are kept */
-	private ArrayList<Product> products;
-	/** All properties of products are kept */
+	/** All calls are kept */
+	private ArrayList<Call> calls;
+	/** All properties of calls are kept */
 	private ArrayList<Integer> numbers;
 	private ArrayList<Double> times;
 	private ArrayList<String> events;
 	private ArrayList<String> stations;
-	/** Counter to number products */
+	/** Counter to number calls */
 	private int number;
 	/** Name of the sink */
 	private String name;
@@ -26,7 +26,7 @@ public class Sink implements ProductAcceptor
 	public Sink(String n)
 	{
 		name = n;
-		products = new ArrayList<>();
+		calls = new ArrayList<>();
 		numbers = new ArrayList<>();
 		times = new ArrayList<>();
 		events = new ArrayList<>();
@@ -35,10 +35,10 @@ public class Sink implements ProductAcceptor
 	}
 	
         @Override
-	public boolean giveProduct(Product p)
+	public boolean giveCall(Call p)
 	{
 		number++;
-		products.add(p);
+		calls.add(p);
 		// store stamps
 		ArrayList<Double> t = p.getTimes();
 		ArrayList<String> e = p.getEvents();

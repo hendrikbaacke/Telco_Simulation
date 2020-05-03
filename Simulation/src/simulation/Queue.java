@@ -3,20 +3,20 @@ package simulation;
 import java.util.ArrayList;
 
 /**
- *	Queue that stores products until they can be handled on a machine machine
+ *	Queue that stores calls until they can be handled on a csa
  *	@author Joel Karel
  *	@version %I%, %G%
  */
-public class Queue implements ProductAcceptor
+public class Queue implements CallAcceptor
 {
-	/** List in which the products are kept */
-	private ArrayList<Product> row;
-	/** Requests from machine that will be handling the products */
-	private ArrayList<Machine> requests;
+	/** List in which the calls are kept */
+	private ArrayList<Call> row;
+	/** Requests from csa that will be handling the calls */
+	private ArrayList<CSA> requests;
 	
 	/**
-	*	Initializes the queue and introduces a dummy machine
-	*	the machine has to be specified later
+	*	Initializes the queue and introduces a dummy csa
+	*	the csa has to be specified later
 	*/
 	public Queue()
 	{
@@ -25,37 +25,37 @@ public class Queue implements ProductAcceptor
 	}
 	
 	/**
-	*	Asks a queue to give a product to a machine
-	*	True is returned if a product could be delivered; false if the request is queued
+	*	Asks a queue to give a call to a csa
+	*	True is returned if a call could be delivered; false if the request is queued
 	*/
-	public boolean askProduct(Machine machine)
+	public boolean askCall(CSA CSA)
 	{
 		// This is only possible with a non-empty queue
 		if(row.size()>0)
 		{
-			// If the machine accepts the product
-			if(machine.giveProduct(row.get(0)))
+			// If the csa accepts the call
+			if(CSA.giveCall(row.get(0)))
 			{
 				row.remove(0);// Remove it from the queue
 				return true;
 			}
 			else
-				return false; // Machine rejected; don't queue request
+				return false; // csa rejected; don't queue request
 		}
 		else
 		{
-			requests.add(machine);
+			requests.add(CSA);
 			return false; // queue request
 		}
 	}
 	
 	/**
-	*	Offer a product to the queue
-	*	It is investigated whether a machine wants the product, otherwise it is stored
+	*	Offer a call to the queue
+	*	It is investigated whether a csa wants the call, otherwise it is stored
 	*/
-	public boolean giveProduct(Product p)
+	public boolean giveCall(Call p)
 	{
-		// Check if the machine accepts it
+		// Check if the csa accepts it
 		if(requests.size()<1)
 			row.add(p); // Otherwise store it
 		else
@@ -63,8 +63,8 @@ public class Queue implements ProductAcceptor
 			boolean delivered = false;
 			while(!delivered & (requests.size()>0))
 			{
-				delivered=requests.get(0).giveProduct(p);
-				// remove the request regardless of whether or not the product has been accepted
+				delivered=requests.get(0).giveCall(p);
+				// remove the request regardless of whether or not the call has been accepted
 				requests.remove(0);
 			}
 			if(!delivered)

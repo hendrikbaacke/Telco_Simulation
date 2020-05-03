@@ -10,7 +10,7 @@ public class CEvent
 {
 	/** The object involved with the event */
 	private CProcess target;
-	/** The type of the event */
+	/** The  of the event */
 	private int type;
 	/** The time on which the event will be executed */
 	private double executionTime;
