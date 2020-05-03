@@ -25,7 +25,10 @@ public class CSA implements CProcess, CallAcceptor
 	private double[] processingTimes;
 	/** Processing time iterator */
 	private int procCnt;
-	
+	/** CSA type (customer/corporate) */
+	private int type;
+	/** if CSA is allowed to handle all kind of calls */
+	private boolean handle_both;
 
 	/**
 	*	Constructor
@@ -43,6 +46,52 @@ public class CSA implements CProcess, CallAcceptor
 		eventlist=e;
 		name=n;
 		meanProcTime=30;
+		queue.askCall(this);
+	}
+
+	/**
+	 *	Constructor
+	 *        Service times are exponentially distributed with mean 30
+	 *	@param q	Queue from which the csa has to take calls
+	 *	@param s	Where to send the completed calls
+	 *	@param e	Eventlist that will manage events
+	 *	@param n	The name of the csa
+	 *  @param tp	The type of the csa (customer/corporate)
+	 *  @param hb flag if agent is allowed to handle all kinds of calls
+	 */
+	public CSA(Queue q, CallAcceptor s, CEventList e, String n, int tp)
+	{
+		status='i';
+		queue=q;
+		sink=s;
+		eventlist=e;
+		name=n;
+		meanProcTime=30;
+		type = tp;
+		handle_both = false;
+		queue.askCall(this);
+	}
+
+	/**
+	 *	Constructor
+	 *        Service times are exponentially distributed with mean 30
+	 *	@param q	Queue from which the csa has to take calls
+	 *	@param s	Where to send the completed calls
+	 *	@param e	Eventlist that will manage events
+	 *	@param n	The name of the csa
+	 *  @param tp	The type of the csa (customer/corporate)
+	 *  @param hb flag if agent is allowed to handle all kinds of calls
+	 */
+	public CSA(Queue q, CallAcceptor s, CEventList e, String n, int tp, boolean hb)
+	{
+		status='i';
+		queue=q;
+		sink=s;
+		eventlist=e;
+		name=n;
+		meanProcTime=30;
+		type = tp;
+		handle_both = hb;
 		queue.askCall(this);
 	}
 
@@ -118,16 +167,18 @@ public class CSA implements CProcess, CallAcceptor
 		// Only accept something if the csa is idle
 		if(status=='i')
 		{
-			int type = p.getType();
-			System.out.println(this.name+" receives a call of type " +type);
-			// accept the call
-			call = p;
-			// mark starting time
-			call.stamp(eventlist.getTime(),"Call started",name);
-			// start calls
-			startCall();
-			// Flag that the call has arrived
-			return true;
+			if (this.handle_both || this.type == p.getType()) {
+				System.out.println(this.name + " receives a call of type " + type);
+				// accept the call
+				call = p;
+				// mark starting time
+				call.stamp(eventlist.getTime(), "Call started", name);
+				// start calls
+				startCall();
+				// Flag that the call has arrived
+				return true;
+			}
+			else return false;
 		}
 		// Flag that the call has been rejected
 		else return false;

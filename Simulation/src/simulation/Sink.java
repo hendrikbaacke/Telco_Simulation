@@ -95,8 +95,6 @@ public class Sink implements CallAcceptor
 
 	public void toFile(String filename) throws IOException
 	{
-
-
 		BufferedWriter outputWriter = null;
 		outputWriter = new BufferedWriter(new FileWriter(filename));
 		for (int i = 0; i < calls.size(); i++) {
