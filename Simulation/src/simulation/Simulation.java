@@ -64,6 +64,10 @@ public class Simulation {
 
             //save the data
             si.toFile(" "+j+".csv");
+            si.toMatrixFile("informationCalls" + j + ".csv");
+            si.toWaitTimeFileConsumer("waitingTimesConsumer"+j+".csv");
+            si.toWaitTimeFileCorporate("waitingTimesCorporate"+j+".csv");
+            si.toAmountCustomersInSystemFile("customersInSystem" + j + ".csv");
         }
     }
 }
