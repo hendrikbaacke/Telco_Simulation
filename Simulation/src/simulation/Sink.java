@@ -107,7 +107,7 @@ public class Sink implements CallAcceptor
 	}
 
 	/* First column: 	type of customer (0 = consumer, 1 = corporate)
-	   Second column: 	type of agent that helps them (1 = consumer, 2 = corporate)
+	   Second column: 	type of agent that helps them (0 = consumer, 1 = corporate)
 	   Third column: 	time of call incoming
 	   Fourth column: 	time of start call
 	   Fifth column: 	time of end call
@@ -118,10 +118,10 @@ public class Sink implements CallAcceptor
 			int typeAgent = 0;
 
 			if(calls.get(i).getStations().get(1).contains("consumer CSA")){
-				typeAgent = 1;
+				typeAgent = 0;
 			}
 			else{
-				typeAgent = 2;
+				typeAgent = 1;
 			}
 			outputWriter.write(calls.get(i).getType() + " " +
 					" " + typeAgent + " " + calls.get(i).getTimes().get(0)

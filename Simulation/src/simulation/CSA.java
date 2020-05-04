@@ -250,16 +250,6 @@ public class CSA implements CProcess, CallAcceptor
 	}
 
 
-	public double drawRandomExponential(double mean)
-	{
-		// draw a [0,1] uniform distributed number
-		double u = Math.random();
-		// Convert it into a exponentially distributed random variate with mean 33
-		double res = -mean*Math.log(u);
-		return res;
-	}
-
-
 	public double BoxMuller1(double u1,double u2){
 
 		double x1;
