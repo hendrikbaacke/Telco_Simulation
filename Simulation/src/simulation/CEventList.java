@@ -94,7 +94,7 @@ public class CEventList implements CProcess
 	/**
 	*	Method for starting the eventlist.
 	*	It will run until there are no longer events in the list or that a maximum time has elapsed
-	*	@param mx De maximum time of the simulation
+	*	@param mx The maximum time of the simulation
 	*/
 	public void start(double mx)
 	{
@@ -103,7 +103,7 @@ public class CEventList implements CProcess
 		// stop criterion
 		while((events.size()>0)&&(!stopFlag))
 		{
-			// Make the similation time equal to the execution time of the first event in the list that has to be processed
+			// Make the simulation time equal to the execution time of the first event in the list that has to be processed
 			currentTime=events.get(0).getExecutionTime();
 			// Let the element be processed
 			events.get(0).execute();
