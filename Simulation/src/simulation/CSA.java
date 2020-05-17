@@ -36,6 +36,8 @@ public class CSA implements CProcess, CallAcceptor
 
 	private double truncation;
 
+	private double shift_end;
+
 	/**
 	*	Constructor
 	*        Service times are exponentially distributed with mean 30
@@ -97,13 +99,14 @@ public class CSA implements CProcess, CallAcceptor
 	 *  @param tp	The type of the csa (consumer/corporate)
 	 *  @param hb flag if agent is allowed to handle all kinds of calls
 	 */
-	public CSA(Queue q, CallAcceptor s, CEventList e, String n, int tp, boolean hb)
+	public CSA(Queue q, CallAcceptor s, CEventList e, String n, int tp, boolean hb, double shift_end)
 	{
 		status='i';
 		queue=q;
 		sink=s;
 		eventlist=e;
 		name=n;
+		this.shift_end = shift_end;
         if(tp == 0){
             std = 35;
             meanProcTime=72;
@@ -177,8 +180,12 @@ public class CSA implements CProcess, CallAcceptor
 		call = null;
 		// set csa status to idle
 		status = 'i';
-		// Ask the queue for calls
-		queue.askCall(this);
+
+		//
+		if (tme < shift_end){
+			// Ask the queue for calls
+			queue.askCall(this);
+		}
 	}
 	
 	/**

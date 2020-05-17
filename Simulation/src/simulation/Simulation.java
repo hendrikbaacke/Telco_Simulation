@@ -22,52 +22,38 @@ public class Simulation {
      * @param args the command line arguments
      */
     public static void main(String[] args) throws IOException {
-        //a shift consists of:
-        //[start hour,finish hour,amount of agents type 0, amount of agents type 1]
-        int[][] shifts = {{6,14,100,50},{14,22,150,150},{22,30,100,50}};
-
-        //flag defining if CSA agents of type 1 are allowed to handle calls of type 0
+                //flag defining if CSA agents of type 1 are allowed to handle calls of type 0
         boolean handle_both = false;
 
-        for (int j = 0; j < shifts.length; j++) {
-            //shift start in seconds
-            double start = shifts[j][0] * 60 * 60;
-            double finish = shifts[j][1] * 60 * 60;
-            int n_agents = shifts[j][2];
-            int n_agents_corp = shifts[j][3];
+        // Create an eventlist
+        CEventList l = new CEventList(0);
 
-            // Create an eventlist
-            CEventList l = new CEventList(start);
-            // Two queues for the csa
-            Queue q1 = new Queue();
+        // Two queues for the csa
+        Queue q = new Queue();
 
-            //type 0 means consumer calls and type 1 means corporate calls
-            Source calls_consumer = new Source(q1, l, "Source 1", 0);
-            Source calls_corporate = new Source(q1, l, "Source 2", 1);
+        //type 0 means consumer calls and type 1 means corporate calls
+        Source calls_consumer = new Source(q, l, "Source 1", 0);
+        Source calls_corporate = new Source(q, l, "Source 2", 1);
 
-            // A sink
-            Sink si = new Sink("Sink 1");
+        // A sink
+        Sink si = new Sink("Sink 1");
 
-            for (int i = 0; i < n_agents; i++) {
-                // A csa
-                CSA CSA_consumer= new CSA(q1, si, l, "consumer CSA nr " + i, 0);
-            }
+        //a shift consists of:
+        //[start hour,finish hour,amount of agents type 0, amount of agents type 1]
+        int[][] shifts = {{14,100,50},{22,150,150},{6,100,50}};
 
-            for (int i = 0; i < n_agents_corp; i++) {
-                // A csa
-                CSA CSA_corporate = new CSA(q1, si, l, "corporate CSA nr " + i, 1,handle_both);
-            }
+        l.add(new Shift(q,si,l,handle_both,shifts[0][0],shifts[0][1],shifts[0][2]), 0, shifts[0][0]);
+        l.add(new Shift(q,si,l,handle_both,shifts[1][0],shifts[1][1],shifts[1][2]), 0, shifts[1][0]);
+        l.add(new Shift(q,si,l,handle_both,shifts[2][0],shifts[2][1],shifts[2][2]), 0, shifts[2][0]);
 
+        // start the eventlist
+        l.start(6*60*60*24);
 
-            // start the eventlist
-            l.start(finish);
-
-            //save the data
-            si.toFile(" "+j+".csv");
-            si.toMatrixFile("informationCalls" + j + ".csv");
-            si.toWaitTimeFileConsumer("waitingTimesConsumer"+j+".csv");
-            si.toWaitTimeFileCorporate("waitingTimesCorporate"+j+".csv");
-            si.toAmountCustomersInSystemFile("customersInSystem" + j + ".csv");
-        }
+        //save the data
+        si.toFile(" "+".csv");
+        si.toMatrixFile("informationCalls" + ".csv");
+        si.toWaitTimeFileConsumer("waitingTimesConsumer"+".csv");
+        si.toWaitTimeFileCorporate("waitingTimesCorporate"+".csv");
+        si.toAmountCustomersInSystemFile("customersInSystem" + ".csv");
     }
 }
