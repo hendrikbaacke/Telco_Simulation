@@ -22,7 +22,7 @@ public class Simulation {
      * @param args the command line arguments
      */
     public static void main(String[] args) throws IOException {
-                //flag defining if CSA agents of type 1 are allowed to handle calls of type 0
+            //flag defining if CSA agents of type 1 are allowed to handle calls of type 0
         boolean handle_both = false;
 
         // Create an eventlist
