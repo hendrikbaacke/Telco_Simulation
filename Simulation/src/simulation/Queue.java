@@ -30,6 +30,7 @@ public class Queue implements CallAcceptor
 	*/
 	public boolean askCall(CSA csa)
 	{
+		System.out.println("Ask Call");
 		// This is only possible with a non-empty queue
 		if(row.size()>0)
 		{

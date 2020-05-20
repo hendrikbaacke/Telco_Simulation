@@ -93,19 +93,6 @@ public class Sink implements CallAcceptor
 		return tmp;
 	}
 
-	public void toFile(String filename) throws IOException
-	{
-		BufferedWriter outputWriter = null;
-		outputWriter = new BufferedWriter(new FileWriter(filename));
-		for (int i = 0; i < calls.size(); i++) {
-			outputWriter.write(numbers.get(i)+" "+events.get(i)
-					+" "+times.get(i)+" "+stations.get(i));
-			outputWriter.newLine();
-		}
-		outputWriter.flush();
-		outputWriter.close();
-	}
-
 	/* First column: 	type of customer (0 = consumer, 1 = corporate)
 	   Second column: 	type of agent that helps them (0 = consumer, 1 = corporate)
 	   Third column: 	time of call incoming
@@ -155,25 +142,6 @@ public class Sink implements CallAcceptor
 				outputWriter.write(Double.toString(calls.get(i).getTimes().get(1) - calls.get(i).getTimes().get(0)));
 				outputWriter.newLine();
 			}
-		}
-		outputWriter.flush();
-		outputWriter.close();
-	}
-
-	public void toAmountCustomersInSystemFile(String filename) throws IOException{
-		// Can be done with every step size. For now, it's checked every minute.
-		BufferedWriter outputWriter = new BufferedWriter(new FileWriter((filename)));
-		double totalTime = times.get(times.size()-1) - times.get(0);
-		int stepSize = 60; //currently one minute
-		for (int i = (int)Math.round(times.get(0)); i < times.get(times.size()-1); i += stepSize){
-			int currentAmount = 0;
-			for (int j = 0; j < calls.size(); j++) {
-				if (i > calls.get(j).getTimes().get(0) && i < calls.get(j).getTimes().get(2)){
-					currentAmount++;
-				}
-			}
-			outputWriter.write(Integer.toString(currentAmount));
-			outputWriter.newLine();
 		}
 		outputWriter.flush();
 		outputWriter.close();

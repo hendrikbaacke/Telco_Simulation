@@ -207,7 +207,6 @@ public class Source implements CProcess {
 		return res;
 	}
 
-	//TODO implement thinning algorithm
 	public static double drawRandomExponential(double maxLambda, double tme) {
 		double Max_mean = 60 /maxLambda;
 

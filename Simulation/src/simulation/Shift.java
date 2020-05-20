@@ -2,7 +2,9 @@ package simulation;
 
 public class Shift implements CProcess {
 
-    private Queue queue;
+    private Queue queue_con;
+
+    private Queue queue_cor;
 
     private final CEventList eventlist;
 
@@ -16,8 +18,9 @@ public class Shift implements CProcess {
 
     private boolean handle_both;
 
-    public Shift(Queue q, Sink si, CEventList l, boolean handle_both ,int number_csa1, int number_csa2, int shift_end ){
-        queue = q;
+    public Shift(Queue q1, Queue q2,  Sink si, CEventList l, boolean handle_both ,int number_csa1, int number_csa2, int shift_end ){
+        queue_con = q1;
+        queue_cor = q2;
         sink = si;
         eventlist = l;
         this.number_csa1 = number_csa1;
@@ -30,18 +33,18 @@ public class Shift implements CProcess {
     public void execute(int type, double tme) {
         for (int i = 0; i < number_csa1; i++) {
             // A consumer CSA (handle both is always false for them)
-            CSA CSA_consumer= new CSA(queue, sink, eventlist, "consumer CSA nr " + i, 0,false,shift_end);
+            CSA CSA_consumer= new CSA(queue_con, sink, eventlist, "consumer CSA nr " + i, shift_end);
         }
 
         for (int i = 0; i < number_csa2; i++) {
             // A csa
-            CSA CSA_corporate = new CSA(queue, sink, eventlist, "corporate CSA nr " + i, 1,handle_both,shift_end);
+            CSA CSA_corporate = new CSA(queue_con, queue_cor, sink, eventlist, "corporate CSA nr " + i, shift_end);
         }
 
         int day = 24 * 60 * 60;
 
         //create new shift for the next day
-        eventlist.add(new Shift(queue,sink,
+        eventlist.add(new Shift(queue_con, queue_cor,sink,
                 eventlist, handle_both,number_csa1,
                 number_csa2, shift_end  + day),
                 0,tme + day);
