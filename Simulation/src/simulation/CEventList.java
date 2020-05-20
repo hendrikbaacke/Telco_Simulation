@@ -103,6 +103,7 @@ public class CEventList implements CProcess
 		// stop criterion
 		while((events.size()>0)&&(!stopFlag))
 		{
+			System.out.println("event "+events.get(0).toString());
 			// Make the simulation time equal to the execution time of the first event in the list that has to be processed
 			currentTime=events.get(0).getExecutionTime();
 			// Let the element be processed

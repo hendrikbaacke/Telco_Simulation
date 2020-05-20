@@ -37,6 +37,11 @@ public class Source implements CProcess {
 	 */
 	private int type;
 
+	/*
+	 * counter for calls
+	 */
+	private int counter;
+
 	/**
 	 * Constructor, creates objects
 	 * Interarrival times are exponentially distributed with mean 33
@@ -122,7 +127,9 @@ public class Source implements CProcess {
 		// show arrival
 		System.out.println("Arrival of type " + type + " at time in hours " + tme / 3600 + " in secs " + tme);
 		// give arrived call to queue
-		Call p = new Call(type);
+		Call p = new Call(type,this.counter);
+		//call id
+		counter++;
 		p.stamp(tme, "Creation", name);
 		queue.giveCall(p);
 		// generate duration

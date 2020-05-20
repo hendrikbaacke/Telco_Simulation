@@ -18,7 +18,7 @@ public class Shift implements CProcess {
 
     private boolean handle_both;
 
-    public Shift(Queue q1, Queue q2,  Sink si, CEventList l, boolean handle_both ,int number_csa1, int number_csa2, int shift_end ){
+    public Shift(Queue q1, Queue q2,  Sink si, CEventList l, boolean handle_both , int shift_end, int number_csa1, int number_csa2){
         queue_con = q1;
         queue_cor = q2;
         sink = si;
@@ -38,15 +38,12 @@ public class Shift implements CProcess {
 
         for (int i = 0; i < number_csa2; i++) {
             // A csa
-            CSA CSA_corporate = new CSA(queue_con, queue_cor, sink, eventlist, "corporate CSA nr " + i, shift_end);
+            CSA CSA_corporate = new CSA(queue_cor, queue_con, sink, eventlist, "corporate CSA nr " + i, shift_end);
         }
+    }
 
-        int day = 24 * 60 * 60;
-
-        //create new shift for the next day
-        eventlist.add(new Shift(queue_con, queue_cor,sink,
-                eventlist, handle_both,number_csa1,
-                number_csa2, shift_end  + day),
-                0,tme + day);
+    public String toString(){
+        return "shift ending at seconds " + this.shift_end + " hours " + this.shift_end /3600;
     }
 }
+

@@ -13,29 +13,21 @@ class Call
 	private ArrayList<String> events;
 	private ArrayList<String> stations;
 	private int type;
+	private int id;
 
-	/** 
-	*	Constructor for the call
-	*	Mark the time at which it is created
-	*/
-	public Call()
-	{
-		times = new ArrayList<>();
-		events = new ArrayList<>();
-		stations = new ArrayList<>();
-	}
 
 	/**
 	 *	Constructor for the call
 	 *	Mark the time at which it is created
 	 * @param tp the type of call (consumer/corporate)
 	 */
-	public Call(int tp)
+	public Call(int tp, int id)
 	{
 		times = new ArrayList<>();
 		events = new ArrayList<>();
 		stations = new ArrayList<>();
 		type = tp;
+		this.id = id;
 	}
 	
 	public void stamp(double time,String event,String station)
@@ -87,6 +79,10 @@ class Call
 		String[] tmp = new String[stations.size()];
 		tmp = stations.toArray(tmp);
 		return tmp;
+	}
+
+	public int getId(){
+		return this.id;
 	}
 
 	public String toString(){return "call type"+ type+" times "+ times;}

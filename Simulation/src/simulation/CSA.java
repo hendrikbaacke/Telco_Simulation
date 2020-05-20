@@ -198,11 +198,15 @@ public class CSA implements CProcess, CallAcceptor
 	*/
 	public void execute(int type, double tme)
 	{
-		// show arrival
-		System.out.println("Call finished at time in hours" + tme / 3600+" in sec "+tme);
+
 		// Remove call from system
 		call.stamp(tme,"Call finished",name);
 		sink.giveCall(call);
+
+		// show arrival
+		System.out.println("Call "+call.getType()+" "+call.getId()+" finished at time in hours " + tme / 3600+" in sec "+tme);
+		System.out.println("times: " +call.getTimes());
+
 		call = null;
 		// set csa status to idle
 		status = 'i';
@@ -244,11 +248,13 @@ public class CSA implements CProcess, CallAcceptor
 				return true;
 			}
 			else {
+				System.out.println(this +" cannot take this call");
 				return false;
 			}
 		}
 		// Flag that the call has been rejected
 		else {
+			System.out.println(this +" is idle");
 			return false;
 		}
 	}
