@@ -13,9 +13,9 @@ public class CSA implements CProcess, CallAcceptor
 	private Call call;
 	/** Eventlist that will manage events */
 	private final CEventList eventlist;
-	/** Queue from which the csa has to take calls */
+	/** Queue from which the csa has to take calls, queuePri depends on the csa, because it's the one that is prioritised for this csa */
 	private Queue queuePri;
-	/** Second queue, lower priority*/
+	/** Second queue, lower priority, this is null for CSAs of type 0, as they cannot take anything but consumer calls*/
 	private Queue otherQueue;
 	/** Sink to dump calls */
 	private CallAcceptor sink;
@@ -137,10 +137,7 @@ public class CSA implements CProcess, CallAcceptor
 		name=n;
 		this.shift_end = shift_end;
 
-		this.std = 72;
-		this.meanProcTime = 216;
-		this.truncation = 45;
-
+		type = 1;
 		if (!queuePri.askCall(this)){
 			otherQueue.askCall(this);
 		};
