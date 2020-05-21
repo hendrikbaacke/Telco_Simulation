@@ -242,6 +242,19 @@ public class CSA implements CProcess, CallAcceptor
 				call = p;
 				// mark starting time
 				call.stamp(eventlist.getTime(), "Call started", name);
+                // set the right values
+                if (this.type == 1){
+                    if (p.getType() == 0){
+                        this.std = 35;
+                        this.meanProcTime = 72;
+                        this.truncation = 25;
+                    }
+                    else {
+                        this.std = 72;
+                        this.meanProcTime = 216;
+                        this.truncation = 45;
+                    }
+                }
 				// start calls
 				startCall();
 				// Flag that the call has arrived
