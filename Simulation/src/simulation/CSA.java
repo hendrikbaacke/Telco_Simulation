@@ -109,7 +109,7 @@ public class CSA implements CProcess, CallAcceptor
 		name=n;
 		this.shift_end = shift_end;
 
-		// As this is a consumer CSA:
+		// As this is a consumer CSA and it is not allowed to handle anything else other than consumer callers:
         std = 35;
         meanProcTime=72;
         truncation = 25;
@@ -137,11 +137,9 @@ public class CSA implements CProcess, CallAcceptor
 		name=n;
 		this.shift_end = shift_end;
 
-		// As it is a corporate CSA:
-		std = 72;
-		meanProcTime=216;
-		truncation = 45;
-		type = 1;
+		this.std = 72;
+		this.meanProcTime = 216;
+		this.truncation = 45;
 
 		if (!queuePri.askCall(this)){
 			otherQueue.askCall(this);
@@ -242,13 +240,15 @@ public class CSA implements CProcess, CallAcceptor
 				call = p;
 				// mark starting time
 				call.stamp(eventlist.getTime(), "Call started", name);
-                // set the right values
+                // If the corp. csa takes a consumer call, get the service time distribution truncated normal at a=25 and specified mean and std as the
+				// service time distribution depends on the type of caller not the type of agent
                 if (this.type == 1){
                     if (p.getType() == 0){
                         this.std = 35;
                         this.meanProcTime = 72;
                         this.truncation = 25;
                     }
+                    // if the caller is corporate, propagate the parameters according to the specification of corporate customers
                     else {
                         this.std = 72;
                         this.meanProcTime = 216;
