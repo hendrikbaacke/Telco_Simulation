@@ -47,6 +47,10 @@ public class Sink implements CallAcceptor
 		ArrayList<Double> t = c.getTimes();
 		ArrayList<String> e = c.getEvents();
 		ArrayList<String> s = c.getStations();
+		if ((c.getTimes().get(2) - c.getTimes().get(1)) == 0)
+			{
+			System.out.println(""+c.getTimes());
+		}
 		for(int i=0;i<t.size();i++)
 		{
 			numbers.add(number);

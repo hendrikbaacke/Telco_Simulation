@@ -125,7 +125,7 @@ public class Source implements CProcess {
 	@Override
 	public void execute(int type, double tme) {
 		// show arrival
-		System.out.println("Arrival of type " + type + " at time in hours " + tme / 3600 + " in secs " + tme);
+		//System.out.println("Arrival of type " + type + " at time in hours " + tme / 3600 + " in secs " + tme);
 		// give arrived call to queue
 		Call p = new Call(type,this.counter);
 		//call id
@@ -139,7 +139,7 @@ public class Source implements CProcess {
 
 				// Create a new event in the eventlist
 				list.add(this, type, tme + duration); //target,type,time
-				System.out.println("Duration till next call in hours " + duration / 3600 + " in secs " + duration);
+				//System.out.println("Duration till next call in hours " + duration / 3600 + " in secs " + duration);
 
 			}
 
@@ -148,7 +148,7 @@ public class Source implements CProcess {
 
 				// Create a new event in the eventlist
 				list.add(this, type, tme + duration); //target,type,time
-				System.out.println("Duration till next call in hours " + duration / 3600 + " in secs " + duration);
+				//System.out.println("Duration till next call in hours " + duration / 3600 + " in secs " + duration);
 			}
 
 

@@ -30,7 +30,7 @@ public class Queue implements CallAcceptor
 	*/
 	public boolean askCall(CSA csa)
 	{
-		System.out.println("Ask Call");
+		//System.out.println("Ask Call");
 		// This is only possible with a non-empty queue
 		if(row.size()>0)
 		{
@@ -41,13 +41,13 @@ public class Queue implements CallAcceptor
 				return true;
 			}
 			else{
-				System.out.println(csa.getName()+" call request rejected");
+				//System.out.println(csa.getName()+" call request rejected");
 				return false; // csa rejected; don't queue request
 			}
 		}
 		else
 		{
-			System.out.println(csa.getName()+" requests calls");
+			//System.out.println(csa.getName()+" requests calls");
 			requests.add(csa);
 			return false; // queue request
 		}

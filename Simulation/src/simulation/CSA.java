@@ -1,5 +1,6 @@
 package simulation;
 
+import java.sql.SQLOutput;
 import java.util.ArrayList;
 
 /**
@@ -200,12 +201,13 @@ public class CSA implements CProcess, CallAcceptor
 	{
 
 		// Remove call from system
+		//System.out.println("call finished at "+ tme);
 		call.stamp(tme,"Call finished",name);
 		sink.giveCall(call);
 
 		// show arrival
-		System.out.println("Call "+call.getType()+" "+call.getId()+" finished at time in hours " + tme / 3600+" in sec "+tme);
-		System.out.println("times: " +call.getTimes());
+		//System.out.println("Call "+call.getType()+" "+call.getId()+" finished at time in hours " + tme / 3600+" in sec "+tme);
+		//System.out.println("times: " +call.getTimes());
 
 		call = null;
 		// set csa status to idle
@@ -237,10 +239,11 @@ public class CSA implements CProcess, CallAcceptor
 		if(status=='i')
 		{
 			if (this.type == p.getType() || (p.getType() == 0 && this.type ==1)){
-				System.out.println(this.name + " receives a call of type " + type);
+				//System.out.println(this.name + " receives a call of type " + type);
 				// accept the call
 				call = p;
 				// mark starting time
+
 				call.stamp(eventlist.getTime(), "Call started", name);
 				// start calls
 				startCall();
@@ -248,13 +251,13 @@ public class CSA implements CProcess, CallAcceptor
 				return true;
 			}
 			else {
-				System.out.println(this +" cannot take this call");
+				//System.out.println(this +" cannot take this call");
 				return false;
 			}
 		}
 		// Flag that the call has been rejected
 		else {
-			System.out.println(this +" is idle");
+			//System.out.println(this +" is idle");
 			return false;
 		}
 	}
@@ -272,9 +275,14 @@ public class CSA implements CProcess, CallAcceptor
 		if(meanProcTime>0)
 		{
 			double duration = drawTruncatedNormal();
-			System.out.println("call will take in hours "+duration/3600 + " in secs "+duration);
+			//System.out.println("now is "+eventlist.getTime());
 			// Create a new event in the eventlist
 			double tme = eventlist.getTime();
+
+			//if (tme+duration == 0) {
+				System.out.println("call will take in hours " + duration / 3600 + " in secs " + duration);
+			//}
+
 			eventlist.add(this,type,tme+duration); //target,type,time
 			// set status to busy
 			status='b';
@@ -369,14 +377,12 @@ public class CSA implements CProcess, CallAcceptor
 		//return rv2 if rv1 falls within the truncated range
 		if (rv1 < 0 && rv2 > 0)
 		{
-
 			return rv2;
 		}
 		//return rv1 if rv2 falls within the truncated range
 
 		if(rv1 > 0 && rv2 < 0)
 		{
-
 			return rv1;
 		}
 
@@ -385,7 +391,7 @@ public class CSA implements CProcess, CallAcceptor
 		if (rv1 < 0 && rv2 < 0)
 		{
 			//go to step 1 of algo
-			drawTruncatedNormal();
+			return drawTruncatedNormal();
 
 		}
 
