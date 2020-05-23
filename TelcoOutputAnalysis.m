@@ -122,34 +122,11 @@ ylabel('amount of occurrence');
 xlabel('interarrival time in sec');
 title('Corporate data: Fitting exponential to observed interarrvial tmes(s)');
 
-%% 
-% finding bug in service tme of consumers
-irr_stmCons= (serviceTmeCons{1}<25)
-
-S_cons = sort(serviceTmeCons{1});
-
-irregularEntries = ((consData{1}.tme_end - consData{1}.tme_start)<25);
-
-S_cons(1:height(consData{1}(irregularEntries,:))+1)
-length(serviceTmeCons{1}(irr_stmCons))
 
 
-consData{1}(irregularEntries,:)
 
-%serviceTmeCons{1}
-%consData{1}((consData{1}{:,5}-consData{1}{:,4})<25)
-
-
-%corpData{1}(1:5,{'tme_start','tme_end'})
-
-%largest value can in theory be arbitrarily large:
-
-%%
  
 
-% interTmeCorp{1}(1:15)
-% corpData{1}(1:15,{'cstm_tp' 'CSA_tp' 'tme_incoming' 'tme_start' 'tme_end'})
-% disp((corpData{1}{1+1:1+1,{'tme_incoming'}}-corpData{1}{1:1,{'tme_incoming'}}))
 
 
 
