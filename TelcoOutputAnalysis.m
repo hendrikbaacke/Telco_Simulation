@@ -88,7 +88,6 @@ interTmeCorp{i}(j+1) = (corpData{i}{j+1:j+1,{'tme_incoming'}}-corpData{i}{j:j,{'
 end
 
 end
-
 %%
 %print the data
 %consData{1}
@@ -98,15 +97,34 @@ end
 %here only the data from the first run is used
 %plot a distribution histogram, superimposing normal dist. for
 %consumer and corporate service times
+
+%the truncated normal distributions of the service times as specified
+pd_serviceTmeCons = makedist('Normal','mu',72 ,'sigma',35);
+T_pd_serviceTmeCons = truncate(pd_serviceTmeCons,25,inf);
+
+pd_serviceTmeCorp = makedist('Normal','mu',216 ,'sigma',72);
+T_pd_serviceTmeCorp = truncate(pd_serviceTmeCorp,45,inf);
+
+
+
+
+
+xline = linspace(0,100);
 figure(1)
-histfit(serviceTmeCons{1})
-ylabel('amount of occurrence');
-xlabel('service time in sec');
-title('Consumer data: Fitting normal to observed service tmes');
+hist(serviceTmeCons{1},20)
+hold on
+plot(xline,pdf(T_pd_serviceTmeCons,xline))
+hold off
+xlabel('service time in sec'),ylabel('amount of occurrence');
+
+title('Consumer data: Fitting truncated normal to observed service tmes');
+
 figure(2)
-histfit(serviceTmeCorp{1})
-ylabel('amount of occurrence');
-xlabel('service time in sec');
+hist(serviceTmeCorp{1},20)
+hold on
+plot(xline,pdf(T_pd_serviceTmeCorp,xline))
+hold off
+xlabel('service time in sec'),ylabel('amount of occurrence');
 title('Corporate data: Fitting normal to observed service tmes');
 
 %plot a distribution histogram, superimposing exponential dist. for
@@ -125,7 +143,13 @@ title('Corporate data: Fitting exponential to observed interarrvial tmes(s)');
 
 
 
- 
+
+
+
+
+
+%plot the waiting times 
+
 
 
 

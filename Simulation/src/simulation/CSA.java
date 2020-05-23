@@ -395,7 +395,7 @@ public class CSA implements CProcess, CallAcceptor
 		if (rv1 < 0 && rv2 < 0)
 		{
 			//go to step 1 of algo
-			drawTruncatedNormal();
+			return drawTruncatedNormal();
 
 		}
 
