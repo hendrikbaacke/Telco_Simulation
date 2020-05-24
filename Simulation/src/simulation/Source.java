@@ -226,7 +226,6 @@ public class Source implements CProcess {
 
 		}
 		double lambda_t = (1.8 * Math.sin((2 * Math.PI / 24) * (tme_h + 15)) + 2);   //<-tme_h (?)
-		System.out.println("Lambda_t" + lambda_t);
 		// 60 divided by rate per minute to get avg arrival time in seconds
 		//avgtme = 60 / (1.8 * Math.sin((2*Math.PI/24)*(tme_h+15))+2);
 
