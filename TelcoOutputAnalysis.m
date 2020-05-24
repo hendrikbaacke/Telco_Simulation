@@ -1,9 +1,9 @@
+%% Telco Output Analysis - Group 8
 
-% This is code runnable with MATLAB only. readtable is not a function
-% implemented in Octave
+% This code is runnable with MATLAB *only*, since readtable is not a function
+% which is implemented in Octave. 
 
-
-%% Data Retrieval 
+%% File Reading
 
 %specify number of runs of simulation
 k = 1;
@@ -36,7 +36,7 @@ WaitCorp_data{i+1}.Properties.VariableNames = {'corporate_wait_tme'};
 end
 
 
-%% Validation of Simulation
+%% Data Retrieval
 
 %specify amount of runs we want to use for distribution validation
 repVal = 1;
@@ -103,15 +103,12 @@ wtTmeCons{i} = consData{i}{:,4}-consData{i}{:,3};
 wtTmeCorp{i} = corpData{i}{:,4}-corpData{i}{:,3};
 end
 
-%%
+
+%% Validation of Simulation - Visualization of the Service Time Distribution
 %print the data
 %consData{1}
 %corpData{1}
 %______________
-%embedd this in loop of previous section if wish to plot more runs
-%here only the data from the first run is used
-%plot a distribution histogram, superimposing normal dist. for
-%consumer and corporate service times
 
 %the truncated normal distributions of the service times as specified
 
@@ -121,34 +118,50 @@ T_pd_serviceTmeCons = truncate(pd_serviceTmeCons,25,inf);
 pd_serviceTmeCorp = makedist('Normal','mu',216 ,'sigma',72);
 T_pd_serviceTmeCorp = truncate(pd_serviceTmeCorp,45,inf);
 
+%___________________________________
+%Fig.1 Density Histogram plot, superimposing truncated normal dist. for
+%consumer service times
+x_st1 = 0:.1:230;
+figure(1)
+%only the data from the first run is used
+hist(serviceTmeCons{1},20)
+hold on;
+plot(x_st1,50000*pdf(T_pd_serviceTmeCons,x_st1),'Color','red','LineWidth',2)
+hold off;
+xlabel('service time in sec'),ylabel('amount of occurrence');
+title('Consumer data: Fitting truncated normal to observed service times');
 
-
-% xline = linspace(0,100);
-% figure(1)
-% hist(serviceTmeCons{1},20)
-% hold on
-% plot(xline,pdf(T_pd_serviceTmeCons,xline))
-% hold off
-% xlabel('service time in sec'),ylabel('amount of occurrence');
-% 
-% title('Consumer data: Fitting truncated normal to observed service tmes');
-% 
-% figure(2)
-% hist(serviceTmeCorp{1},20)
-% hold on
-% plot(xline,pdf(T_pd_serviceTmeCorp,xline))
-% hold off
-% xlabel('service time in sec'),ylabel('amount of occurrence');
-% title('Corporate data: Fitting normal to observed service tmes');
+%___________________________________
+%Fig.2 Density Histogram plot, superimposing truncated normal dist. for
+%corporate service times
+x_st2 = 0:.1:450;
+figure(2)
+%only the data from the first run is used
+hist(serviceTmeCorp{1},20)
+hold on
+plot(x_st2,16000*pdf(T_pd_serviceTmeCorp,x_st2),'Color','red','LineWidth',2)
+hold off
+xlabel('service time in sec'),ylabel('amount of occurrence');
+title('Corporate data: Fitting normal to observed service times');
+%% % Validation of Simulation - Visualization of the Interarrival Times Distribution
 
 %plot a distribution histogram, superimposing exponential dist. for
 %consumer and corporate interarrival times
+%___________________________________
+%Fig.3 Density Histogram plot, superimposing exponential dist. for
+%consumer interarrival times
 figure(3)
+%only the data from the first run is used
 histfit(interTmeCons{1},[],'exponential')
 ylabel('amount of occurrence');
 xlabel('interarrival time in sec');
 title('Consumer data: Fitting exponential to observed interarrvial tmes(s)');
+
+%___________________________________
+%Fig.4 Density Histogram plot, superimposing exponential dist. for
+%corporate interarrival times
 figure(4)
+%only the data from the first run is used
 histfit(interTmeCorp{1},[],'exponential')
 ylabel('amount of occurrence');
 xlabel('interarrival time in sec');
@@ -157,31 +170,23 @@ title('Corporate data: Fitting exponential to observed interarrvial tmes(s)');
 
 %% Analysis of the Performance Bounds
 
-%Analysing Waiting times of consumer and corp cust.
-%consumer:
-wtTmeCons = table2array(WaitCons_data{1});
-figure(5)
-histfit(wtTmeCons,[],'exponential');
-figure(6)
-hist(wtTmeCons)
-Mean_waitingTmeCons = mean(wtTmeCons)
-
-%corporate:
-wtTmeCorp = table2array(WaitCorp_data{1});
-figure(7)
-Mean_waitingTmeCorp = mean(wtTmeCorp)
-histfit(wtTmeCorp,[],'exponential');
-figure(8)
-hist(wtTmeCorp)
-
-
+%Analysing Waiting times of consumer and corp customers with regard to the
+%given performance requirements. 
+%The calling costumers should be assisted in a specified time frame.  
+%This is reflected in the following requirements:
 %%
+% 
+% * 90% of consumers within 5 min
+% * 5% of consumers within 10 min
+% * 95% of corporate users within 3 min
+% * 99% of corporate users within 7 min
 
-ArrayWaitCons_data = cell(k,1);
-ArrayWaitCorp_data = cell(k,1);
 
-wtCons_smallerFive = cell(k,1);
-wtCons_smallerTen  = cell(k,1);
+ArrayWaitCons_data =  cell(k,1);
+ArrayWaitCorp_data =  cell(k,1);
+
+wtCons_smallerFive =  cell(k,1);
+wtCons_smallerTen  =  cell(k,1);
 wtCorp_smallerThree = cell(k,1);
 wtCorp_smallerSeven = cell(k,1);
 
@@ -189,6 +194,11 @@ wtCorp_smallerSeven = cell(k,1);
 for i = 1:k
 ArrayWaitCons_data{i} = table2array(WaitCons_data{i});
 ArrayWaitCorp_data{i} = table2array(WaitCorp_data{i});
+
+%retrieve the mean waiting times:
+Mean_waitingTmeCons(i) = mean(ArrayWaitCons_data{i});
+Mean_waitingTmeCorp(i) = mean(ArrayWaitCorp_data{i});
+
 
 % data is in sec, convert 5 min to sec
 smallerthanFive_Cons = (ArrayWaitCons_data{i}<=300); 
@@ -224,24 +234,45 @@ pct_corp_asstdSeven(i) = length(wtCorp_smallerSeven{i})/height(WaitCorp_data{i})
 end
 
 disp('_____________________________________________________________________________________________________________________________________');
-d5 = ['The fraction of consumers that have been assisted within five minutes, averaged over ',num2str(k),' runs is: '];
+d5 = ['The expected waiting time for consumers based on all ',num2str(k),' runs is in seconds: '];
 disp(d5);
-disp(mean(pct_cons_asstdFive))
+disp(mean(Mean_waitingTmeCons));
 disp('_____________________________________________________________________________________________________________________________________');
-d6 = ['The fraction of consumers that have been assisted within ten minutes, averaged over ',num2str(k),' runs is: ',mean(pct_cons_asstdTen)];
+d6 = ['The expected waiting time for corporates based on all ',num2str(k),' runs is in seconds: '];
 disp(d6);
-disp(mean(pct_cons_asstdTen))
+disp(mean(Mean_waitingTmeCorp));
 disp('_____________________________________________________________________________________________________________________________________');
-d7 = ['The fraction of corporates that have been assisted within three minutes, averaged over ',num2str(k),' runs is: ',mean(pct_corp_asstdThree)];
+d7 = ['The fraction of consumers that have been assisted within five minutes, averaged over ',num2str(k),' runs is: '];
 disp(d7);
-disp(mean(pct_corp_asstdThree))
+disp(mean(pct_cons_asstdFive));
 disp('_____________________________________________________________________________________________________________________________________');
-d8 = ['The fraction of corporates that have been assisted within seven minutes, averaged over ',num2str(k),' runs is: ',mean(pct_corp_asstdSeven)];
+d8 = ['The fraction of consumers that have been assisted within ten minutes, averaged over ',num2str(k),' runs is: '];
 disp(d8);
-disp(mean(pct_corp_asstdSeven))
+disp(mean(pct_cons_asstdTen));
+disp('_____________________________________________________________________________________________________________________________________');
+d9 = ['The fraction of corporates that have been assisted within three minutes, averaged over ',num2str(k),' runs is: '];
+disp(d9);
+disp(mean(pct_corp_asstdThree));
+disp('_____________________________________________________________________________________________________________________________________');
+d10 = ['The fraction of corporates that have been assisted within seven minutes, averaged over ',num2str(k),' runs is: '];
+disp(d10);
+disp(mean(pct_corp_asstdSeven));
 
 
-%%
+
+%% Hendrik Notes
+
+
+%TODO
+
+%Find bug in drawing consumer interarrival times (rate too high)
+%Priority:do replication deletion or batch means to cut the transient
+%after this:
+%do c_i for the performance measures
+%KS test for validating the underlying distribution (only if enough tme)
+
+
+
 % corpData{1}(1:15,{'cstm_tp' 'CSA_tp' 'tme_incoming' 'tme_start' 'tme_end'})
 %corpData{1}
 
@@ -263,4 +294,12 @@ disp(mean(pct_corp_asstdSeven))
 % 
 % %not the same! WHY
 % height(WaitCons_data{1});
+
+
 % height(consData{1});
+
+
+
+
+
+
