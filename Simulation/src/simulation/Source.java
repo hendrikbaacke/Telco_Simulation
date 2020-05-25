@@ -225,19 +225,20 @@ public class Source implements CProcess {
 			tme_h = tme_h - 24;
 
 		}
-		double lambda_t = (1.8 * Math.sin((2 * Math.PI / 24) * (tme_h + 15)) + 2);   //<-tme_h (?)
+		//double lambda_t = (1.8 * Math.sin((2 * Math.PI / 24) * (tme_h + 15)) + 2);   //<-tme_h (?)
+		double lambda_t = 1.8 * Math.sin((2 * Math.PI / 24) * (tme_h + 9)) + 2;
 		// 60 divided by rate per minute to get avg arrival time in seconds
 		//avgtme = 60 / (1.8 * Math.sin((2*Math.PI/24)*(tme_h+15))+2);
 
 		// draw a [0,1] uniform distributed number
 		double u1 = Math.random();
 		double u2 = Math.random();
-		// Convert it into a exponentially distributed random variate with mean "mean"
 
-		double res = -Max_mean * Math.log(u1);
+		// Convert it into a exponentially distributed random variate with mean "mean"
+		double res = tme_h - (1/maxLambda*Math.log(u1));
+		//double res = -Max_mean * Math.log(u1);
 
 		if (u2 <= (lambda_t)/maxLambda) {
-
 			return res;
 		}
 		else {
