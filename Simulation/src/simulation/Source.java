@@ -77,7 +77,7 @@ public class Source implements CProcess {
 			double arr_tme = drawRandomExponentialNonStat(tme);
 			// Create a new event in the eventlist
 			list.add(this, type,arr_tme); //target,type,time
-
+			System.out.format("duration generated: %.2f\n",arr_tme-tme);
 			System.out.format("time now/next con call %.2f %.2f in hours %.2f %.2f\n",tme,arr_tme,tme/3600,arr_tme/3600);
 		}
 		else if (type == 1) {
@@ -137,7 +137,7 @@ public class Source implements CProcess {
 		double arr_tme = tme / 60 - (1/max_lambda)*Math.log(u1); //next arrival time
 
 		if (u2 <= (lambda_t)/max_lambda) {
-			System.out.format("arrival rate %.2f per minute", lambda_t);
+			System.out.format("arrival rate %.2f per minute ", lambda_t);
 			return arr_tme * 60; // in seconds
 		}
 		else {
