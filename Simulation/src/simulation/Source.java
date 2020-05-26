@@ -75,18 +75,17 @@ public class Source implements CProcess {
 		// generate duration
 		if (type == 0) {
 			double arr_tme = drawRandomExponentialNonStat(tme);
-
 			// Create a new event in the eventlist
 			list.add(this, type,arr_tme); //target,type,time
-			System.out.println("time for next cons call in hours " + arr_tme / 3600 + " in secs " + arr_tme);
 
+			System.out.format("time now/next con call %.2f %.2f in hours %.2f %.2f\n",tme,arr_tme,tme/3600,arr_tme/3600);
 		}
 		else if (type == 1) {
 			double duration = drawRandomExponential(getAverageArrivalRateCorp(tme));
 			//System.out.println("Duration till next corp call in hours " + duration / 3600 + " in secs " + duration);
 			// Create a new event in the eventlist
 			list.add(this, type, tme + duration); //target,type,time
-			//System.out.println("Duration till next call in hours " + duration / 3600 + " in secs " + duration);
+			//System.out.println("Duration till next corp call in hours " + duration / 3600 + " in secs " + duration);
 		}
 	}
 
@@ -115,6 +114,13 @@ public class Source implements CProcess {
 		return res;
 	}
 
+	/*
+	1. Set t = ti-1.
+	2. Generate U1 and U2 as IID U(0, 1) independent of any previous random variates.
+	3. Replace t by t2 (1yl*) ln U1.4. If U2#l(t)yl*, return ti5t.
+	 Otherwise, go back to step 2
+	 */
+
 	public static double drawRandomExponentialNonStat(double tme) {
 		double max_lambda = 3.8; //maximum rate in a day
 
@@ -131,16 +137,15 @@ public class Source implements CProcess {
 		double arr_tme = tme / 60 - (1/max_lambda)*Math.log(u1); //next arrival time
 
 		if (u2 <= (lambda_t)/max_lambda) {
-			System.out.println(arr_tme * 60 + " " + lambda_t);
+			System.out.format("arrival rate %.2f per minute", lambda_t);
 			return arr_tme * 60; // in seconds
 		}
 		else {
-			return drawRandomExponential(tme);
+			return drawRandomExponentialNonStat(tme);
 		}
-
 	}
 
 	public String toString(){
-		return "source " + type + " ma " + meanArrTime;
+		return "source " + type;
 	}
 }

@@ -289,9 +289,7 @@ public class CSA implements CProcess, CallAcceptor
 			// Create a new event in the eventlist
 			double tme = eventlist.getTime();
 
-			//if (tme+duration == 0) {
-				System.out.println("call will take in hours " + duration / 3600 + " in secs " + duration);
-			//}
+			//System.out.println("call will take in hours " + duration / 3600 + " in secs " + duration);
 
 			eventlist.add(this,type,tme+duration); //target,type,time
 			// set status to busy
