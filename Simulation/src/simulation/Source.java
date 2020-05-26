@@ -82,7 +82,8 @@ public class Source implements CProcess {
 		}
 		else if (type == 1) {
 			double duration = drawRandomExponential(getAverageArrivalRateCorp(tme));
-			//System.out.println("Duration till next corp call in hours " + duration / 3600 + " in secs " + duration);
+			System.out.format("duration generated: %.2f\n",duration);
+			System.out.format("time now/next corp call %.2f %.2f in hours %.2f %.2f\n",tme,tme+duration,tme/3600,(tme+duration)/3600);
 			// Create a new event in the eventlist
 			list.add(this, type, tme + duration); //target,type,time
 			//System.out.println("Duration till next corp call in hours " + duration / 3600 + " in secs " + duration);
@@ -102,7 +103,7 @@ public class Source implements CProcess {
 		if (18 < tme_h || tme_h < 8) {
 			avgtme = 60 / 0.2;
 		}
-
+		System.out.format("arrival rate %.2f per min ",60/avgtme);
 		return avgtme;
 	}
 
@@ -124,24 +125,26 @@ public class Source implements CProcess {
 	public static double drawRandomExponentialNonStat(double tme) {
 		double max_lambda = 3.8; //maximum rate in a day
 
-		//time in hours for a day
-		double tme_h = tme / 3600 % 24;
-
-		//function
-		double lambda_t = 1.8 * Math.sin((2 * Math.PI / 24) * (tme_h + 15)) + 2;
-
 		// draw a [0,1] uniform distributed number
 		double u1 = Math.random();
 		double u2 = Math.random();
 
-		double arr_tme = tme / 60 - (1/max_lambda)*Math.log(u1); //next arrival time
+		double arr_tme = tme / 60 - (1/max_lambda)*Math.log(u1) ; //next arrival time in minutes
 
-		if (u2 <= (lambda_t)/max_lambda) {
-			System.out.format("arrival rate %.2f per minute ", lambda_t);
-			return arr_tme * 60; // in seconds
+		//arrival time in hours for a day
+		double tme_h = arr_tme / 60 % 24;
+
+		//function
+		double lambda_t = (1.8 * Math.sin((2 * Math.PI / 24) * (tme_h + 15)) + 2 );
+
+		if (u2 <= (lambda_t/max_lambda)) {
+			System.out.format("arrival rate %.2f per min ", lambda_t);
+			return arr_tme * 60 ; // in seconds
 		}
 		else {
-			return drawRandomExponentialNonStat(tme);
+			//System.out.format("refused duration %.2f\n",arr_tme*60-tme);
+			//System.out.format("u2 %.2f ratio %.2f\n",u2,lambda_t/max_lambda);
+			return drawRandomExponentialNonStat(arr_tme * 60);
 		}
 	}
 
