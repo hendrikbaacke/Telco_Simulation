@@ -136,10 +136,11 @@ public class Source implements CProcess {
 		if (meanArrTime > 0) {
 			if (type == 0) {
 				double duration = drawRandomExponential(getMaxArrivalRateCons(), tme);
+				//double time = drawRandomExponential(getMaxArrivalRateCons(), tme);
 
 				// Create a new event in the eventlist
 				list.add(this, type, tme + duration); //target,type,time
-				//System.out.println("Duration till next call in hours " + duration / 3600 + " in secs " + duration);
+				System.out.println("Duration till next call in hours " + duration / 3600 + " in secs " + duration);
 
 			}
 
@@ -158,6 +159,8 @@ public class Source implements CProcess {
 				if (type == 0) {
 					double duration = drawRandomExponential(getMaxArrivalRateCons(), tme);
 					list.add(this, 0, tme + interarrivalTimes[interArrCnt]); //target,type,time
+					//double time = drawRandomExponential(getMaxArrivalRateCons(), tme);
+					//list.add(this, type, time);
 				}
 
 				if (type == 1) {
@@ -235,11 +238,11 @@ public class Source implements CProcess {
 		double u2 = Math.random();
 
 		// Convert it into a exponentially distributed random variate with mean "mean"
-		double res = tme_h - (1/maxLambda*Math.log(u1));
+		double res = tme_h - (1/maxLambda)*Math.log(u1);
 		//double res = -Max_mean * Math.log(u1);
 
 		if (u2 <= (lambda_t)/maxLambda) {
-			return res;
+			return res; // in seconds
 		}
 		else {
 			return drawRandomExponential(getMaxArrivalRateCons(), tme);
