@@ -26,13 +26,21 @@ public class Simulation {
         boolean handle_both = true;
 
         //roster: agents for each shift
-        int[][] roster = {{5,5},{5,5},{5,5}};
+        //Shift 1: (6am - 2pm)
+        //Shift 2: (2pm - 10pm)
+        //Shift 3: (10pm - 6am)
+        //first agent{0,x}: consumer CSA
+        //second agent{x,1} corporate CSA
+        int[][] roster = {{2,4},{2,5},{2,4}};
 
         // n is the number of runs
-        int n = 1;
+        int n = 10;
+
+        //amount of days of simulation runs
+        int days = 10;
         for (int i = 0; i < n; i++) {
             int start_time = 6 * 60 * 60;
-            int sim_duration = 8* 24 *60 * 60;
+            int sim_duration = days * 24 *60 * 60;
             int shift_duration = 8 * 60 * 60;
 
             // Create an eventlist
@@ -69,6 +77,10 @@ public class Simulation {
             si.toMatrixFile("informationCalls" +  i + ".csv");
             si.toWaitTimeFileConsumer("waitingTimesConsumer" + i + ".csv");
             si.toWaitTimeFileCorporate("waitingTimesCorporate" + i + ".csv");
+
+            int cost = (roster[0][0]  + roster[1][0] + roster[2][0])* 8 * 35 + (roster[0][1] + roster[1][1] + roster[2][1]) * 8 * 60;
+            System.out.println("________________________"+"Cost per day: "+cost+"________________________");
+
         }
     }
 }
