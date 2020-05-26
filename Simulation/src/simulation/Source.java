@@ -58,7 +58,14 @@ public class Source implements CProcess {
 		name = n;
 		type = tp;
 		// put first event in list for initialization
-		list.add(this, type, drawRandomExponential(l.getTime())); //target,type,time
+		double first_arrival;
+		if (type==0){
+			first_arrival = l.getTime() + drawRandomExponential(l.getTime());
+		}
+		else {
+			first_arrival = l.getTime() + drawRandomExponential(getAverageArrivalRateCorp(l.getTime()));
+		}
+		list.add(this, type, first_arrival); //target,type,time
 	}
 
 

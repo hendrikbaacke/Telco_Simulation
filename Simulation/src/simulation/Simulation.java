@@ -32,7 +32,7 @@ public class Simulation {
         int n = 1;
         for (int i = 0; i < n; i++) {
             int start_time = 6 * 60 * 60;
-            int sim_duration = 24 *60 * 60;
+            int sim_duration = 8* 24 *60 * 60;
             int shift_duration = 8 * 60 * 60;
 
             // Create an eventlist
