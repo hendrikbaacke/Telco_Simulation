@@ -26,7 +26,7 @@ public class Simulation {
         boolean handle_both = true;
 
         //roster: agents for each shift
-        int[][] roster = {{50,10},{50,10},{50,10}};
+        int[][] roster = {{5,5},{5,5},{5,5}};
 
         // n is the number of runs
         int n = 1;
