@@ -143,8 +143,6 @@ public class Source implements CProcess {
 				System.out.println("Duration till next call in hours " + (duration - tme)/3600 + " in secs " + duration);
 				//list.add(this, type, time);
 				//System.out.println("Duration till next call in hours " + (time - tme) / 3600 + " in secs " + (time-tme));
-				list.add(this, type, tme + duration); //target,type,time
-				System.out.println("Duration till next call in hours " + duration / 3600 + " in secs " + duration);
 			}
 
 			if (type == 1) {
