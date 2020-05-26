@@ -74,7 +74,7 @@ public class Source implements CProcess {
 		queue.giveCall(p);
 		// generate duration
 		if (type == 0) {
-			double arr_tme = drawRandomExponential(tme);
+			double arr_tme = drawRandomExponentialNonStat(tme);
 
 			// Create a new event in the eventlist
 			list.add(this, type,arr_tme); //target,type,time
@@ -107,7 +107,15 @@ public class Source implements CProcess {
 		return avgtme;
 	}
 
-	public static double drawRandomExponential(double tme) {
+	public static double drawRandomExponential(double mean) {
+		// draw a [0,1] uniform distributed number
+		double u = Math.random();
+		// Convert it into a exponentially distributed random variate with mean "mean"
+		double res = -mean * Math.log(u);
+		return res;
+	}
+
+	public static double drawRandomExponentialNonStat(double tme) {
 		double max_lambda = 3.8; //maximum rate in a day
 
 		//time in hours for a day
