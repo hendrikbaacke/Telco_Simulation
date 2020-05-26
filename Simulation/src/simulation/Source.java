@@ -238,8 +238,8 @@ public class Source implements CProcess {
 		double u2 = Math.random();
 
 		// Convert it into a exponentially distributed random variate with mean "mean"
-		double res = tme_h - (1/maxLambda)*Math.log(u1);
-		//double res = -Max_mean * Math.log(u1);
+		//double res = tme_h - (1/maxLambda)*Math.log(u1);
+		double res = -Max_mean * Math.log(u1);
 
 		if (u2 <= (lambda_t)/maxLambda) {
 			return res; // in seconds

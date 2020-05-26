@@ -15,7 +15,7 @@ for i = 1:k
 i = i-1;
 %retrieve the call data
 %CHANGE THE FILEPATH TO THE DESIRED FILEPATH OF ALL RELEVANT CSV FILES
-fileN = ['/Users/HendrikS/Documents/GitHub/Telco_Simulation/informationCalls',num2str(i),'.csv'];
+fileN = ['informationCalls',num2str(i),'.csv'];
 C_data{i+1} = readtable(fileN);
 C_data{i+1}.Properties.VariableNames = {'cstm_tp' 'CSA_tp' 'tme_incoming' 'tme_start' 'tme_end'};
 
@@ -24,13 +24,13 @@ SortedC_data{i+1} = sortrows(C_data{i+1},3);
 
 %retrieve the waiting times of consumer costumers
 %CHANGE THE FILEPATH TO THE DESIRED FILEPATH OF ALL RELEVANT CSV FILES
-fileWaitCons = ['/Users/HendrikS/Documents/GitHub/Telco_Simulation/waitingTimesConsumer',num2str(i),'.csv'];
+fileWaitCons = ['waitingTimesConsumer',num2str(i),'.csv'];
 WaitCons_data{i+1} = readtable(fileWaitCons);
 WaitCons_data{i+1}.Properties.VariableNames = {'consumer_wait_tme'};
 
 %retrieve the waiting times of corporate costumers
 %CHANGE THE FILEPATH TO THE DESIRED FILEPATH OF ALL RELEVANT CSV FILES
-fileWaitCorp = ['/Users/HendrikS/Documents/GitHub/Telco_Simulation/waitingTimesCorporate',num2str(i),'.csv'];
+fileWaitCorp = ['waitingTimesCorporate',num2str(i),'.csv'];
 WaitCorp_data{i+1} = readtable(fileWaitCorp);
 WaitCorp_data{i+1}.Properties.VariableNames = {'corporate_wait_tme'};
 end
