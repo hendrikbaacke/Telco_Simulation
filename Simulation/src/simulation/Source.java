@@ -135,13 +135,16 @@ public class Source implements CProcess {
 		// generate duration
 		if (meanArrTime > 0) {
 			if (type == 0) {
-				double duration = drawRandomExponential(getMaxArrivalRateCons(), tme);
+				double duration = drawRandomExponential(getMaxArrivalRateCons(), tme) * 3600;
 				//double time = drawRandomExponential(getMaxArrivalRateCons(), tme);
 
 				// Create a new event in the eventlist
+				list.add(this, type, duration); //target,type,time
+				System.out.println("Duration till next call in hours " + (duration - tme)/3600 + " in secs " + duration);
+				//list.add(this, type, time);
+				//System.out.println("Duration till next call in hours " + (time - tme) / 3600 + " in secs " + (time-tme));
 				list.add(this, type, tme + duration); //target,type,time
 				System.out.println("Duration till next call in hours " + duration / 3600 + " in secs " + duration);
-
 			}
 
 			if (type == 1) {
@@ -223,26 +226,28 @@ public class Source implements CProcess {
 		//time in hours
 		double tme_h = tme / 3600;
 
+		int i = 0;
 		//handle clock when one day is over
-		if (tme_h > 24) {
+		while (tme_h > 24) {
 			tme_h = tme_h - 24;
-
+			i =+ 1;
 		}
+
 		//double lambda_t = (1.8 * Math.sin((2 * Math.PI / 24) * (tme_h + 15)) + 2);   //<-tme_h (?)
 		double lambda_t = 1.8 * Math.sin((2 * Math.PI / 24) * (tme_h + 9)) + 2;
 		// 60 divided by rate per minute to get avg arrival time in seconds
-		//avgtme = 60 / (1.8 * Math.sin((2*Math.PI/24)*(tme_h+15))+2);
+		//avgtme = 60 / (1.8 * Math.sin((2Math.PI/24)(tme_h+15))+2);
 
 		// draw a [0,1] uniform distributed number
 		double u1 = Math.random();
 		double u2 = Math.random();
 
 		// Convert it into a exponentially distributed random variate with mean "mean"
-		//double res = tme_h - (1/maxLambda)*Math.log(u1);
-		double res = -Max_mean * Math.log(u1);
+		double res = tme_h - (1/maxLambda)*Math.log(u1);
+		//double res = -Max_mean * Math.log(u1);
 
 		if (u2 <= (lambda_t)/maxLambda) {
-			return res; // in seconds
+			return res + i*24;
 		}
 		else {
 			return drawRandomExponential(getMaxArrivalRateCons(), tme);
