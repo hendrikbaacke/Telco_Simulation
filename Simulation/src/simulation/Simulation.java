@@ -25,14 +25,17 @@ public class Simulation {
         //flag defining if CSA agents of type 1 are allowed to handle calls of type 0
         boolean handle_both = true;
 
-        //roster: agents for each shift
-        int[][] roster = {{5,5},{5,5},{5,5}};
+        //roster: agents for each shift 6-14-22-6
+        //1. agent -> consumer CSA
+        //2. agent -> corporate only CSA
+        //3. agent -> flexible corporate CSA
+        int[][] roster = {{2,2,2},{2,2,2},{2,2,2}};
 
         // n is the number of runs
-        int n = 1;
+        int n = 10;
         for (int i = 0; i < n; i++) {
             int start_time = 6 * 60 * 60;
-            int sim_duration = 8* 24 *60 * 60;
+            int sim_duration = 10 * 24 *60 * 60;
             int shift_duration = 8 * 60 * 60;
 
             // Create an eventlist
@@ -49,18 +52,15 @@ public class Simulation {
             // A sink
             Sink si = new Sink("Sink 1");
 
-            //
+            //init the shifts
             int amount_shifts = sim_duration / shift_duration + 1;
             int shift_end = start_time;
             for(int j = 0; j < amount_shifts; j++){
                 shift_end += shift_duration;
                 int shift_type = j % 3;
                 l.add(new Shift(q_con, q_cor, si, l, handle_both,
-                        shift_end, roster[shift_type][0], roster[shift_type][1]),0,shift_end - shift_duration);
+                        shift_end, roster[shift_type][0], roster[shift_type][1], roster[shift_type][2]),0,shift_end - shift_duration);
             }
-
-
-
 
             // start the eventlist
             l.start(start_time + sim_duration);
@@ -70,5 +70,7 @@ public class Simulation {
             si.toWaitTimeFileConsumer("waitingTimesConsumer" + i + ".csv");
             si.toWaitTimeFileCorporate("waitingTimesCorporate" + i + ".csv");
         }
+        int cost = (roster[0][0]  + roster[1][0] + roster[2][0])* 8 * 35 + (roster[0][1] + roster[1][1] + roster[2][1]+roster[0][2] + roster[1][2] + roster[2][2]) * 8 * 60;
+        System.out.println(cost);
     }
 }

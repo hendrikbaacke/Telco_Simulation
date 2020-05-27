@@ -10,21 +10,27 @@ public class Shift implements CProcess {
 
     private Sink sink;
 
+    //amount consumer CSA
     private int number_csa1;
 
+    //amount only corporate CSA
     private int number_csa2;
+
+    //amount flexible corporate CSA
+    private int number_csa3;
 
     private int shift_end;
 
     private boolean handle_both;
 
-    public Shift(Queue q1, Queue q2,  Sink si, CEventList l, boolean handle_both , int shift_end, int number_csa1, int number_csa2){
+    public Shift(Queue q1, Queue q2,  Sink si, CEventList l, boolean handle_both , int shift_end, int number_csa1, int number_csa2, int number_csa3){
         queue_con = q1;
         queue_cor = q2;
         sink = si;
         eventlist = l;
         this.number_csa1 = number_csa1;
         this.number_csa2 = number_csa2;
+        this.number_csa3 = number_csa3;
         this.shift_end = shift_end;
         this.handle_both = handle_both;
     }
@@ -37,6 +43,11 @@ public class Shift implements CProcess {
         }
 
         for (int i = 0; i < number_csa2; i++) {
+            // A csa
+            CSA CSA_corporate = new CSA(queue_cor, sink, eventlist, "corporate CSA nr " + i, shift_end);
+        }
+
+        for (int i = 0; i < number_csa3; i++) {
             // A csa
             CSA CSA_corporate = new CSA(queue_cor, queue_con, sink, eventlist, "corporate CSA nr " + i, shift_end);
         }

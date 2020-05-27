@@ -43,57 +43,6 @@ public class CSA implements CProcess, CallAcceptor
 
 
 	/**
-	*	Constructor
-	*        Service times are exponentially distributed with mean 30
-	*	@param q	Queue from which the csa has to take calls
-	*	@param s	Where to send the completed calls
-	*	@param e	Eventlist that will manage events
-	*	@param n	The name of the csa
-	*/ /*
-	public CSA(Queue q, CallAcceptor s, CEventList e, String n)
-	{
-		status='i';
-		queuePri=q;
-		sink=s;
-		eventlist=e;
-		name=n;
-		meanProcTime=30;
-		queuePri.askCall(this);
-	}*/
-
-	/**
-	 *	Constructor
-	 *        Service times are exponentially distributed with mean dependent on the kind of agent
-	 *	@param q	Queue from which the csa has to take calls
-	 *	@param s	Where to send the completed calls
-	 *	@param e	Eventlist that will manage events
-	 *	@param n	The name of the csa
-	 *  @param tp	The type of the csa (consumer/corporate)
-	 */ /*
-	public CSA(Queue q, CallAcceptor s, CEventList e, String n, int tp)
-	{
-		status='i';
-		queuePri=q;
-		sink=s;
-		eventlist=e;
-		name=n;
-		type = tp;
-		if(tp == 0){
-		    std = 35;
-            meanProcTime=72;
-            truncation = 25;
-
-        }
-        else{
-            std = 72;
-            meanProcTime=216;
-            truncation = 45;
-        }
-		handle_both = false;
-		queuePri.askCall(this);
-	}*/
-
-	/**
 	 *	Constructor - consumer CSA
 	 *        Service times are exponentially distributed with mean dependent on agent
 	 *	@param q	Queue from which the csa has to take calls
@@ -146,48 +95,6 @@ public class CSA implements CProcess, CallAcceptor
 
 
 	/**
-	*	Constructor
-	*        Service times are exponentially distributed with specified mean
-	*	@param q	Queue from which the csa has to take calls
-	*	@param s	Where to send the completed calls
-	*	@param e	Eventlist that will manage events
-	*	@param n	The name of the csa
-	*        @param m	Mean processing time
-	*/ /*
-	public CSA(Queue q, CallAcceptor s, CEventList e, String n, double m)
-	{
-		status='i';
-		queuePri = q;
-		sink=s;
-		eventlist=e;
-		name=n;
-		meanProcTime=m;
-		queuePri.askCall(this);
-	}*/
-	
-	/**
-	*	Constructor
-	*        Service times are pre-specified
-	*	@param q	Queue from which the csa has to take calls
-	*	@param s	Where to send the completed calls
-	*	@param e	Eventlist that will manage events
-	*	@param n	The name of the csa
-	*        @param st	service times
-	*/ /*
-	public CSA(Queue q, CallAcceptor s, CEventList e, String n, double[] st)
-	{
-		status='i';
-		queuePri=q;
-		sink=s;
-		eventlist=e;
-		name=n;
-		meanProcTime=-1;
-		processingTimes=st;
-		procCnt=0;
-		queuePri.askCall(this);
-	} */
-
-	/**
 	*	Method to have this object execute an event
 	*	@param type	The type of the event that has to be executed
 	*	@param tme	The current time
@@ -211,10 +118,10 @@ public class CSA implements CProcess, CallAcceptor
 
 		if (tme < shift_end){
 			// Ask the queue for calls
-			if (this.type == 0) {
+			if (otherQueue == null) {
 				queuePri.askCall(this);
 			}
-			else if(this.type == 1){
+			else{
 				if (!queuePri.askCall(this)){
 					otherQueue.askCall(this);
 				}
