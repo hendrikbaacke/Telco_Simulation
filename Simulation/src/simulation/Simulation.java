@@ -25,7 +25,6 @@ public class Simulation {
         //flag defining if CSA agents of type 1 are allowed to handle calls of type 0
         boolean handle_both = true;
 
-<<<<<<< HEAD
         //roster: agents for each shift 6-14-22-6
         //1. agent -> consumer CSA
         //2. agent -> corporate only CSA
