@@ -5,8 +5,8 @@
 
 %% File Reading
 
-%specify number of runs of simulation
-k = 1;
+%specify number of runs of simulation, one run is 8 days in the simulation 
+k = 10;
 C_data = cell(k,1);
 SortedC_data = cell(k,1);
 WaitCons_data = cell(k,1);
@@ -103,6 +103,9 @@ wtTmeCons{i} = consData{i}{:,4}-consData{i}{:,3};
 wtTmeCorp{i} = corpData{i}{:,4}-corpData{i}{:,3};
 end
 
+%%
+height(corpData{1})
+height(consData{1})
 
 %% Validation of Simulation - Visualization of the Service Time Distribution
 %print the data
@@ -126,7 +129,7 @@ figure(1)
 %only the data from the first run is used
 hist(serviceTmeCons{1},20)
 hold on;
-plot(x_st1,50000*pdf(T_pd_serviceTmeCons,x_st1),'Color','red','LineWidth',2)
+plot(x_st1,290000*pdf(T_pd_serviceTmeCons,x_st1),'Color','red','LineWidth',2)
 hold off;
 xlabel('service time in sec'),ylabel('amount of occurrence');
 title('Consumer data: Fitting truncated normal to observed service times');
@@ -139,7 +142,7 @@ figure(2)
 %only the data from the first run is used
 hist(serviceTmeCorp{1},20)
 hold on
-plot(x_st2,16000*pdf(T_pd_serviceTmeCorp,x_st2),'Color','red','LineWidth',2)
+plot(x_st2,170000*pdf(T_pd_serviceTmeCorp,x_st2),'Color','red','LineWidth',2)
 hold off
 xlabel('service time in sec'),ylabel('amount of occurrence');
 title('Corporate data: Fitting normal to observed service times');
@@ -177,7 +180,7 @@ title('Corporate data: Fitting exponential to observed interarrvial tmes(s)');
 %%
 % 
 % * 90% of consumers within 5 min
-% * 5% of consumers within 10 min
+% * 95% of consumers within 10 min
 % * 95% of corporate users within 3 min
 % * 99% of corporate users within 7 min
 
@@ -242,21 +245,34 @@ d6 = ['The expected waiting time for corporates based on all ',num2str(k),' runs
 disp(d6);
 disp(mean(Mean_waitingTmeCorp));
 disp('_____________________________________________________________________________________________________________________________________');
-d7 = ['The fraction of consumers that have been assisted within five minutes, averaged over ',num2str(k),' runs is: '];
+d7 = ['The fraction of consumers that have been assisted within 5 minutes, averaged over ',num2str(k),' runs is: '];
 disp(d7);
 disp(mean(pct_cons_asstdFive));
 disp('_____________________________________________________________________________________________________________________________________');
-d8 = ['The fraction of consumers that have been assisted within ten minutes, averaged over ',num2str(k),' runs is: '];
+d8 = ['The fraction of consumers that have been assisted within 10 minutes, averaged over ',num2str(k),' runs is: '];
 disp(d8);
 disp(mean(pct_cons_asstdTen));
 disp('_____________________________________________________________________________________________________________________________________');
-d9 = ['The fraction of corporates that have been assisted within three minutes, averaged over ',num2str(k),' runs is: '];
+d9 = ['The fraction of corporates that have been assisted within 3 minutes, averaged over ',num2str(k),' runs is: '];
 disp(d9);
 disp(mean(pct_corp_asstdThree));
 disp('_____________________________________________________________________________________________________________________________________');
-d10 = ['The fraction of corporates that have been assisted within seven minutes, averaged over ',num2str(k),' runs is: '];
+d10 = ['The fraction of corporates that have been assisted within 7 minutes, averaged over ',num2str(k),' runs is: '];
 disp(d10);
 disp(mean(pct_corp_asstdSeven));
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

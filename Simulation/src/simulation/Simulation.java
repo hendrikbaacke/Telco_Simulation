@@ -25,6 +25,7 @@ public class Simulation {
         //flag defining if CSA agents of type 1 are allowed to handle calls of type 0
         boolean handle_both = true;
 
+<<<<<<< HEAD
         //roster: agents for each shift 6-14-22-6
         //1. agent -> consumer CSA
         //2. agent -> corporate only CSA
@@ -33,9 +34,11 @@ public class Simulation {
 
         // n is the number of runs
         int n = 10;
+        //number of days a single simulation is run
+        int days = 10;
         for (int i = 0; i < n; i++) {
             int start_time = 6 * 60 * 60;
-            int sim_duration = 10 * 24 *60 * 60;
+            int sim_duration = days * 24 *60 * 60;
             int shift_duration = 8 * 60 * 60;
 
             // Create an eventlist
@@ -69,6 +72,10 @@ public class Simulation {
             si.toMatrixFile("informationCalls" +  i + ".csv");
             si.toWaitTimeFileConsumer("waitingTimesConsumer" + i + ".csv");
             si.toWaitTimeFileCorporate("waitingTimesCorporate" + i + ".csv");
+
+            int cost = (roster[0][0]  + roster[1][0] + roster[2][0])* 8 * 35 + (roster[0][1] + roster[1][1] + roster[2][1]) * 8 * 60;
+            System.out.println("________________________"+"Cost per day: "+cost+"________________________");
+
         }
         int cost = (roster[0][0]  + roster[1][0] + roster[2][0])* 8 * 35 + (roster[0][1] + roster[1][1] + roster[2][1]+roster[0][2] + roster[1][2] + roster[2][2]) * 8 * 60;
         System.out.println(cost);
