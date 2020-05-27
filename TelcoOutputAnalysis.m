@@ -6,7 +6,7 @@
 %% File Reading
 
 %specify number of runs of simulation, one run is 8 days in the simulation 
-k = 10;
+k = 20;
 C_data = cell(k,1);
 SortedC_data = cell(k,1);
 WaitCons_data = cell(k,1);
@@ -193,6 +193,7 @@ wtCons_smallerTen  =  cell(k,1);
 wtCorp_smallerThree = cell(k,1);
 wtCorp_smallerSeven = cell(k,1);
 
+
 %we take each of the k runs into account
 for i = 1:k
 ArrayWaitCons_data{i} = table2array(WaitCons_data{i});
@@ -201,6 +202,7 @@ ArrayWaitCorp_data{i} = table2array(WaitCorp_data{i});
 %retrieve the mean waiting times:
 Mean_waitingTmeCons(i) = mean(ArrayWaitCons_data{i});
 Mean_waitingTmeCorp(i) = mean(ArrayWaitCorp_data{i});
+Mean_waitingTmeComb(i) = (Mean_waitingTmeCons(i) * length(ArrayWaitCons_data(i)) + Mean_waitingTmeCorp(i) * length(ArrayWaitCorp_data(i))) / (length(ArrayWaitCons_data(i)) + length(ArrayWaitCorp_data(i)));
 
 
 % data is in sec, convert 5 min to sec
@@ -262,19 +264,73 @@ disp(d10);
 disp(mean(pct_corp_asstdSeven));
 
 
+%% Confidence intervals
 
+% t-confidence intervals of the mean
+% It is a small sample size: 20
+% The runs are independent
+% As this concerns means, the data is normally distributed
 
+% We want to have a probability of 95% of all the means falling in the
+% confidence intervals simultaneously. 
 
+% The confidence intervals that will be created:
+% - Average waiting time
+% - Performance measure 1: percentage of consumers assisted within 5
+% minutes
+%- Performance measure 2: percentage of consumers assisted within 10
+%minutes
+% Performance measure 3: percentage of corporate customers assisted within
+% 3 minutes
+% Performance meaure 4: percentage of corporate customers assisted within 7
+% minutes
 
+% This are 5 confidence intervals. As the combined probability needs to
+% 95%, due to the Bonferroni inequality, the alpha for each of these will
+% be 0.01
 
+% For 19 degrees of freedom, and alpha/2, look up the critical point t.
+t_crit = 2.861 ;
 
+% For the average waiting time:
+mean_average_waiting = mean(Mean_waitingTmeComb);
+std_avg_wait = std(Mean_waitingTmeComb);
+ci_average_waiting_time = [(mean_average_waiting - t_crit * sqrt(std_avg_wait/k)),( mean_average_waiting + t_crit * sqrt(std_avg_wait/k))];
+disp('_____________________________________________________________________________________________________________________________________');
+disp('The confidence interval for the mean waiting time (in seconds) is: ');
+disp(ci_average_waiting_time);
 
+% For the first performance measure:
+mean_perf_m_1 = mean(pct_cons_asstdFive);
+std_perf_m_1 = std(pct_cons_asstdFive);
+ci_perf_m_1 = [(mean_perf_m_1 - t_crit * sqrt(std_perf_m_1/k)),( mean_perf_m_1 + t_crit * sqrt(std_perf_m_1/k))];
+disp('_____________________________________________________________________________________________________________________________________');
+disp('The confidence interval for the percentage of consumers assisted within 5 minutes is: ');
+disp(ci_perf_m_1);
 
+% For the second performance measure:
+mean_perf_m_2 = mean(pct_cons_asstdTen);
+std_perf_m_2 = std(pct_cons_asstdTen);
+ci_perf_m_2 = [(mean_perf_m_2 - t_crit * sqrt(std_perf_m_2/k)),( mean_perf_m_2 + t_crit * sqrt(std_perf_m_2/k))];
+disp('_____________________________________________________________________________________________________________________________________');
+disp('The confidence interval for the percentage of consumers assisted within 10 minutes is: ');
+disp(ci_perf_m_2);
 
+% For the third performance measure:
+mean_perf_m_3 = mean(pct_corp_asstdThree);
+std_perf_m_3 = std(pct_corp_asstdThree);
+ci_perf_m_3 = [(mean_perf_m_3 - t_crit * sqrt(std_perf_m_3/k)),( mean_perf_m_3 + t_crit * sqrt(std_perf_m_3/k))];
+disp('_____________________________________________________________________________________________________________________________________');
+disp('The confidence interval for the percentage of corporate customers assisted within 3 minutes is: ');
+disp(ci_perf_m_3);
 
-
-
-
+% For the fourth performance measure:
+mean_perf_m_4 = mean(pct_corp_asstdSeven);
+std_perf_m_4 = std(pct_corp_asstdSeven);
+ci_perf_m_4 = [(mean_perf_m_4 - t_crit * sqrt(std_perf_m_4/k)),( mean_perf_m_4 + t_crit * sqrt(std_perf_m_4/k))];
+disp('_____________________________________________________________________________________________________________________________________');
+disp('The confidence interval for the percentage of corporate customers assisted within 7 minutes is: ');
+disp(ci_perf_m_4);
 
 %% Hendrik Notes
 
