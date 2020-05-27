@@ -50,7 +50,7 @@ public class CSA implements CProcess, CallAcceptor
 	 *	@param e	Eventlist that will manage events
 	 *	@param n	The name of the csa
 	 */
-	public CSA(Queue q, CallAcceptor s, CEventList e, String n, double shift_end)
+	public CSA(Queue q, CallAcceptor s, CEventList e, String n, double shift_end, int tp)
 	{
 		status='i';
 		queuePri=q;
@@ -63,7 +63,7 @@ public class CSA implements CProcess, CallAcceptor
         std = 35;
         meanProcTime=72;
         truncation = 25;
-		type = 0;
+		type = tp;
 
 		queuePri.askCall(this);
 	}
@@ -77,7 +77,7 @@ public class CSA implements CProcess, CallAcceptor
 	 *	@param e	Eventlist that will manage events
 	 *	@param n	The name of the csa
 	 */
-	public CSA(Queue qPriority, Queue possible,  CallAcceptor s, CEventList e, String n, double shift_end)
+	public CSA(Queue qPriority, Queue possible,  CallAcceptor s, CEventList e, String n, double shift_end, int tp)
 	{
 		status='i';
 		queuePri=qPriority;
@@ -87,7 +87,7 @@ public class CSA implements CProcess, CallAcceptor
 		name=n;
 		this.shift_end = shift_end;
 
-		type = 1;
+		type = tp;
 		if (!queuePri.askCall(this)){
 			otherQueue.askCall(this);
 		};

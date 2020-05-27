@@ -39,17 +39,17 @@ public class Shift implements CProcess {
     public void execute(int type, double tme) {
         for (int i = 0; i < number_csa1; i++) {
             // A consumer CSA (handle both is always false for them)
-            CSA CSA_consumer= new CSA(queue_con, sink, eventlist, "consumer CSA nr " + i, shift_end);
+            CSA CSA_consumer= new CSA(queue_con, sink, eventlist, "consumer CSA nr " + i, shift_end,0);
         }
 
         for (int i = 0; i < number_csa2; i++) {
             // A csa
-            CSA CSA_corporate = new CSA(queue_cor, sink, eventlist, "corporate CSA nr " + i, shift_end);
+            CSA CSA_corporate = new CSA(queue_cor, sink, eventlist, "corporate CSA nr " + i, shift_end,1);
         }
 
         for (int i = 0; i < number_csa3; i++) {
             // A csa
-            CSA CSA_corporate = new CSA(queue_cor, queue_con, sink, eventlist, "corporate CSA nr " + i, shift_end);
+            CSA CSA_corporate_flex = new CSA(queue_cor, queue_con, sink, eventlist, "corporate CSA nr " + i, shift_end,1);
         }
     }
 

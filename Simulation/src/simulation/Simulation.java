@@ -32,7 +32,7 @@ public class Simulation {
         int[][] roster = {{2,2,2},{2,2,2},{2,2,2}};
 
         // n is the number of runs
-        int n = 10;
+        int n = 1;
         //number of days a single simulation is run
         int days = 10;
         for (int i = 0; i < n; i++) {
