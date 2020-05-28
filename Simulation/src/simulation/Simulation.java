@@ -22,7 +22,7 @@ public class Simulation {
         //number of CSA corporate to kept idle to handle incoming corporate calls
         CSA.minIdle = 1;
 
-        String strategy_name = "Mixed";
+        String strategy_name = "mixed";
 
         // n is the number of runs
         int n = 1;
@@ -66,5 +66,6 @@ public class Simulation {
         }
         int cost = (roster[0][0]  + roster[1][0] + roster[2][0])* 8 * 35 + (roster[0][1] + roster[1][1] + roster[2][1]) * 8 * 60;
         System.out.println(cost);
+
     }
 }
