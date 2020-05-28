@@ -89,15 +89,17 @@ public class Source implements CProcess {
 		double avgtme = 0;
 
 		//time in hours for a day
-		double tme_h = tme / 3600 % 24;
+		double tme_h = (tme / 3600) % 24;
 
 		//corporate calls
 		if (8 < tme_h && tme_h < 18) {
 			avgtme = 60;
 		}
 		if (18 < tme_h || tme_h < 8) {
-			avgtme = 60 / 0.2;
+			avgtme = 60 * 0.2;
 		}
+		avgtme = 1/(avgtme*3600); // mean-- seconds
+
 		//System.out.format("arrival rate %.2f per min ",60/avgtme);
 		return avgtme;
 	}
