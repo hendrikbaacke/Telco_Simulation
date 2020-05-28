@@ -32,14 +32,22 @@ public class CSA implements CProcess, CallAcceptor
 	private int procCnt;
 	/** CSA type (consumer/corporate) */
 	private int type;
-	/** if CSA is allowed to handle all kind of calls */
-	//private boolean handle_both;
 
 	private double std;
 
 	private double truncation;
 
 	private double shift_end;
+
+	/**
+	 * static counter to note amount of idle corp CSA
+	 */
+	public static int corpCsaIdleCounter = 0;
+
+	/**
+	 * static value to note minimum amount of idle corp CSA
+	 */
+	public static int minIdle = 0;
 
 
 	/**
@@ -52,7 +60,7 @@ public class CSA implements CProcess, CallAcceptor
 	 */
 	public CSA(Queue q, CallAcceptor s, CEventList e, String n, double shift_end, int tp)
 	{
-		status='i';
+		this.setIdle();
 		queuePri=q;
 		sink=s;
 		eventlist=e;
@@ -79,7 +87,7 @@ public class CSA implements CProcess, CallAcceptor
 	 */
 	public CSA(Queue qPriority, Queue possible,  CallAcceptor s, CEventList e, String n, double shift_end, int tp)
 	{
-		status='i';
+		this.setIdle();
 		queuePri=qPriority;
 		otherQueue = possible;
 		sink=s;
@@ -107,22 +115,23 @@ public class CSA implements CProcess, CallAcceptor
 		call.stamp(tme,"Call finished",name);
 		sink.giveCall(call);
 
-		// show arrival
+		//show arrival
 		//System.out.println("Call "+call.getType()+" "+call.getId()+" finished at time in hours " + tme / 3600+" in sec "+tme);
 		//System.out.println("times: " +call.getTimes());
 
 		call = null;
 		// set csa status to idle
-		status = 'i';
+		this.setIdle();
 
-
+		//ask for another call if shift hasn't ended yet
 		if (tme < shift_end){
 			// Ask the queue for calls
 			if (otherQueue == null) {
 				queuePri.askCall(this);
 			}
 			else{
-				if (!queuePri.askCall(this)){
+				//prioritize first queue and only allow corporate csa to request for consumer calls if at least k corporate CSA are idle
+				if (!queuePri.askCall(this)) {
 					otherQueue.askCall(this);
 				}
 			}
@@ -140,12 +149,15 @@ public class CSA implements CProcess, CallAcceptor
 		// Only accept something if the csa is idle
 		if(status=='i')
 		{
-			if (this.type == p.getType() || (p.getType() == 0 && this.type ==1)){
+			boolean enough_idle =  false;
+
+
+			if (this.type == p.getType() || ( p.getType() == 0 && this.type == 1 && CSA.corpCsaIdleCounter > CSA.minIdle ) ){
 				//System.out.println(this.name + " receives a call of type " + type);
+
 				// accept the call
 				call = p;
 				// mark starting time
-
 				call.stamp(eventlist.getTime(), "Call started", name);
                 // If the corp. csa takes a consumer call, get the service time distribution truncated normal at a=25 and specified mean and std as the
 				// service time distribution depends on the type of caller not the type of agent
@@ -189,33 +201,17 @@ public class CSA implements CProcess, CallAcceptor
 	private void startCall()
 	{
 		// generate duration
-		if(meanProcTime>0)
-		{
-			double duration = drawTruncatedNormal();
-			//System.out.println("now is "+eventlist.getTime());
-			// Create a new event in the eventlist
-			double tme = eventlist.getTime();
+		double duration = drawTruncatedNormal();
+		//System.out.println("now is "+eventlist.getTime());
+		// Create a new event in the eventlist
+		double tme = eventlist.getTime();
 
-			//System.out.println("call will take in hours " + duration / 3600 + " in secs " + duration);
+		//System.out.println("call will take in hours " + duration / 3600 + " in secs " + duration);
 
-			eventlist.add(this,type,tme+duration); //target,type,time
-			// set status to busy
-			status='b';
-		}
-		else
-		{
-			if(processingTimes.length>procCnt)
-			{
-				eventlist.add(this,0,eventlist.getTime()+processingTimes[procCnt]); //target,type,time
-				// set status to busy
-				status='b';
-				procCnt++;
-			}
-			else
-			{
-				eventlist.stop();
-			}
-		}
+		eventlist.add(this,type,tme+duration); //target,type,time
+		// set status to busy
+		this.setBusy();
+
 	}
 
 
@@ -338,5 +334,18 @@ public class CSA implements CProcess, CallAcceptor
 
 	public double getTruncation(){
 		return this.truncation;
+	}
+
+	public int getType(){return this.type;}
+
+	public void setIdle() {
+		this.status = 'i';
+		if (this.type == 1) corpCsaIdleCounter += 1;
+
+	}
+
+	public void setBusy() {
+		this.status = 'b';
+		if (this.type == 1) corpCsaIdleCounter -= 1;
 	}
 }

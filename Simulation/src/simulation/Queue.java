@@ -13,7 +13,12 @@ public class Queue implements CallAcceptor
 	private ArrayList<Call> row;
 	/** Requests from csa that will be handling the calls */
 	private ArrayList<CSA> requests;
-	
+
+	/**
+	 * number of CSA corporate to kept idle to handle incoming corporate calls
+	 */
+	public int k;
+
 	/**
 	*	Initializes the queue and introduces a dummy csa
 	*	the csa has to be specified later
@@ -23,7 +28,7 @@ public class Queue implements CallAcceptor
 		row = new ArrayList<>();
 		requests = new ArrayList<>();
 	}
-	
+
 	/**
 	*	Asks a queue to give a call to a csa
 	*	True is returned if a call could be delivered; false if the request is queued
@@ -47,7 +52,6 @@ public class Queue implements CallAcceptor
 		}
 		else
 		{
-			//System.out.println(csa.getName()+" requests calls");
 			requests.add(csa);
 			return false; // queue request
 		}
@@ -84,4 +88,9 @@ public class Queue implements CallAcceptor
 		}
 		return true;
 	}
+
+	public ArrayList<CSA> getRequests(){
+		return requests;
+	}
+
 }

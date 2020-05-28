@@ -20,17 +20,6 @@ public class CEventList implements CProcess
 	private boolean stopFlag;
 
 	/**
-	*	Standard constructor
-	*	Create an CEventList object
-	*/
-	public CEventList()
-	{
-		currentTime = 0;
-		stopFlag = false;
-		events = new ArrayList<>();
-	}
-
-	/**
 	 *	Standard constructor
 	 *	Create an CEventList object
 	 */
