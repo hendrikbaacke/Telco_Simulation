@@ -96,9 +96,8 @@ public class Source implements CProcess {
 			avgtme = 60;
 		}
 		if (18 < tme_h || tme_h < 8) {
-			avgtme = 60 * 0.2;
+			avgtme = 60 / 0.2;
 		}
-		avgtme = 1/(avgtme*3600); // mean-- seconds
 
 		//System.out.format("arrival rate %.2f per min ",60/avgtme);
 		return avgtme;
