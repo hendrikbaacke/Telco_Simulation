@@ -22,7 +22,6 @@ public class Simulation {
         //roster: agents for each shift 6-14 14-22 22-6 and
         //1. -> consumer CSA
         //2. -> flexible corporate CSA
-<<<<<<< HEAD
         int[][] roster = {{5,5},{5,5},{5,4}};
 
         //number of CSA corporate to kept idle to handle incoming corporate calls
