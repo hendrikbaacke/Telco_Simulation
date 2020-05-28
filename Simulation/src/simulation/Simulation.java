@@ -19,9 +19,10 @@ public class Simulation {
     This way one can generate two sets of output data for each system config.
     */
 
-        //roster: agents for each shift 6-14-22-6 and
+        //roster: agents for each shift 6-14 14-22 22-6 and
         //1. -> consumer CSA
         //2. -> flexible corporate CSA
+<<<<<<< HEAD
         int[][] roster = {{5,5},{5,5},{5,4}};
 
         //number of CSA corporate to kept idle to handle incoming corporate calls
@@ -36,6 +37,7 @@ public class Simulation {
         int n = 10;
         //number of days a single simulation is run
         int days = 10;
+
         for (int i = 0; i < n; i++) {
             int start_time = 6 * 60 * 60;
             int sim_duration = days * 24 * 60 * 60;
@@ -68,12 +70,12 @@ public class Simulation {
             l.start(start_time + sim_duration);
 
             //save the data
-            si.toMatrixFile(strategy_name+" informationCalls" +  i + ".csv");
-            si.toWaitTimeFileConsumer(strategy_name+" waitingTimesConsumer" + i + ".csv");
-            si.toWaitTimeFileCorporate(strategy_name+" waitingTimesCorporate" + i + ".csv");
+            si.toMatrixFile(strategy_name+"informationCalls" +  i + ".csv");
+            si.toWaitTimeFileConsumer(strategy_name+"waitingTimesConsumer" + i + ".csv");
+            si.toWaitTimeFileCorporate(strategy_name+"waitingTimesCorporate" + i + ".csv");
         }
         int cost = (roster[0][0]  + roster[1][0] + roster[2][0])* 8 * 35 + (roster[0][1] + roster[1][1] + roster[2][1]) * 8 * 60;
-        System.out.println(cost);
+        System.out.println("______________________Cost of the roster per day: "+cost+"_________________________");
 
     }
 }
