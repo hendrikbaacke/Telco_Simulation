@@ -35,6 +35,15 @@ public class Queue implements CallAcceptor
 	*/
 	public boolean askCall(CSA csa)
 	{
+		int cnt = 0;
+		for (CSA c : this.getRequests()){
+			if (c.getType() == 1) cnt +=1;
+		}
+		for (CSA c : this.getRequests()){
+			if (c.getType() == 1) cnt +=1;
+		}
+		System.out.println(cnt + " "+CSA.corpCsaIdleCounter);
+
 		//System.out.println("Ask Call");
 		// This is only possible with a non-empty queue
 		if(row.size()>0)
@@ -52,7 +61,9 @@ public class Queue implements CallAcceptor
 		}
 		else
 		{
-			requests.add(csa);
+			if (!requests.contains(csa)){
+				requests.add(csa);
+			}
 			return false; // queue request
 		}
 	}
@@ -63,7 +74,7 @@ public class Queue implements CallAcceptor
 	*/
 	public boolean giveCall(Call p)
 	{
-		// Check if the csa accepts it
+		// Check if there are any call requests
 		if(requests.size()<1)
 			row.add(p); // Otherwise store it
 		else
@@ -83,7 +94,9 @@ public class Queue implements CallAcceptor
 				row.add(p); // Otherwise store it
 
 			for (CSA csa : list_rejected){
-				requests.add(csa);
+				if (!requests.contains(csa)){
+					requests.add(csa);
+				}
 			}
 		}
 		return true;

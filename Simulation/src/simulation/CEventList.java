@@ -61,24 +61,7 @@ public class CEventList implements CProcess
 			events.add(evnt);
 		}
 	}
-	
-	/**
-	*	Method for starting the eventlist.
-	*	It will run until there are no longer events in the list
-	*/
-	public void start()
-	{
-		// stop criterion
-		while((events.size()>0)&&(!stopFlag))
-		{
-			// Make the similation time equal to the execution time of the first event in the list that has to be processed
-			currentTime=events.get(0).getExecutionTime();
-			// Let the element be processed
-			events.get(0).execute();
-			// Remove the event from the list
-			events.remove(0);
-		}
-	}
+
 
 	/**
 	*	Method for starting the eventlist.

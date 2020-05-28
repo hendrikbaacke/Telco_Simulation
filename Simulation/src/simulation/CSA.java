@@ -49,7 +49,6 @@ public class CSA implements CProcess, CallAcceptor
 	 */
 	public static int minIdle = 0;
 
-
 	/**
 	 *	Constructor - consumer CSA
 	 *        Service times are exponentially distributed with mean dependent on agent
@@ -72,7 +71,6 @@ public class CSA implements CProcess, CallAcceptor
         std = 35;
         meanProcTime=72;
         truncation = 25;
-
 
 		queuePri.askCall(this);
 	}
@@ -97,10 +95,10 @@ public class CSA implements CProcess, CallAcceptor
 		name=n;
 		this.shift_end = shift_end;
 
-
-		if (!queuePri.askCall(this)){
+		//prioritize first queue and only allow corporate csa to request for consumer calls if at least k corporate CSA are idle
+		if (!queuePri.askCall(this)) {
 			otherQueue.askCall(this);
-		};
+		}
 	}
 
 
@@ -111,18 +109,19 @@ public class CSA implements CProcess, CallAcceptor
 	*/
 	public void execute(int type, double tme)
 	{
-
 		// Remove call from system
-		//System.out.println("call finished at "+ tme);
+		if (this.type == 1){
+			System.out.println("call finished ");
+		}
 		call.stamp(tme,"Call finished",name);
 		sink.giveCall(call);
 
 		//show arrival
 		//System.out.println("Call "+call.getType()+" "+call.getId()+" finished at time in hours " + tme / 3600+" in sec "+tme);
 		//System.out.println("times: " +call.getTimes());
-		call = null;
 		// set csa status to idle
 		this.setIdle();
+		call = null;
 		//ask for another call if shift hasn't ended yet
 		if (tme < shift_end){
 			// Ask the queue for calls
@@ -134,6 +133,14 @@ public class CSA implements CProcess, CallAcceptor
 				if (!queuePri.askCall(this)) {
 					otherQueue.askCall(this);
 				}
+			}
+		} else{
+			queuePri.getRequests().remove(this);
+			if (otherQueue != null ) otherQueue.getRequests().remove(this);
+			//don't ask for more calls and remove one from the idle counter if this was a corporate csa
+			if (this.type == 1){
+				CSA.corpCsaIdleCounter -= 1;
+				System.out.println("decreased after shift " + CSA.corpCsaIdleCounter);
 			}
 		}
 	}
@@ -149,9 +156,10 @@ public class CSA implements CProcess, CallAcceptor
 		// Only accept something if the csa is idle
 		if(status=='i')
 		{
-			if (this.type == p.getType() || ( p.getType() == 0 && this.type == 1 && CSA.corpCsaIdleCounter > CSA.minIdle ) ){
-				//System.out.println(this.name + " receives a call of type " + type);
 
+			if (this.type == p.getType() || ( p.getType() == 0 && this.type == 1 && CSA.corpCsaIdleCounter > CSA.minIdle) ){
+
+				//System.out.println(this.name + " receives a call of type " + type);
 				// accept the call
 				call = p;
 				// mark starting time
@@ -177,7 +185,10 @@ public class CSA implements CProcess, CallAcceptor
 				return true;
 			}
 			else {
-				//System.out.println(this +" cannot take this call");
+				if (p.getType() == 0 && this.type == 1)
+				{
+					System.out.println("corp refuses call because " + CSA.corpCsaIdleCounter);
+				}
 				return false;
 			}
 		}
@@ -203,12 +214,12 @@ public class CSA implements CProcess, CallAcceptor
 		// Create a new event in the eventlist
 		double tme = eventlist.getTime();
 
-		//System.out.println("call will take in hours " + duration / 3600 + " in secs " + duration);
-
+		if (this.type == 1) {
+			System.out.println("call will take in hours " + duration / 3600 + " in secs " + duration);
+		}
 		eventlist.add(this,type,tme+duration); //target,type,time
 		// set status to busy
 		this.setBusy();
-
 	}
 
 
@@ -333,12 +344,15 @@ public class CSA implements CProcess, CallAcceptor
 		return this.truncation;
 	}
 
-	public int getType(){return this.type;}
+	public int getType(){
+		return this.type;
+	}
 
 	public void setIdle() {
 		this.status = 'i';
 		if (this.type == 1) {
 			CSA.corpCsaIdleCounter += 1;
+			//System.out.println("increased " + CSA.corpCsaIdleCounter);
 		}
 	}
 
@@ -346,6 +360,7 @@ public class CSA implements CProcess, CallAcceptor
 		this.status = 'b';
 		if (this.type == 1) {
 			CSA.corpCsaIdleCounter -= 1;
+			//System.out.println("decreased " + CSA.corpCsaIdleCounter);
 		}
 	}
 }

@@ -13,32 +13,32 @@ public class Simulation {
      * @param args the command line arguments
      */
     public static void main(String[] args) throws IOException {
-/*To do the comparison of system configuration 1 and 2 in Matlab, let CSA.minIdle==0 to have system config. 1
-/or let CSA.minIdle>0 to have system config. 2
-/Let each system run with the desired amount of replications n and length (days) at least 15
-This way one can generate two sets of output data for each system config.
-*/
+    /*To do the comparison of system configuration 1 and 2 in Matlab, let CSA.minIdle==0 to have system config. 1
+    /or let CSA.minIdle>0 to have system config. 2
+    /Let each system run with the desired amount of replications n and length (days) at least 15
+    This way one can generate two sets of output data for each system config.
+    */
 
         //roster: agents for each shift 6-14-22-6 and
         //1. -> consumer CSA
         //2. -> flexible corporate CSA
-        int[][] roster = {{5,5},{5,4},{5,2}};
+        int[][] roster = {{5,5},{5,5},{5,4}};
 
         //number of CSA corporate to kept idle to handle incoming corporate calls
         CSA.minIdle = 0;
         String strategy_name = "Strategy1";  //Strategy1 flexible
-        if(CSA.minIdle>0) {
 
+        if(CSA.minIdle>0) {
             strategy_name = "Strategy2";      //Strategy2 mixed
         }
 
         // n is the number of runs
-        int n = 1;
+        int n = 10;
         //number of days a single simulation is run
-        int days = 1;
+        int days = 10;
         for (int i = 0; i < n; i++) {
             int start_time = 6 * 60 * 60;
-            int sim_duration = days * 24 *60 * 60;
+            int sim_duration = days * 24 * 60 * 60;
             int shift_duration = 8 * 60 * 60;
 
             // Create an eventlist

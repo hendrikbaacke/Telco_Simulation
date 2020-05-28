@@ -32,12 +32,12 @@ public class Shift implements CProcess {
     @Override
     public void execute(int type, double tme) {
         //set idle CSA counter to zero
-        CSA.corpCsaIdleCounter = 0;
+        System.out.println("shift change ----------------------------- "+ shift_end/3600);
+
         for (int i = 0; i < number_csa1; i++) {
             // A consumer CSA
             CSA CSA_consumer= new CSA(queue_con, sink, eventlist, "consumer CSA nr " + i, shift_end,0);
         }
-
         for (int i = 0; i < number_csa2; i++) {
             // A corporate csa
             CSA CSA_corporate = new CSA(queue_con,queue_cor, sink, eventlist, "corporate CSA nr " + i, shift_end,1);
