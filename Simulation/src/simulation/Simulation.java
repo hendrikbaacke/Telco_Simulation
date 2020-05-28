@@ -6,9 +6,6 @@
 
 package simulation;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 
 public class Simulation {
 
@@ -22,8 +19,6 @@ public class Simulation {
      * @param args the command line arguments
      */
     public static void main(String[] args) throws IOException {
-        //flag defining if CSA agents of type 1 are allowed to handle calls of type 0
-        boolean handle_both = true;
 
         //roster: agents for each shift 6-14-22-6
         //1. agent -> consumer CSA
@@ -60,8 +55,7 @@ public class Simulation {
             for(int j = 0; j < amount_shifts; j++){
                 shift_end += shift_duration;
                 int shift_type = j % 3;
-                l.add(new Shift(q_con, q_cor, si, l, handle_both,
-                        shift_end, roster[shift_type][0], roster[shift_type][1], roster[shift_type][2]),0,shift_end - shift_duration);
+                l.add(new Shift(q_con, q_cor, si, l, shift_end, roster[shift_type][0], roster[shift_type][1], roster[shift_type][2]),0,shift_end - shift_duration);
             }
 
             // start the eventlist

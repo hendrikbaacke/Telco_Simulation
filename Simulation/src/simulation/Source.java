@@ -21,23 +21,11 @@ public class Source implements CProcess {
 	 */
 	private String name;
 	/**
-	 * Mean interarrival time
-	 */
-	private double meanArrTime;
-	/**
-	 * Interarrival times (in case pre-specified)
-	 */
-	private double[] interarrivalTimes;
-	/**
-	 * Interarrival time iterator
-	 */
-	private int interArrCnt;
-	/**
 	 * type of the source
 	 */
 	private int type;
 
-	/*
+	/**
 	 * counter for calls
 	 */
 	private int counter;

@@ -21,9 +21,8 @@ public class Shift implements CProcess {
 
     private int shift_end;
 
-    private boolean handle_both;
 
-    public Shift(Queue q1, Queue q2,  Sink si, CEventList l, boolean handle_both , int shift_end, int number_csa1, int number_csa2, int number_csa3){
+    public Shift(Queue q1, Queue q2,  Sink si, CEventList l, int shift_end, int number_csa1, int number_csa2, int number_csa3){
         queue_con = q1;
         queue_cor = q2;
         sink = si;
@@ -32,7 +31,6 @@ public class Shift implements CProcess {
         this.number_csa2 = number_csa2;
         this.number_csa3 = number_csa3;
         this.shift_end = shift_end;
-        this.handle_both = handle_both;
     }
 
     @Override
