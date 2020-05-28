@@ -1,11 +1,11 @@
 %% Telco Output Analysis - Group 8
 
 % This code is runnable with MATLAB *only*, since readtable is not a function
-% which is implemented in Octave. 
+% which is implemented in Octave.
 
 %% File Reading
 
-%specify number of runs of simulation, one run is 10 days in the simulation 
+%specify number of runs of simulation, one run is 10 days in the simulation
 k = 5;                                                               %<----------------
 C_data = cell(k,1);
 SortedC_data = cell(k,1);
@@ -39,7 +39,7 @@ end
 
 %% Data Retrieval
 
-%specify amount of runs we want to use for distribution validation 
+%specify amount of runs we want to use for distribution validation
 repVal = 5; %repVal <=k                                              %<----------------
 if k~=repVal
     disp('_____________________________________');
@@ -62,7 +62,7 @@ corpData{i} = SortedC_data{i}(CorpTbl,:);
 %________________________________________________
 %get the service times of consumers
 serviceTmeCons{i} = consData{i}{:,5}-consData{i}{:,4};
-d1 = ['Shortest consumer call service time in ',num2str(i), '. run: ']; 
+d1 = ['Shortest consumer call service time in ',num2str(i), '. run: '];
 d2 = ['Longest consumer call service time in ',num2str(i), '. run: ' ];
 disp(d1)
 %see next section                                                    !!
@@ -73,7 +73,7 @@ disp(max(serviceTmeCons{i}))
 
 %get the service times of corporates
 serviceTmeCorp{i} = corpData{i}{:,5}-corpData{i}{:,4};
-d3 = ['Shortest corporate call service time in ',num2str(i), '. run: ']; 
+d3 = ['Shortest corporate call service time in ',num2str(i), '. run: '];
 d4 = ['Longest corporate call service time in ',num2str(i), '. run: ' ];
 disp(d3)
 %smallest values are >45 as desired
@@ -87,14 +87,14 @@ disp('__________________________________________________________');
 %Simulation starts at 21600
 interTmeCons{i}(1) =  (consData{i}{1:1,{'tme_incoming'}}-21600);
 
-for j = 1:(height(consData{i})-1)  
+for j = 1:(height(consData{i})-1)
 interTmeCons{i}(j+1) = (consData{i}{j+1:j+1,{'tme_incoming'}}-consData{i}{j:j,{'tme_incoming'}});
 end
 
 %get the interarrival tmes of corporates
 interTmeCorp{i}(1) =  (corpData{i}{1:1,{'tme_incoming'}}-21600);
 
-for j = 1:(height(corpData{i})-1)  
+for j = 1:(height(corpData{i})-1)
 interTmeCorp{i}(j+1) = (corpData{i}{j+1:j+1,{'tme_incoming'}}-corpData{i}{j:j,{'tme_incoming'}});
 end
 end
@@ -176,25 +176,25 @@ xlabel('interarrival time in sec');
 title('Corporate data: Fitting exponential to observed interarrvial tmes(s)');
 
 
-%% Replication-Deletion: Visual Procedure 
-% For the replication deletion the heuristically evaluated 'best' roster (int[][] roster = {{0,5},{2,5},{0,5}};) 
+%% Replication-Deletion: Visual Procedure
+% For the replication deletion the heuristically evaluated 'best' roster (int[][] roster = {{0,5},{2,5},{0,5}};)
 % was used which adheres to the given performance requirements while
 % keeping the cost of the simulation low at EUR 7760 per day.
 % *For reproducing similar results and plots please use the roster (int[][] roster = {{0,5},{2,5},{0,5}};) and
 % let the simulation run for 30 days at least 5 times.*
 %%
-%get days 
+%get days
 dayDivisions = cell(k,1);
-%get maximum time from each simulation 
+%get maximum time from each simulation
 tmax = cell(k,1);
 newDay = 86400; %24*60*60
 for i=1:k
 d=1;
 for j =1:max(SortedC_data{i}{:,5})
-    
+
     if mod(j,86400)==0
     dayDivisions{i}(d)=j;
-    d = d+1;  
+    d = d+1;
     end
 end
 tmax{i}=dayDivisions{i}(length(dayDivisions{i}));
@@ -206,7 +206,7 @@ tmin = 21600;
 %procedure
 if(k>=5)
     replications = 5; %<----------------
-else 
+else
     replications = 1;
 end
 if k~=replications
@@ -229,7 +229,7 @@ tmeIncomCorp = cell(replications,1);
 %________________________________________________
 % It is decided to retrieve the waiting times in Matlab again, even though
 % this data is provided from the Java code, because the visual
-% replication-deletion procedure needs to associate the time of arrival of customer 
+% replication-deletion procedure needs to associate the time of arrival of customer
 % with the waiting time.
 
 for i = 1:replications
@@ -246,12 +246,12 @@ tmeIncomCorp{i} =corpData{i}{:,3};
 end
 %%
 % Fig.5 plots the waiting time of each individual
-% customer, nonregarding their type for 5 replications of the system. 
+% customer, nonregarding their type for 5 replications of the system.
 % The time (x) is in each case the arrival time of the specific customer to the system.
 
 %___________________________________
 %Fig.5 plotting the waiting times of all customers with time on the x-axis
-%and output on the y-axis   
+%and output on the y-axis
 %xvalues: tme_incoming | yvalues: waiting tme of customer
 C = ['y','b','r','g','k']; % Cell array of colros. length 5, see below reason
 ts = cell(replications,1);
@@ -265,11 +265,11 @@ ts{i}.TimeInfo.Units = 'Seconds';
 d11 = ['Time Series Plot: Comparing ',num2str(replications),' runs',': Waiting times of all customers'];
 title(d11)
 end
-%ts1.TimeInfo.Format = 'ss.SSS';      
+%ts1.TimeInfo.Format = 'ss.SSS';
 xlabel('Simulation Time in sec.')
 xlim([tmin tmax{1}])
 for i=1:length(dayDivisions{1})
-xline(dayDivisions{1}(i),'-.b',{'End of Day ',num2str(i)});  
+xline(dayDivisions{1}(i),'-.b',{'End of Day ',num2str(i)});
 end
 %grid on
 
@@ -285,7 +285,7 @@ end
 % and exhibit the same characteristics. Therefore in Fig.6 and Fig.7 only
 % data from one run is plotted. We also can see in Fig.5 that the steady
 % state peak height differences (so differences in peak waiting times) are
-% down to the stochastic nature of the simulation as the different runs 
+% down to the stochastic nature of the simulation as the different runs
 % have higher values for different days.
 %%
 % %Fig.6,7 and 8,9 plot the waiting time of each individual customer of the two
@@ -294,7 +294,7 @@ end
 
 %___________________________________
 %Fig.6 plotting the waiting times of each consumer type customers with time on the x-axis
-%and output on the y-axis   
+%and output on the y-axis
 %xvalues: tme_incoming | yvalues: waiting tme of consumer
 figure(6)
 tsCons = timeseries(wtTmeCons{1},tmeIncomCons{1});
@@ -304,14 +304,14 @@ plot(tsCons,'.-k')
 xlabel('Simulation Time in sec.')
 xlim([tmin tmax{1}])
 for i=1:length(dayDivisions{1})
-xline(dayDivisions{1}(i),'-.b',{'End of Day ',num2str(i)});   
+xline(dayDivisions{1}(i),'-.b',{'End of Day ',num2str(i)});
 end
 %grid on
 
 if(replications>=2)
 %___________________________________
 %Fig.7 plotting the waiting times of each consumer type customers with time on the x-axis
-%and output on the y-axis   
+%and output on the y-axis
 %xvalues: tme_incoming | yvalues: waiting tme of consumer
 figure(7)
 tsCons2 = timeseries(wtTmeCons{2},tmeIncomCons{2});
@@ -321,7 +321,7 @@ plot(tsCons2,'.-k')
 xlabel('Simulation Time in sec.')
 xlim([tmin tmax{1}])
 for i=1:length(dayDivisions{1})
-xline(dayDivisions{1}(i),'-.b',{'End of Day ',num2str(i)});   
+xline(dayDivisions{1}(i),'-.b',{'End of Day ',num2str(i)});
 end
 %grid on
 end
@@ -332,12 +332,12 @@ end
 % their arrivals. At the middle part of each day (14h-16h), the arrival rate
 % is highest, as generated by the thinning algorithm, and we can see this
 % clearly reflected in the waiting times of the indiviudal consumers.
-% Notice that Fig.6 and Fig.7 exhibit a very similar pattern which 
+% Notice that Fig.6 and Fig.7 exhibit a very similar pattern which
 % indicates a specific location for the cutoff-point of the transient.
 %%
 %___________________________________
 %Fig.8 plotting the waiting times of each corporate type customer with time on the x-axis
-%and output on the y-axis   
+%and output on the y-axis
 %xvalues: tme_incoming | yvalues: waiting tme of corporate
 figure(8)
 tsCorp = timeseries(wtTmeCorp{1},tmeIncomCorp{1});
@@ -347,14 +347,14 @@ plot(tsCorp,'.-k')
 xlabel('Simulation Time in sec.')
 xlim([tmin tmax{1}])
 for i=1:length(dayDivisions{1})
-xline(dayDivisions{1}(i),'-.b',{'End of Day ',num2str(i)})  ; 
+xline(dayDivisions{1}(i),'-.b',{'End of Day ',num2str(i)})  ;
 end
 %grid on
 
 if(replications>=2)
 %___________________________________
 %Fig.9 plotting the waiting times of each corporate type customer with time on the x-axis
-%and output on the y-axis   
+%and output on the y-axis
 %xvalues: tme_incoming | yvalues: waiting tme of corporate
 
 figure(9)
@@ -365,7 +365,7 @@ plot(tsCorp2,'.-k')
 xlabel('Simulation Time in sec.')
 xlim([tmin tmax{1}])
 for i=1:length(dayDivisions{1})
-xline(dayDivisions{1}(i),'-.b',{'End of Day ',num2str(i)})  ; 
+xline(dayDivisions{1}(i),'-.b',{'End of Day ',num2str(i)})  ;
 end
 %grid on
 end
@@ -382,16 +382,16 @@ end
 % point l is defined to be the end of the first day at 86400 seconds into
 % the simulation after the simulation has run for 86400-21600==64800
 % seconds. To identify the transient it is sufficient in this case to plot
-% the waiting times of customers for 5 runs and visually/heuristically estimate 
+% the waiting times of customers for 5 runs and visually/heuristically estimate
 % the point l. The reason for this being that the cutoff point is very
 % pronounced, eliminating the need for averaging over the 5 runs and
 % additionally performing a low-pass filter procedure.
 % As discussed in the report, after identifying the truncation point l, we
 % might want to change the roster based on the aggregate values generated
-% from only the desired steady-state. 
+% from only the desired steady-state.
 
 %% Retrieve the steady-state data
-l = 86400;  
+l = 86400;
 TruncData = cell(k,1);
 %we go to k to ensure that we truncate the transient for all runs of
 %simulation, it is a deliberate choice to not add a variable that can have
@@ -435,14 +435,14 @@ TruncTmeIncomCons = cell(k,1);
 TruncTmeIncomCorp = cell(k,1);
 for i = 1:k
 %get the waiting times for both costumer types from truncated data
-TruncwtTme{i} = TruncData{i}{:,4}-TruncData{i}{:,3};  
+TruncwtTme{i} = TruncData{i}{:,4}-TruncData{i}{:,3};
 
 %also get the waiting times for both types individually from truncated data
 TruncwtTmeCons{i} = TruncDataCons{i}{:,4}-TruncDataCons{i}{:,3};
 TruncwtTmeCorp{i} = TruncDataCorp{i}{:,4}-TruncDataCorp{i}{:,3};
 
 %get the incoming times of all customers
-TruncTmeIncom{i} = TruncData{i}{:,3};                    
+TruncTmeIncom{i} = TruncData{i}{:,3};
 
 %also get the incoming times for both types individually from truncated data
 TruncTmeIncomCons{i} =TruncDataCons{i}{:,3};
@@ -452,10 +452,10 @@ end
 %% Analysis of the Performance Bounds
 
 %Analysing Waiting times of consumer and corp customers with regard to the
-%given performance requirements. 
-%The calling costumers should be assisted in a specified time frame.  
+%given performance requirements.
+%The calling costumers should be assisted in a specified time frame.
 %This is reflected in the following requirements:
-% 
+%
 % * 90% of consumers within 5 min
 % * 95% of consumers within 10 min
 % * 95% of corporate users within 3 min
@@ -470,6 +470,7 @@ wtCons_smallerTen  =  cell(k,1);
 wtCorp_smallerThree = cell(k,1);
 wtCorp_smallerSeven = cell(k,1);
 
+
 %we take each of the k runs into account
 for i = 1:k
 
@@ -483,7 +484,7 @@ Mean_waitingTmeCorp(i) = mean(TruncwtTmeCorp{i});
 
 
 % data is in sec, convert 5 min to sec
-smallerthanFive_Cons = (TruncwtTmeCons{i}<=300); 
+smallerthanFive_Cons = (TruncwtTmeCons{i}<=300);
 wtCons_smallerFive{i} = TruncwtTmeCons{i}(smallerthanFive_Cons);
 
 %get the percentage of costumers that have been assisted within 5min:
@@ -501,14 +502,14 @@ pct_cons_asstdTen(i) = length(wtCons_smallerTen{i})/length(TruncwtTmeCons{i});
 
 
 % data is in sec, convert 3 min to sec
-smallerthanThree_Corp = (TruncwtTmeCorp{i}<=180); 
+smallerthanThree_Corp = (TruncwtTmeCorp{i}<=180);
 wtCorp_smallerThree{i} = TruncwtTmeCorp{i}(smallerthanThree_Corp);
 
 %get the percentage of costumers that have been assisted within 3min:
 pct_corp_asstdThree(i) = length(wtCorp_smallerThree{i})/length(TruncwtTmeCorp{i});
 
 % data is in sec, convert 7 min to sec
-smallerthanSeven_Corp = (TruncwtTmeCorp{i}<=420); 
+smallerthanSeven_Corp = (TruncwtTmeCorp{i}<=420);
 wtCorp_smallerSeven{i} = TruncwtTmeCorp{i}(smallerthanSeven_Corp);
 
 %get the percentage of costumers that have been assisted within 7min:
@@ -571,7 +572,7 @@ disp(mean(pct_corp_asstdSeven));
 % As this concerns means, the data is normally distributed
 
 % We want to have a probability of 95% of all the means falling in the
-% confidence intervals simultaneously. 
+% confidence intervals simultaneously.
 
 % The confidence intervals that will be created:
 % - Average waiting time
@@ -637,25 +638,73 @@ disp(ci_perf_m_4);
 
 
 
+%% Confidence intervals
 
+% t-confidence intervals of the mean
+% It is a small sample size: 20
+% The runs are independent
+% As this concerns means, the data is normally distributed
 
+% We want to have a probability of 95% of all the means falling in the
+% confidence intervals simultaneously.
 
+% The confidence intervals that will be created:
+% - Average waiting time
+% - Performance measure 1: percentage of consumers assisted within 5
+% minutes
+%- Performance measure 2: percentage of consumers assisted within 10
+%minutes
+% Performance measure 3: percentage of corporate customers assisted within
+% 3 minutes
+% Performance meaure 4: percentage of corporate customers assisted within 7
+% minutes
 
+% This are 5 confidence intervals. As the combined probability needs to
+% 95%, due to the Bonferroni inequality, the alpha for each of these will
+% be 0.01
 
+% For 19 degrees of freedom, and alpha/2, look up the critical point t.
+t_crit = 2.861 ;
 
+% For the average waiting time:
+mean_average_waiting = mean(Mean_waitingTmeComb);
+std_avg_wait = std(Mean_waitingTmeComb);
+ci_average_waiting_time = [(mean_average_waiting - t_crit * sqrt(std_avg_wait/k)),( mean_average_waiting + t_crit * sqrt(std_avg_wait/k))];
+disp('_____________________________________________________________________________________________________________________________________');
+disp('The confidence interval for the mean waiting time (in seconds) is: ');
+disp(ci_average_waiting_time);
 
+% For the first performance measure:
+mean_perf_m_1 = mean(pct_cons_asstdFive);
+std_perf_m_1 = std(pct_cons_asstdFive);
+ci_perf_m_1 = [(mean_perf_m_1 - t_crit * sqrt(std_perf_m_1/k)),( mean_perf_m_1 + t_crit * sqrt(std_perf_m_1/k))];
+disp('_____________________________________________________________________________________________________________________________________');
+disp('The confidence interval for the percentage of consumers assisted within 5 minutes is: ');
+disp(ci_perf_m_1);
 
+% For the second performance measure:
+mean_perf_m_2 = mean(pct_cons_asstdTen);
+std_perf_m_2 = std(pct_cons_asstdTen);
+ci_perf_m_2 = [(mean_perf_m_2 - t_crit * sqrt(std_perf_m_2/k)),( mean_perf_m_2 + t_crit * sqrt(std_perf_m_2/k))];
+disp('_____________________________________________________________________________________________________________________________________');
+disp('The confidence interval for the percentage of consumers assisted within 10 minutes is: ');
+disp(ci_perf_m_2);
 
-%% Comparing the two different systems 
+% For the third performance measure:
+mean_perf_m_3 = mean(pct_corp_asstdThree);
+std_perf_m_3 = std(pct_corp_asstdThree);
+ci_perf_m_3 = [(mean_perf_m_3 - t_crit * sqrt(std_perf_m_3/k)),( mean_perf_m_3 + t_crit * sqrt(std_perf_m_3/k))];
+disp('_____________________________________________________________________________________________________________________________________');
+disp('The confidence interval for the percentage of corporate customers assisted within 3 minutes is: ');
+disp(ci_perf_m_3);
 
-% System 1: CSA corporate helps always when the queue of corporate
-% costumers is empty.
-% System 2: 
-
-% do ci of difference of mean waiting tme
-
-% do Dalal and Dudewicz procedure
-
+% For the fourth performance measure:
+mean_perf_m_4 = mean(pct_corp_asstdSeven);
+std_perf_m_4 = std(pct_corp_asstdSeven);
+ci_perf_m_4 = [(mean_perf_m_4 - t_crit * sqrt(std_perf_m_4/k)),( mean_perf_m_4 + t_crit * sqrt(std_perf_m_4/k))];
+disp('_____________________________________________________________________________________________________________________________________');
+disp('The confidence interval for the percentage of corporate customers assisted within 7 minutes is: ');
+disp(ci_perf_m_4);
 
 %% Hendrik Notes
 
@@ -676,7 +725,7 @@ disp(ci_perf_m_4);
 
 
 %isequal(wtTmeCons{1}(bolWaitCons1),ArrayWaitCons_data(bolWaitCons))
-% down to parallel threads? 
+% down to parallel threads?
 
 
 
@@ -688,15 +737,9 @@ disp(ci_perf_m_4);
 
 %length(wtTmeCons{1}(bolWaitCons1))
 % length(ArrayWaitCons_data(bolWaitCons))
-% 
+%
 % %not the same! WHY
 % height(WaitCons_data{1});
 
 
 % height(consData{1});
-
-
-
-
-
-

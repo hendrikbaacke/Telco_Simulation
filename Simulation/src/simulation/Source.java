@@ -21,23 +21,11 @@ public class Source implements CProcess {
 	 */
 	private String name;
 	/**
-	 * Mean interarrival time
-	 */
-	private double meanArrTime;
-	/**
-	 * Interarrival times (in case pre-specified)
-	 */
-	private double[] interarrivalTimes;
-	/**
-	 * Interarrival time iterator
-	 */
-	private int interArrCnt;
-	/**
 	 * type of the source
 	 */
 	private int type;
 
-	/*
+	/**
 	 * counter for calls
 	 */
 	private int counter;
@@ -110,7 +98,7 @@ public class Source implements CProcess {
 		if (18 < tme_h || tme_h < 8) {
 			avgtme = 60 / 0.2;
 		}
-		System.out.format("arrival rate %.2f per min ",60/avgtme);
+		//System.out.format("arrival rate %.2f per min ",60/avgtme);
 		return avgtme;
 	}
 
@@ -145,7 +133,7 @@ public class Source implements CProcess {
 		double lambda_t = (1.8 * Math.sin((2 * Math.PI / 24) * (tme_h + 15)) + 2 );
 
 		if (u2 <= (lambda_t/max_lambda)) {
-			System.out.format("arrival rate %.2f per min ", lambda_t);
+			//System.out.format("arrival rate %.2f per min ", lambda_t);
 			return arr_tme * 60 ; // in seconds
 		}
 		else {

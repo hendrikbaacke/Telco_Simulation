@@ -6,9 +6,6 @@
 
 package simulation;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 
 public class Simulation {
 
@@ -22,21 +19,18 @@ public class Simulation {
      * @param args the command line arguments
      */
     public static void main(String[] args) throws IOException {
-        //flag defining if CSA agents of type 1 are allowed to handle calls of type 0
-        boolean handle_both = true;
 
-        //roster: agents for each shift
-        //Shift 1: (6am - 2pm)
-        //Shift 2: (2pm - 10pm)
-        //Shift 3: (10pm - 6am)
-        //first agent{0,x}: consumer CSA
-        //second agent{x,1} corporate CSA
-        int[][] roster = {{2,4},{2,5},{2,4}};
+        //roster: agents for each shift 6-14-22-6
+        //1. agent -> consumer CSA
+        //2. agent -> corporate only CSA
+        //3. agent -> flexible corporate CSA
+        int[][] roster = {{2,2,2},{2,2,2},{2,2,2}};
+
+        String strategy_name = "Mixed";
 
         // n is the number of runs
-        int n = 10;
-
-        //amount of days of simulation runs
+        int n = 1;
+        //number of days a single simulation is run
         int days = 10;
         for (int i = 0; i < n; i++) {
             int start_time = 6 * 60 * 60;
@@ -57,30 +51,28 @@ public class Simulation {
             // A sink
             Sink si = new Sink("Sink 1");
 
-            //
+            //init the shifts
             int amount_shifts = sim_duration / shift_duration + 1;
             int shift_end = start_time;
             for(int j = 0; j < amount_shifts; j++){
                 shift_end += shift_duration;
                 int shift_type = j % 3;
-                l.add(new Shift(q_con, q_cor, si, l, handle_both,
-                        shift_end, roster[shift_type][0], roster[shift_type][1]),0,shift_end - shift_duration);
+                l.add(new Shift(q_con, q_cor, si, l, shift_end, roster[shift_type][0], roster[shift_type][1], roster[shift_type][2]),0,shift_end - shift_duration);
             }
-
-
-
 
             // start the eventlist
             l.start(start_time + sim_duration);
 
             //save the data
-            si.toMatrixFile("informationCalls" +  i + ".csv");
-            si.toWaitTimeFileConsumer("waitingTimesConsumer" + i + ".csv");
-            si.toWaitTimeFileCorporate("waitingTimesCorporate" + i + ".csv");
+            si.toMatrixFile(strategy_name+" informationCalls" +  i + ".csv");
+            si.toWaitTimeFileConsumer(strategy_name+" waitingTimesConsumer" + i + ".csv");
+            si.toWaitTimeFileCorporate(strategy_name+" waitingTimesCorporate" + i + ".csv");
 
             int cost = (roster[0][0]  + roster[1][0] + roster[2][0])* 8 * 35 + (roster[0][1] + roster[1][1] + roster[2][1]) * 8 * 60;
             System.out.println("________________________"+"Cost per day: "+cost+"________________________");
 
         }
+        int cost = (roster[0][0]  + roster[1][0] + roster[2][0])* 8 * 35 + (roster[0][1] + roster[1][1] + roster[2][1]+roster[0][2] + roster[1][2] + roster[2][2]) * 8 * 60;
+        System.out.println(cost);
     }
 }
