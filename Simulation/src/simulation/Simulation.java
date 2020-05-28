@@ -22,10 +22,10 @@ public class Simulation {
         //roster: agents for each shift 6-14 14-22 22-6 and
         //1. -> consumer CSA
         //2. -> flexible corporate CSA
-        int[][] roster = {{5,5},{5,5},{5,4}};
+        int[][] roster = {{7,7},{7,7},{7,6}};
 
         //number of CSA corporate to kept idle to handle incoming corporate calls
-        CSA.minIdle = 0;
+        CSA.minIdle = 2;
         String strategy_name = "Strategy1";  //Strategy1 flexible
 
         if(CSA.minIdle>0) {
@@ -33,9 +33,9 @@ public class Simulation {
         }
 
         // n is the number of runs
-        int n = 10;
+        int n = 15;
         //number of days a single simulation is run
-        int days = 10;
+        int days = 15;
 
         for (int i = 0; i < n; i++) {
             int start_time = 6 * 60 * 60;

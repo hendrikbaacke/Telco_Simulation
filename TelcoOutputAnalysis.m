@@ -8,7 +8,7 @@
 
 %make sure that k matches the number of runs n in the Java code of the
 %Simulation, k cannot be larger than n 
-k = 5;                                                               %<----------------
+k = 15;                                                               %<----------------
 C_data = cell(k,1);
 SortedC_data = cell(k,1);
 WaitCons_data = cell(k,1);
@@ -42,7 +42,8 @@ end
 %% Data Retrieval System Configuration 1
 
 %specify amount of runs we want to use for distribution validation
-repVal = 5; %repVal <=k                                              %<----------------
+repVal = 15; %repVal <=k                                              %<----------------
+%%
 if k~=repVal
     disp('_____________________________________');
     disp('Warning: repVal is different from k');
@@ -258,7 +259,7 @@ end
 %Fig.5 plotting the waiting times of all customers with time on the x-axis
 %and output on the y-axis
 %xvalues: tme_incoming | yvalues: waiting tme of customer
-C = ['b','y','r','g','k']; % Cell array of colros. length 5, see below reason
+C = ['.-b','.-y','.-r','.-g','.-k']; % Cell array of colors. length 5, see below reason
 ts = cell(replications,1);
 figure(5)
 for i=1:replications  %plot u INDEPENDENT runs of the simulation
@@ -279,19 +280,6 @@ xline(dayDivisions{1}(i),'-.b',{'End of Day ',num2str(i)});
 end
 %grid on
 
-%%
-% What is quite aparent from the generated graph is the transient in the
-% beginning of the simulation which is present for all simulation replications 
-% between the start of the simulation and the end of day 5 . 
-% found in each of the 5 plotted runs. (Be aware that because of the large
-% amount of data we have overlap. Zoom in to see each individual run more
-% clearly. After the first day the simulation enters its steady state.
-% We see that the curves for all 5 replications of the system are very close
-% and exhibit the same characteristics. Therefore in Fig.6 and Fig.7 only
-% data from one run is plotted. We also can see in Fig.5 that the steady
-% state peak height differences (so differences in peak waiting times) are
-% down to the stochastic nature of the simulation as the different runs
-% have higher values for different days.
 
 %%
 % %Fig.6,7 and 8,9 plot the waiting time of each individual customer of the two
@@ -397,13 +385,13 @@ end
 % from only the desired steady-state.
 
 %% Retrieve the steady-state data of System Configuration 1
-% Truncating the first 5 days of data until we can assume that the
+% Truncating the first 2 days of data until we can assume that the
 % simulation reached its steady-state.
 % Therefore do not choose a simulation runtime <15 days to have at least 10
 % days of usable data.
 % This decision is based on the findings in the previous Section
 %'Replication-Deletion: Visual Procedure'
-l = 86400*5;         
+l = 86400*2;                                   %<-------------------------------------   
 TruncData = cell(k,1);
 %we go to k to ensure that we truncate the transient for all runs of
 %simulation, it is a deliberate choice to not add a variable that can have
@@ -573,7 +561,7 @@ d10 = ['The fraction of corporates that have been assisted within 7 minutes, ave
 disp(d10);
 disp(mean(pct_corp_asstdSeven));
 
-%% Confidence intervals
+%% Confidence intervals: System Configuration 1
 % t-confidence intervals of the mean
 % It is a small sample size: 20
 % The runs are independent
@@ -605,11 +593,11 @@ gamma1=(1-alpha1/2);
 %get the degrees of freedom
 dof1 = k-1;
 % get the critical point of t-dist.
-t_crit = tinv(gamma1,dof1)  
+t_crit = tinv(gamma1,dof1);  
 
 %%
 disp('_____________________________________________________________________________________________________________________________________');
-disp('________________________________________________________Confidence Intervals:________________________________________________________');
+disp('_______________________________________________System 1:Confidence Intervals:________________________________________________________');
 % For the average waiting time:
 mean_average_waiting = mean(Mean_waitingTmeComb);
 var_avg_wait = var(Mean_waitingTmeComb);
@@ -698,7 +686,7 @@ end
 
 %%  Retrieve the steady-state data of System Configuration 2
 % For getting the steady-state data we make the simplifying but reasonable assumption that
-% the (generous) truncation of the first 5 days, which was found to eliminate
+% the (generous) truncation of the first 2 days, which was found to eliminate
 % the transient for the first system configuration, also cuts off the
 % transient of system 2.
 
@@ -862,6 +850,66 @@ d10 = ['The fraction of corporates that have been assisted within 7 minutes, ave
 disp(d10);
 disp(mean(pct_corp_asstdSeven2));
 
+%% Confidence intervals: System Configuration 2
+
+
+% This are 5 confidence intervals. As the combined probability needs to
+% 95%, due to the Bonferroni inequality, the alpha for each of these will
+% be 0.01
+
+                                                          
+% We have 5 CIs, to have overall confidence level of 95% have individual
+% alphas = 0.05
+
+% the computation of the critical t-val is the same as for the CIs of
+% System config. 1 as we are using the same k and also want the overall
+% confidence level to be 95 percent, so take alpha1=0.01 and k-1
+
+%%
+disp('_____________________________________________________________________________________________________________________________________');
+disp('_______________________________________________System 2:Confidence Intervals:________________________________________________________');
+% For the average waiting time:
+mean_average_waiting2 = mean(Mean_waitingTmeComb2);
+var_avg_wait2 = var(Mean_waitingTmeComb2);
+ci_average_waiting_time2 = [(mean_average_waiting2 - t_crit * sqrt(var_avg_wait2/k)),( mean_average_waiting2 + t_crit * sqrt(var_avg_wait2/k))];
+disp('_____________________________________________________________________________________________________________________________________');
+disp('The confidence interval for the mean waiting time (in seconds) is: ');
+disp(ci_average_waiting_time2);
+
+% For the first performance measure:
+mean_perf_m_1_2 = mean(pct_cons_asstdFive2);
+var_perf_m_1_2 = var(pct_cons_asstdFive2);
+ci_perf_m_1_2 = [(mean_perf_m_1_2 - t_crit * sqrt(var_perf_m_1_2/k)),( mean_perf_m_1_2 + t_crit * sqrt(var_perf_m_1_2/k))];
+disp('_____________________________________________________________________________________________________________________________________');
+disp('The confidence interval for the percentage of consumers assisted within 5 minutes is: ');
+disp(ci_perf_m_1_2);
+
+% For the second performance measure:
+mean_perf_m_2_2 = mean(pct_cons_asstdTen2);
+var_perf_m_2_2 = var(pct_cons_asstdTen2);
+ci_perf_m_2_2 = [(mean_perf_m_2_2 - t_crit * sqrt(var_perf_m_2_2/k)),( mean_perf_m_2_2 + t_crit * sqrt(var_perf_m_2_2/k))];
+disp('_____________________________________________________________________________________________________________________________________');
+disp('The confidence interval for the percentage of consumers assisted within 10 minutes is: ');
+disp(ci_perf_m_2_2);
+
+% For the third performance measure:
+mean_perf_m_3_2 = mean(pct_corp_asstdThree2);
+var_perf_m_3_2 = var(pct_corp_asstdThree2);
+ci_perf_m_3_2 = [(mean_perf_m_3_2 - t_crit * sqrt(var_perf_m_3_2/k)),( mean_perf_m_3_2 + t_crit * sqrt(var_perf_m_3_2/k))];
+disp('_____________________________________________________________________________________________________________________________________');
+disp('The confidence interval for the percentage of corporate customers assisted within 3 minutes is: ');
+disp(ci_perf_m_3_2);
+
+% For the fourth performance measure:
+mean_perf_m_4_2 = mean(pct_corp_asstdSeven2);
+var_perf_m_4_2 = var(pct_corp_asstdSeven2);
+ci_perf_m_4_2 = [(mean_perf_m_4_2 - t_crit * sqrt(var_perf_m_4_2/k)),( mean_perf_m_4_2 + t_crit * sqrt(var_perf_m_4_2/k))];
+disp('_____________________________________________________________________________________________________________________________________');
+disp('The confidence interval for the percentage of corporate customers assisted within 7 minutes is: ');
+disp(ci_perf_m_4_2);
+
+
+
 %% Comparison of System Configuration 1 and 2
 
 %% 1. 95 percent paired confidence interval on the difference in expected waiting time
@@ -888,7 +936,7 @@ disp('__________________________________________________________________________
 disp('The confidence interval for the difference of expected waiting time of System 1 and 2 is: ');
 disp(ci_difference);
 %%
-% We want to reduce waiting time, therefore if only values <0 , then System 1
+% We want to reduce/minimize waiting time, therefore if only values <0 , then System 1
 % has significantly less waiting time than System 2. For the converse case when there are only values >0, then
 % System 2 has significantly less waiting time than System 1.
 
@@ -915,40 +963,5 @@ pVal =2*(1-pctTl)
 
 
 
-%% Hendrik Notes
 
-
-%TODO
-
-%Find bug in drawing consumer interarrival times (rate too high)
-%Priority:do replication deletion or batch means to cut the transient
-%after this:
-%do c_i for the performance measures
-%KS test for validating the underlying distribution (only if enough tme)
-
-
-
-% corpData{1}(1:15,{'cstm_tp' 'CSA_tp' 'tme_incoming' 'tme_start' 'tme_end'})
-%corpData{1}
-
-
-
-%isequal(wtTmeCons{1}(bolWaitCons1),ArrayWaitCons_data(bolWaitCons))
-% down to parallel threads?
-
-
-
-
- %bolWaitCons1 = (wtTmeCons{1}~=0);
- %wtTmeCons{1}(bolWaitCons1);
-
-
-
-%length(wtTmeCons{1}(bolWaitCons1))
-% length(ArrayWaitCons_data(bolWaitCons))
-%
-% %not the same! WHY
-% height(WaitCons_data{1});
-
-
-% height(consData{1});
+%Version1 29/05/20 00:08 H.Baacke
