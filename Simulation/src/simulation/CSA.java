@@ -60,7 +60,8 @@ public class CSA implements CProcess, CallAcceptor
 	 */
 	public CSA(Queue q, CallAcceptor s, CEventList e, String n, double shift_end, int tp)
 	{
-		this.setIdle();
+		type = tp;
+		setIdle();
 		queuePri=q;
 		sink=s;
 		eventlist=e;
@@ -71,7 +72,7 @@ public class CSA implements CProcess, CallAcceptor
         std = 35;
         meanProcTime=72;
         truncation = 25;
-		type = tp;
+
 
 		queuePri.askCall(this);
 	}
@@ -87,7 +88,8 @@ public class CSA implements CProcess, CallAcceptor
 	 */
 	public CSA(Queue qPriority, Queue possible,  CallAcceptor s, CEventList e, String n, double shift_end, int tp)
 	{
-		this.setIdle();
+		type = tp;
+		setIdle();
 		queuePri=qPriority;
 		otherQueue = possible;
 		sink=s;
@@ -95,7 +97,7 @@ public class CSA implements CProcess, CallAcceptor
 		name=n;
 		this.shift_end = shift_end;
 
-		type = tp;
+
 		if (!queuePri.askCall(this)){
 			otherQueue.askCall(this);
 		};
@@ -118,11 +120,9 @@ public class CSA implements CProcess, CallAcceptor
 		//show arrival
 		//System.out.println("Call "+call.getType()+" "+call.getId()+" finished at time in hours " + tme / 3600+" in sec "+tme);
 		//System.out.println("times: " +call.getTimes());
-
 		call = null;
 		// set csa status to idle
 		this.setIdle();
-
 		//ask for another call if shift hasn't ended yet
 		if (tme < shift_end){
 			// Ask the queue for calls
@@ -149,9 +149,6 @@ public class CSA implements CProcess, CallAcceptor
 		// Only accept something if the csa is idle
 		if(status=='i')
 		{
-			boolean enough_idle =  false;
-
-
 			if (this.type == p.getType() || ( p.getType() == 0 && this.type == 1 && CSA.corpCsaIdleCounter > CSA.minIdle ) ){
 				//System.out.println(this.name + " receives a call of type " + type);
 
@@ -340,12 +337,15 @@ public class CSA implements CProcess, CallAcceptor
 
 	public void setIdle() {
 		this.status = 'i';
-		if (this.type == 1) corpCsaIdleCounter += 1;
-
+		if (this.type == 1) {
+			CSA.corpCsaIdleCounter += 1;
+		}
 	}
 
 	public void setBusy() {
 		this.status = 'b';
-		if (this.type == 1) corpCsaIdleCounter -= 1;
+		if (this.type == 1) {
+			CSA.corpCsaIdleCounter -= 1;
+		}
 	}
 }

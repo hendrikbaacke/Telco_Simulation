@@ -34,12 +34,12 @@ public class Shift implements CProcess {
         //set idle CSA counter to zero
         CSA.corpCsaIdleCounter = 0;
         for (int i = 0; i < number_csa1; i++) {
-            // A consumer CSA (handle both is always false for them)
+            // A consumer CSA
             CSA CSA_consumer= new CSA(queue_con, sink, eventlist, "consumer CSA nr " + i, shift_end,0);
         }
 
         for (int i = 0; i < number_csa2; i++) {
-            // A csa
+            // A corporate csa
             CSA CSA_corporate = new CSA(queue_con,queue_cor, sink, eventlist, "corporate CSA nr " + i, shift_end,1);
         }
 

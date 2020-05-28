@@ -17,7 +17,7 @@ public class Simulation {
         //roster: agents for each shift 6-14-22-6 and
         //1. -> consumer CSA
         //2. -> flexible corporate CSA
-        int[][] roster = {{2,2},{3,4},{2,2}};
+        int[][] roster = {{5,5},{5,4},{5,2}};
 
         //number of CSA corporate to kept idle to handle incoming corporate calls
         CSA.minIdle = 1;
@@ -27,7 +27,7 @@ public class Simulation {
         // n is the number of runs
         int n = 1;
         //number of days a single simulation is run
-        int days = 10;
+        int days = 1;
         for (int i = 0; i < n; i++) {
             int start_time = 6 * 60 * 60;
             int sim_duration = days * 24 *60 * 60;

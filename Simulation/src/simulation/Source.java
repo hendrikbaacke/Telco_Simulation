@@ -72,12 +72,12 @@ public class Source implements CProcess {
 			double arr_tme = drawRandomExponentialNonStat(tme);
 			// Create a new event in the eventlist
 			list.add(this, type,arr_tme); //target,type,time
-			System.out.format("con duration generated: %.2f for arr time %.1f\n",arr_tme-tme,arr_tme/3600 % 24);
+			//System.out.format("con duration generated: %.2f for arr time %.1f\n",arr_tme-tme,arr_tme/3600 % 24);
 			//System.out.format("time now/next con call %.2f %.2f in hours %.2f %.2f\n",tme,arr_tme,tme/3600,arr_tme/3600);
 		}
 		else if (type == 1) {
 			double duration = drawRandomExponential(getAverageArrivalRateCorp(tme));
-			System.out.format("corp duration generated: %.2f\n",duration);
+			//System.out.format("corp duration generated: %.2f\n",duration);
 			//System.out.format("time now/next corp call %.2f %.2f in hours %.2f %.2f\n",tme,tme+duration,tme/3600,(tme+duration)/3600);
 			// Create a new event in the eventlist
 			list.add(this, type, tme + duration); //target,type,time
