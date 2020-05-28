@@ -178,14 +178,15 @@ xlabel('interarrival time in sec');
 title('Corporate data: Fitting exponential to observed interarrvial tmes(s)');
 
 
-
-
 %% Replication-Deletion: Visual Procedure
 % For the replication deletion the heuristically evaluated 'best' roster (int[][] roster = {{0,5},{2,5},{0,5}};)
 % was used which adheres to the given performance requirements while
 % keeping the cost of the simulation low at EUR 7760 per day.
-% *For reproducing similar results and plots please use the roster (int[][] roster = {{0,5},{2,5},{0,5}};) and
+% *For reproducing similar results and plots use the roster int[][] roster = {{0, 0, 5}, {2, 0, 5}, {0, 0, 5}}; and
 % let the simulation run for 30 days at least 5 times.*
+% The system variable waiting time is the most indicative variable with
+% regard to the system being in a transient or steady-state, therefore it
+% is chosen to plot the waiting times of individual customers over the time in the simulation.
 %%
 %get days
 dayDivisions = cell(k,1);
@@ -395,7 +396,7 @@ end
 % might want to change the roster based on the aggregate values generated
 % from only the desired steady-state.
 
-%% Retrieve the steady-state data
+%% Retrieve the steady-state data of System Configuration 1
 % Truncating the first 5 days of data until we can assume that the
 % simulation reached its steady-state.
 % Therefore do not choose a simulation runtime <15 days to have at least 10
@@ -460,7 +461,7 @@ TruncTmeIncomCons{i} =TruncDataCons{i}{:,3};
 TruncTmeIncomCorp{i} =TruncDataCorp{i}{:,3};
 end
 
-%% Analysis of the Performance Bounds
+%% Analysis of the Performance Bounds: 1. System Configuration
 
 %Analysing Waiting times of consumer and corp customers with regard to the
 %given performance requirements.
@@ -524,7 +525,7 @@ wtCorp_smallerSeven{i} = TruncwtTmeCorp{i}(smallerthanSeven_Corp);
 pct_corp_asstdSeven(i) = length(wtCorp_smallerSeven{i})/length(TruncwtTmeCorp{i});
 end
 disp('_____________________________________________________________________________________________________________________________________');
-disp('________________________________________Fractions of each run for each type of performance measure:__________________________________');
+disp('___________________________________System 1:Fractions of each run for each type of performance measure:______________________________');
 
 disp('_____________________________________________________________________________________________________________________________________');
 disp('Consumers assisted within 5min:');
@@ -541,7 +542,7 @@ pct_corp_asstdSeven
 
 
 disp('_____________________________________________________________________________________________________________________________________');
-disp('________________________________________________________Performance Measures:________________________________________________________');
+disp('________________________________________________________System 1:Performance Measures:_______________________________________________');
 
 disp('_____________________________________________________________________________________________________________________________________');
 dcomb = ['The expected waiting time based on all ',num2str(k),' runs is in seconds: '];
@@ -573,8 +574,6 @@ disp(d10);
 disp(mean(pct_corp_asstdSeven));
 
 %% Confidence intervals
-% TODO : verify assumptions and
-
 % t-confidence intervals of the mean
 % It is a small sample size: 20
 % The runs are independent
@@ -583,7 +582,7 @@ disp(mean(pct_corp_asstdSeven));
 % We want to have a probability of 95% of all the means falling in the
 % confidence intervals simultaneously.
 
-% The confidence intervals that will be created:
+% The confidence intervals that are created:
 % - Average waiting time
 % - Performance measure 1: percentage of consumers assisted within 5
 % minutes
@@ -598,46 +597,55 @@ disp(mean(pct_corp_asstdSeven));
 % 95%, due to the Bonferroni inequality, the alpha for each of these will
 % be 0.01
 
-% For 19 degrees of freedom, and alpha/2, look up the critical point t.
-t_crit = 2.861 ;
+                                                          
+% We have 5 CIs, to have overall confidence level of 95% have individual
+% alphas = 0.05
+alpha1=0.01;
+gamma1=(1-alpha1/2);
+%get the degrees of freedom
+dof1 = k-1;
+% get the critical point of t-dist.
+t_crit = tinv(gamma1,dof1)  
+
+%%
 disp('_____________________________________________________________________________________________________________________________________');
 disp('________________________________________________________Confidence Intervals:________________________________________________________');
 % For the average waiting time:
 mean_average_waiting = mean(Mean_waitingTmeComb);
-std_avg_wait = std(Mean_waitingTmeComb);
-ci_average_waiting_time = [(mean_average_waiting - t_crit * sqrt(std_avg_wait/k)),( mean_average_waiting + t_crit * sqrt(std_avg_wait/k))];
+var_avg_wait = var(Mean_waitingTmeComb);
+ci_average_waiting_time = [(mean_average_waiting - t_crit * sqrt(var_avg_wait/k)),( mean_average_waiting + t_crit * sqrt(var_avg_wait/k))];
 disp('_____________________________________________________________________________________________________________________________________');
 disp('The confidence interval for the mean waiting time (in seconds) is: ');
 disp(ci_average_waiting_time);
 
 % For the first performance measure:
 mean_perf_m_1 = mean(pct_cons_asstdFive);
-std_perf_m_1 = std(pct_cons_asstdFive);
-ci_perf_m_1 = [(mean_perf_m_1 - t_crit * sqrt(std_perf_m_1/k)),( mean_perf_m_1 + t_crit * sqrt(std_perf_m_1/k))];
+var_perf_m_1 = var(pct_cons_asstdFive);
+ci_perf_m_1 = [(mean_perf_m_1 - t_crit * sqrt(var_perf_m_1/k)),( mean_perf_m_1 + t_crit * sqrt(var_perf_m_1/k))];
 disp('_____________________________________________________________________________________________________________________________________');
 disp('The confidence interval for the percentage of consumers assisted within 5 minutes is: ');
 disp(ci_perf_m_1);
 
 % For the second performance measure:
 mean_perf_m_2 = mean(pct_cons_asstdTen);
-std_perf_m_2 = std(pct_cons_asstdTen);
-ci_perf_m_2 = [(mean_perf_m_2 - t_crit * sqrt(std_perf_m_2/k)),( mean_perf_m_2 + t_crit * sqrt(std_perf_m_2/k))];
+var_perf_m_2 = var(pct_cons_asstdTen);
+ci_perf_m_2 = [(mean_perf_m_2 - t_crit * sqrt(var_perf_m_2/k)),( mean_perf_m_2 + t_crit * sqrt(var_perf_m_2/k))];
 disp('_____________________________________________________________________________________________________________________________________');
 disp('The confidence interval for the percentage of consumers assisted within 10 minutes is: ');
 disp(ci_perf_m_2);
 
 % For the third performance measure:
 mean_perf_m_3 = mean(pct_corp_asstdThree);
-std_perf_m_3 = std(pct_corp_asstdThree);
-ci_perf_m_3 = [(mean_perf_m_3 - t_crit * sqrt(std_perf_m_3/k)),( mean_perf_m_3 + t_crit * sqrt(std_perf_m_3/k))];
+var_perf_m_3 = var(pct_corp_asstdThree);
+ci_perf_m_3 = [(mean_perf_m_3 - t_crit * sqrt(var_perf_m_3/k)),( mean_perf_m_3 + t_crit * sqrt(var_perf_m_3/k))];
 disp('_____________________________________________________________________________________________________________________________________');
 disp('The confidence interval for the percentage of corporate customers assisted within 3 minutes is: ');
 disp(ci_perf_m_3);
 
 % For the fourth performance measure:
 mean_perf_m_4 = mean(pct_corp_asstdSeven);
-std_perf_m_4 = std(pct_corp_asstdSeven);
-ci_perf_m_4 = [(mean_perf_m_4 - t_crit * sqrt(std_perf_m_4/k)),( mean_perf_m_4 + t_crit * sqrt(std_perf_m_4/k))];
+var_perf_m_4 = var(pct_corp_asstdSeven);
+ci_perf_m_4 = [(mean_perf_m_4 - t_crit * sqrt(var_perf_m_4/k)),( mean_perf_m_4 + t_crit * sqrt(var_perf_m_4/k))];
 disp('_____________________________________________________________________________________________________________________________________');
 disp('The confidence interval for the percentage of corporate customers assisted within 7 minutes is: ');
 disp(ci_perf_m_4);
@@ -653,7 +661,7 @@ disp(ci_perf_m_4);
 %   help incoming corporate callers. 
 % 
 
-%% Data Retrieval System Configuration 1
+%% Data Retrieval System Configuration 2
 
 %the amount of runs for both systems should be the same to keep things
 %simple, thus we use k
@@ -688,11 +696,225 @@ WaitCorp_data2{i+1}.Properties.VariableNames = {'corporate_wait_tme'};
 end
 
 
+%%  Retrieve the steady-state data of System Configuration 2
+% For getting the steady-state data we make the simplifying but reasonable assumption that
+% the (generous) truncation of the first 5 days, which was found to eliminate
+% the transient for the first system configuration, also cuts off the
+% transient of system 2.
+
+TruncData2 = cell(k,1);
+%we go to k to ensure that we truncate the transient for all runs of
+%simulation, it is a deliberate choice to not add a variable that can have
+%a different value from k
+for i = 1:k
+cutL2 = (SortedC_data2{i}{:,3}>=l);
+TruncData2{i} = SortedC_data2{i}(cutL2,:);
+end
+
+%validate:
+%TruncData2{1}(1:15,{'cstm_tp' 'CSA_tp' 'tme_incoming' 'tme_start' 'tme_end'})
+%TruncData is sorted
+
+%get the individual data for each costumer type
+TruncDataCons2 = cell(k,1);
+TruncDataCorp2 = cell(k,1);
+
+for i = 1:k
+%get all data from consumer calls from each sim. run
+Co2 = (TruncData2{i}.cstm_tp ==0);
+TruncDataCons2{i} = TruncData2{i}(Co2,:);
+
+%get all data from corporate calls from each sim. run
+Corp2 = (TruncData2{i}.cstm_tp ==1);
+TruncDataCorp2{i} = TruncData2{i}(Corp2,:);
+end
+
+%validate:
+%TruncDataCons2{1}(1:15,{'cstm_tp' 'CSA_tp' 'tme_incoming' 'tme_start' 'tme_end'})
+%TruncDataCorp2{1}(1:15,{'cstm_tp' 'CSA_tp' 'tme_incoming' 'tme_start' 'tme_end'})
+%TruncData2 is sorted
+
+%get the waiting times and tms of arrival for all types
+TruncwtTme2 = cell(k,1);
+TruncwtTmeCons2 = cell(k,1);
+TruncwtTmeCorp2 = cell(k,1);
 
 
-% do ci of difference of mean waiting tme
+TruncTmeIncom2 = cell(k,1);
+TruncTmeIncomCons2 = cell(k,1);
+TruncTmeIncomCorp2 = cell(k,1);
+for i = 1:k
+%get the waiting times for both costumer types from truncated data
+TruncwtTme2{i} = TruncData2{i}{:,4}-TruncData2{i}{:,3};
 
-% do Dalal and Dudewicz procedure
+%also get the waiting times for both types individually from truncated data
+TruncwtTmeCons2{i} = TruncDataCons2{i}{:,4}-TruncDataCons2{i}{:,3};
+TruncwtTmeCorp2{i} = TruncDataCorp2{i}{:,4}-TruncDataCorp2{i}{:,3};
+
+%get the incoming times of all customers
+TruncTmeIncom2{i} = TruncData2{i}{:,3};
+
+%also get the incoming times for both types individually from truncated data
+TruncTmeIncomCons2{i} =TruncDataCons2{i}{:,3};
+TruncTmeIncomCorp2{i} =TruncDataCorp2{i}{:,3};
+end
+
+%% Analysis of the Performance Bounds: 2. System Configuration
+
+
+ArrayWaitCons_data2 =  cell(k,1);
+ArrayWaitCorp_data2 =  cell(k,1);
+
+wtCons_smallerFive2 =  cell(k,1);
+wtCons_smallerTen2  =  cell(k,1);
+wtCorp_smallerThree2 = cell(k,1);
+wtCorp_smallerSeven2 = cell(k,1);
+
+
+%we take each of the k runs into account
+for i = 1:k
+
+%retrieve the mean waiting times:
+Mean_waitingTmeComb2(i) = mean(TruncwtTme2{i});
+Mean_waitingTmeCons2(i) = mean(TruncwtTmeCons2{i});
+Mean_waitingTmeCorp2(i) = mean(TruncwtTmeCorp2{i});
+
+
+% data is in sec, convert 5 min to sec
+smallerthanFive_Cons2 = (TruncwtTmeCons2{i}<=300);
+wtCons_smallerFive2{i} = TruncwtTmeCons2{i}(smallerthanFive_Cons2);
+
+%get the percentage of costumers that have been assisted within 5min:
+pct_cons_asstdFive2(i) = length(wtCons_smallerFive2{i})/length(TruncwtTmeCons2{i});
+
+
+% data is in sec, convert 10 min to sec
+smallerthanTen_Cons2 = (TruncwtTmeCons2{i}<=600);
+wtCons_smallerTen2{i} = TruncwtTmeCons2{i}(smallerthanTen_Cons2);
+
+%get the percentage of costumers that have been assisted within 10min:
+pct_cons_asstdTen2(i) = length(wtCons_smallerTen2{i})/length(TruncwtTmeCons2{i});
+
+%______________________________________________________________________
+
+
+% data is in sec, convert 3 min to sec
+smallerthanThree_Corp2 = (TruncwtTmeCorp2{i}<=180);
+wtCorp_smallerThree2{i} = TruncwtTmeCorp2{i}(smallerthanThree_Corp2);
+
+%get the percentage of costumers that have been assisted within 3min:
+pct_corp_asstdThree2(i) = length(wtCorp_smallerThree2{i})/length(TruncwtTmeCorp2{i});
+
+% data is in sec, convert 7 min to sec
+smallerthanSeven_Corp2 = (TruncwtTmeCorp2{i}<=420);
+wtCorp_smallerSeven2{i} = TruncwtTmeCorp2{i}(smallerthanSeven_Corp2);
+
+%get the percentage of costumers that have been assisted within 7min:
+pct_corp_asstdSeven2(i) = length(wtCorp_smallerSeven2{i})/length(TruncwtTmeCorp2{i});
+end
+
+disp('_____________________________________________________________________________________________________________________________________');
+disp('___________________________________System 2:Fractions of each run for each type of performance measure:______________________________');
+
+disp('_____________________________________________________________________________________________________________________________________');
+disp('Consumers assisted within 5min:');
+pct_cons_asstdFive2
+disp('_____________________________________________________________________________________________________________________________________');
+disp('Consumers assisted within 10min:');
+pct_cons_asstdTen2
+disp('_____________________________________________________________________________________________________________________________________');
+disp('Corporate assisted within 3min:');
+pct_corp_asstdThree2
+disp('_____________________________________________________________________________________________________________________________________');
+disp('Corporate assisted within 7min:');
+pct_corp_asstdSeven2
+
+
+disp('_____________________________________________________________________________________________________________________________________');
+disp('________________________________________________________System 2:Performance Measures:_______________________________________________');
+
+disp('_____________________________________________________________________________________________________________________________________');
+dcomb = ['The expected waiting time based on all ',num2str(k),' runs is in seconds: '];
+disp(dcomb);
+disp(mean(Mean_waitingTmeComb2));
+disp('_____________________________________________________________________________________________________________________________________');
+d5 = ['The expected waiting time for consumers based on all ',num2str(k),' runs is in seconds: '];
+disp(d5);
+disp(mean(Mean_waitingTmeCons2));
+disp('_____________________________________________________________________________________________________________________________________');
+d6 = ['The expected waiting time for corporates based on all ',num2str(k),' runs is in seconds: '];
+disp(d6);
+disp(mean(Mean_waitingTmeCorp2));
+disp('_____________________________________________________________________________________________________________________________________');
+d7 = ['The fraction of consumers that have been assisted within 5 minutes, averaged over ',num2str(k),' runs is: '];
+disp(d7);
+disp(mean(pct_cons_asstdFive2));
+disp('_____________________________________________________________________________________________________________________________________');
+d8 = ['The fraction of consumers that have been assisted within 10 minutes, averaged over ',num2str(k),' runs is: '];
+disp(d8);
+disp(mean(pct_cons_asstdTen2));
+disp('_____________________________________________________________________________________________________________________________________');
+d9 = ['The fraction of corporates that have been assisted within 3 minutes, averaged over ',num2str(k),' runs is: '];
+disp(d9);
+disp(mean(pct_corp_asstdThree2));
+disp('_____________________________________________________________________________________________________________________________________');
+d10 = ['The fraction of corporates that have been assisted within 7 minutes, averaged over ',num2str(k),' runs is: '];
+disp(d10);
+disp(mean(pct_corp_asstdSeven2));
+
+%% Comparison of System Configuration 1 and 2
+
+%% 1. 95 percent paired confidence interval on the difference in expected waiting time
+% Do the Paired confidence interval approach as n1==n2
+disp('_____________________________________________________________________________________________________________________________________');
+disp('________________________________________________Confidence Interval of Difference:___________________________________________________');
+%Compute the paired means zeta
+zeta = (Mean_waitingTmeComb-Mean_waitingTmeComb2);
+zetaBar = sum(zeta)/k;
+
+%We want to get 0.95 confidence interval of difference
+alpha2=0.05;
+gamma2=(1-alpha2/2);
+%get the degrees of freedom
+dof2 = k-1;
+% get the critical point of t-dist.
+t_dff = tinv(gamma2,dof2); 
+
+%Compute the upper and lower bound of the confidence interval, if 0 is not
+%part of this interval, we have a significant difference of the two systems
+ci_difference(1,1) = zetaBar - t_dff*sqrt(var(zeta)/k);
+ci_difference(1,2) = zetaBar + t_dff*sqrt(var(zeta)/k);
+disp('_____________________________________________________________________________________________________________________________________');
+disp('The confidence interval for the difference of expected waiting time of System 1 and 2 is: ');
+disp(ci_difference);
+%%
+% We want to reduce waiting time, therefore if only values <0 , then System 1
+% has significantly less waiting time than System 2. For the converse case when there are only values >0, then
+% System 2 has significantly less waiting time than System 1.
+
+
+%% 2. Paired T-test 
+% Null hypothesis H_0: 
+% 
+% 
+% * The expected waiting times for the customers for system configuration
+% 1 (flexible) and  2 (mixed) does not significantly differ from one to
+% another. (Mean_waitingTmeComb = Mean_waitingTmeComb2)
+disp('_____________________________________________________________________________________________________________________________________');
+disp('Value of the paired t-test test statistic: ');
+t_statVal = abs(zetaBar/sqrt(var(zeta/k)))
+%we have the same dof as for the CI of difference computed above
+%Note:allowed to use 'tcdf' and 'tinv' according to requirements 
+pctTl = tcdf(t_statVal,dof2); 
+disp('_____________________________________________________________________________________________________________________________________');
+disp('Obtained p-value of the paired t-test: ');
+pVal =2*(1-pctTl)
+%%
+% If pVal <0.05 then we reject the null hypothesis that the average waiting time of costumers in the two systems
+% is not significantly difference, otherwise we cannot reject H_0.
+
+
+
 %% Hendrik Notes
 
 
