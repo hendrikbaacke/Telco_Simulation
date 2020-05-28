@@ -2,10 +2,12 @@
 
 % This code is runnable with MATLAB *only*, since readtable is not a function
 % which is implemented in Octave.
-
+% The code is written in a way that makes it nice to read in the MATLAB
+% publish mode.
 %% File Reading
 
-%specify number of runs of simulation, one run is 10 days in the simulation
+%make sure that k matches the number of runs n in the Java code of the
+%Simulation, k cannot be larger than n 
 k = 5;                                                               %<----------------
 C_data = cell(k,1);
 SortedC_data = cell(k,1);
@@ -65,7 +67,7 @@ serviceTmeCons{i} = consData{i}{:,5}-consData{i}{:,4};
 d1 = ['Shortest consumer call service time in ',num2str(i), '. run: '];
 d2 = ['Longest consumer call service time in ',num2str(i), '. run: ' ];
 disp(d1)
-%see next section                                                    !!
+%see next section                                                    
 disp(min(serviceTmeCons{i}))
 disp(d2)
 %highest values are not truncated
@@ -474,9 +476,6 @@ wtCorp_smallerSeven = cell(k,1);
 %we take each of the k runs into account
 for i = 1:k
 
-ArrayWaitCons_data{i} = table2array(WaitCons_data{i});
-ArrayWaitCorp_data{i} = table2array(WaitCorp_data{i});
-
 %retrieve the mean waiting times:
 Mean_waitingTmeComb(i) = mean(TruncwtTme{i});
 Mean_waitingTmeCons(i) = mean(TruncwtTmeCons{i});
@@ -633,12 +632,8 @@ disp('The confidence interval for the percentage of corporate customers assisted
 disp(ci_perf_m_4);
 
 
-
-
-
-
-
 %% Confidence intervals
+% TODO : verify assumptions and
 
 % t-confidence intervals of the mean
 % It is a small sample size: 20
@@ -706,6 +701,25 @@ disp('__________________________________________________________________________
 disp('The confidence interval for the percentage of corporate customers assisted within 7 minutes is: ');
 disp(ci_perf_m_4);
 
+
+%% Comparing the two different systems 
+% NOTE: all data analysis until now is performed with System configuration 1 .
+%%
+% 
+% # System 1 'Flexible' : CSA corporate helps always when the queue of corporate
+%   costumers is empty. Thus, Strategy1 uses only flexible corporate CSAs.
+% # System 2 'Mixed' : A specified amount of CSA corporates is held idle in order to
+%   help incoming corporate callers. 
+% 
+
+
+
+
+
+
+% do ci of difference of mean waiting tme
+
+% do Dalal and Dudewicz procedure
 %% Hendrik Notes
 
 
