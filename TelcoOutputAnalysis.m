@@ -18,7 +18,7 @@ i = i-1;
 %retrieve the call data
 %CHANGE THE FILEPATH TO THE DESIRED FILEPATH OF ALL RELEVANT CSV FILES
 %The .csv files are the output of the Simulation written in Java code, project name 'Telco_Simulation'
-fileN = ['informationCalls',num2str(i),'.csv'];
+fileN = ['Strategy1informationCalls',num2str(i),'.csv'];
 C_data{i+1} = readtable(fileN);
 C_data{i+1}.Properties.VariableNames = {'cstm_tp' 'CSA_tp' 'tme_incoming' 'tme_start' 'tme_end'};
 
@@ -27,19 +27,19 @@ SortedC_data{i+1} = sortrows(C_data{i+1},3);
 
 %retrieve the waiting times of consumer costumers
 %CHANGE THE FILEPATH TO THE DESIRED FILEPATH OF ALL RELEVANT CSV FILES
-fileWaitCons = ['waitingTimesConsumer',num2str(i),'.csv'];
+fileWaitCons = ['Strategy1waitingTimesConsumer',num2str(i),'.csv'];
 WaitCons_data{i+1} = readtable(fileWaitCons);
 WaitCons_data{i+1}.Properties.VariableNames = {'consumer_wait_tme'};
 
 %retrieve the waiting times of corporate costumers
 %CHANGE THE FILEPATH TO THE DESIRED FILEPATH OF ALL RELEVANT CSV FILES
-fileWaitCorp = ['waitingTimesCorporate',num2str(i),'.csv'];
+fileWaitCorp = ['Strategy1waitingTimesCorporate',num2str(i),'.csv'];
 WaitCorp_data{i+1} = readtable(fileWaitCorp);
 WaitCorp_data{i+1}.Properties.VariableNames = {'corporate_wait_tme'};
 end
 
 
-%% Data Retrieval
+%% Data Retrieval System Configuration 1
 
 %specify amount of runs we want to use for distribution validation
 repVal = 5; %repVal <=k                                              %<----------------
@@ -54,6 +54,7 @@ serviceTmeCorp = cell(repVal,1);
 interTmeCons = cell(repVal,1);
 interTmeCorp = cell(repVal,1);
 for i = 1:repVal
+disp('__________________________________________________________');
 %get all data from consumer calls from each sim. run
 ConsTbl = (SortedC_data{i}.cstm_tp ==0);
 consData{i} = SortedC_data{i}(ConsTbl,:);
@@ -107,7 +108,6 @@ end
 %consData{1}
 %corpData{1}
 %______________
-
 %the truncated normal distributions of the service times as specified
 
 pd_serviceTmeCons = makedist('Normal','mu',72 ,'sigma',35);
@@ -126,7 +126,7 @@ figure(1)
 %setting serviceTmeCons{x},serviceTmeCorp to the repVal we want
 hist(serviceTmeCons{1},20)
 hold on;
-plot(x_st1,280000*pdf(T_pd_serviceTmeCons,x_st1),'Color','red','LineWidth',2)
+plot(x_st1,410000*pdf(T_pd_serviceTmeCons,x_st1),'Color','red','LineWidth',2)
 hold off;
 xlabel('service time in sec'),ylabel('amount of occurrence');
 title('Consumer data: Fitting truncated normal to observed service times');
@@ -139,16 +139,16 @@ figure(2)
 %only the data from the first run is used
 hist(serviceTmeCorp{1},20)
 hold on
-plot(x_st2,165000*pdf(T_pd_serviceTmeCorp,x_st2),'Color','red','LineWidth',2)
+plot(x_st2,280000*pdf(T_pd_serviceTmeCorp,x_st2),'Color','red','LineWidth',2)
 hold off
 xlabel('service time in sec'),ylabel('amount of occurrence');
 title('Corporate data: Fitting normal to observed service times');
 
 %note: the superimposed truncated normal distribution in both figures will
 %not be to scale in case the length of the simulation run is changed. The
-%provided scalars are heuristically chosen and match 10 days of simulation runtime
+%provided scalars are heuristically chosen and match 15 days of simulation runtime
 %to show that the data indeed stems from the needed distributions. In case
-%the simulation is run for longer, the imposed distribution in both
+%the simulation is run for longer or shorter, the imposed distribution in both
 %distribution histogram plots will of course not be to scale anymore.
 %% % Validation of Simulation - Visualization of the Interarrival Times Distribution
 
@@ -176,6 +176,8 @@ histfit(interTmeCorp{1},[],'exponential')
 ylabel('amount of occurrence');
 xlabel('interarrival time in sec');
 title('Corporate data: Fitting exponential to observed interarrvial tmes(s)');
+
+
 
 
 %% Replication-Deletion: Visual Procedure
@@ -250,12 +252,12 @@ end
 % Fig.5 plots the waiting time of each individual
 % customer, nonregarding their type for 5 replications of the system.
 % The time (x) is in each case the arrival time of the specific customer to the system.
-
+% have at least 5 replications to make Fig.5 meaningful
 %___________________________________
 %Fig.5 plotting the waiting times of all customers with time on the x-axis
 %and output on the y-axis
 %xvalues: tme_incoming | yvalues: waiting tme of customer
-C = ['y','b','r','g','k']; % Cell array of colros. length 5, see below reason
+C = ['b','y','r','g','k']; % Cell array of colros. length 5, see below reason
 ts = cell(replications,1);
 figure(5)
 for i=1:replications  %plot u INDEPENDENT runs of the simulation
@@ -266,6 +268,7 @@ ts{i}.Name = 'Waiting Time of all customer types in sec.';
 ts{i}.TimeInfo.Units = 'Seconds';
 d11 = ['Time Series Plot: Comparing ',num2str(replications),' runs',': Waiting times of all customers'];
 title(d11)
+ylabel('Individual Customer Waiting Times in sec.');
 end
 %ts1.TimeInfo.Format = 'ss.SSS';
 xlabel('Simulation Time in sec.')
@@ -276,10 +279,9 @@ end
 %grid on
 
 %%
-% ___The explanation is based on (int[][] roster = {{0,5},{2,5},{0,5}};)
-% running 5 replications at length 30 days each.)___
 % What is quite aparent from the generated graph is the transient in the
-% begining until roughly the end of the first day. This transient can be
+% beginning of the simulation which is present for all simulation replications 
+% between the start of the simulation and the end of day 5 . 
 % found in each of the 5 plotted runs. (Be aware that because of the large
 % amount of data we have overlap. Zoom in to see each individual run more
 % clearly. After the first day the simulation enters its steady state.
@@ -289,6 +291,7 @@ end
 % state peak height differences (so differences in peak waiting times) are
 % down to the stochastic nature of the simulation as the different runs
 % have higher values for different days.
+
 %%
 % %Fig.6,7 and 8,9 plot the waiting time of each individual customer of the two
 % specific groups (consumer,corporate). The time (x) is in each case the
@@ -393,7 +396,13 @@ end
 % from only the desired steady-state.
 
 %% Retrieve the steady-state data
-l = 86400;
+% Truncating the first 5 days of data until we can assume that the
+% simulation reached its steady-state.
+% Therefore do not choose a simulation runtime <15 days to have at least 10
+% days of usable data.
+% This decision is based on the findings in the previous Section
+%'Replication-Deletion: Visual Procedure'
+l = 86400*5;         
 TruncData = cell(k,1);
 %we go to k to ensure that we truncate the transient for all runs of
 %simulation, it is a deliberate choice to not add a variable that can have
@@ -515,7 +524,7 @@ wtCorp_smallerSeven{i} = TruncwtTmeCorp{i}(smallerthanSeven_Corp);
 pct_corp_asstdSeven(i) = length(wtCorp_smallerSeven{i})/length(TruncwtTmeCorp{i});
 end
 disp('_____________________________________________________________________________________________________________________________________');
-disp('________________________________________________________Fractions of each run for each type of performance measure:__________________');
+disp('________________________________________Fractions of each run for each type of performance measure:__________________________________');
 
 disp('_____________________________________________________________________________________________________________________________________');
 disp('Consumers assisted within 5min:');
@@ -563,75 +572,6 @@ d10 = ['The fraction of corporates that have been assisted within 7 minutes, ave
 disp(d10);
 disp(mean(pct_corp_asstdSeven));
 
-%% Confidence Intervals of relevant Output Measures
-
-% t-confidence intervals of the mean
-% It is a small sample size: 20
-% The runs are independent
-% As this concerns means, the data is normally distributed
-
-% We want to have a probability of 95% of all the means falling in the
-% confidence intervals simultaneously.
-
-% The confidence intervals that will be created:
-% - Average waiting time
-% - Performance measure 1: percentage of consumers assisted within 5
-% minutes
-%- Performance measure 2: percentage of consumers assisted within 10
-%minutes
-% Performance measure 3: percentage of corporate customers assisted within
-% 3 minutes
-% Performance meaure 4: percentage of corporate customers assisted within 7
-% minutes
-
-% This are 5 confidence intervals. As the combined probability needs to
-% 95%, due to the Bonferroni inequality, the alpha for each of these will
-% be 0.01
-
-% For 19 degrees of freedom, and alpha/2, look up the critical point t.
-t_crit = 2.861 ;
-
-% For the average waiting time:
-mean_average_waiting = mean(Mean_waitingTmeComb);
-std_avg_wait = std(Mean_waitingTmeComb);
-ci_average_waiting_time = [(mean_average_waiting - t_crit * sqrt(std_avg_wait/k)),( mean_average_waiting + t_crit * sqrt(std_avg_wait/k))];
-disp('_____________________________________________________________________________________________________________________________________');
-disp('The confidence interval for the mean waiting time (in seconds) is: ');
-disp(ci_average_waiting_time);
-
-% For the first performance measure:
-mean_perf_m_1 = mean(pct_cons_asstdFive);
-std_perf_m_1 = std(pct_cons_asstdFive);
-ci_perf_m_1 = [(mean_perf_m_1 - t_crit * sqrt(std_perf_m_1/k)),( mean_perf_m_1 + t_crit * sqrt(std_perf_m_1/k))];
-disp('_____________________________________________________________________________________________________________________________________');
-disp('The confidence interval for the percentage of consumers assisted within 5 minutes is: ');
-disp(ci_perf_m_1);
-
-% For the second performance measure:
-mean_perf_m_2 = mean(pct_cons_asstdTen);
-std_perf_m_2 = std(pct_cons_asstdTen);
-ci_perf_m_2 = [(mean_perf_m_2 - t_crit * sqrt(std_perf_m_2/k)),( mean_perf_m_2 + t_crit * sqrt(std_perf_m_2/k))];
-disp('_____________________________________________________________________________________________________________________________________');
-disp('The confidence interval for the percentage of consumers assisted within 10 minutes is: ');
-disp(ci_perf_m_2);
-
-% For the third performance measure:
-mean_perf_m_3 = mean(pct_corp_asstdThree);
-std_perf_m_3 = std(pct_corp_asstdThree);
-ci_perf_m_3 = [(mean_perf_m_3 - t_crit * sqrt(std_perf_m_3/k)),( mean_perf_m_3 + t_crit * sqrt(std_perf_m_3/k))];
-disp('_____________________________________________________________________________________________________________________________________');
-disp('The confidence interval for the percentage of corporate customers assisted within 3 minutes is: ');
-disp(ci_perf_m_3);
-
-% For the fourth performance measure:
-mean_perf_m_4 = mean(pct_corp_asstdSeven);
-std_perf_m_4 = std(pct_corp_asstdSeven);
-ci_perf_m_4 = [(mean_perf_m_4 - t_crit * sqrt(std_perf_m_4/k)),( mean_perf_m_4 + t_crit * sqrt(std_perf_m_4/k))];
-disp('_____________________________________________________________________________________________________________________________________');
-disp('The confidence interval for the percentage of corporate customers assisted within 7 minutes is: ');
-disp(ci_perf_m_4);
-
-
 %% Confidence intervals
 % TODO : verify assumptions and
 
@@ -660,7 +600,8 @@ disp(ci_perf_m_4);
 
 % For 19 degrees of freedom, and alpha/2, look up the critical point t.
 t_crit = 2.861 ;
-
+disp('_____________________________________________________________________________________________________________________________________');
+disp('________________________________________________________Confidence Intervals:________________________________________________________');
 % For the average waiting time:
 mean_average_waiting = mean(Mean_waitingTmeComb);
 std_avg_wait = std(Mean_waitingTmeComb);
@@ -702,7 +643,7 @@ disp('The confidence interval for the percentage of corporate customers assisted
 disp(ci_perf_m_4);
 
 
-%% Comparing the two different systems 
+%% Comparing Two different systems 
 % NOTE: all data analysis until now is performed with System configuration 1 .
 %%
 % 
@@ -712,7 +653,39 @@ disp(ci_perf_m_4);
 %   help incoming corporate callers. 
 % 
 
+%% Data Retrieval System Configuration 1
 
+%the amount of runs for both systems should be the same to keep things
+%simple, thus we use k
+
+C_data2 = cell(k,1);
+SortedC_data2 = cell(k,1);
+WaitCons_data2 = cell(k,1);
+WaitCorp_data2 = cell(k,1);
+for i = 1:k
+i = i-1;
+%retrieve the call data
+%CHANGE THE FILEPATH TO THE DESIRED FILEPATH OF ALL RELEVANT CSV FILES
+%The .csv files are the output of the Simulation written in Java code, project name 'Telco_Simulation'
+fileN2 = ['Strategy2informationCalls',num2str(i),'.csv'];
+C_data2{i+1} = readtable(fileN2);
+C_data2{i+1}.Properties.VariableNames = {'cstm_tp' 'CSA_tp' 'tme_incoming' 'tme_start' 'tme_end'};
+
+% sort C_data2 according to tme_incoming
+SortedC_data2{i+1} = sortrows(C_data2{i+1},3);
+
+%retrieve the waiting times of consumer costumers
+%CHANGE THE FILEPATH TO THE DESIRED FILEPATH OF ALL RELEVANT CSV FILES
+fileWaitCons2 = ['Strategy2waitingTimesConsumer',num2str(i),'.csv'];
+WaitCons_data2{i+1} = readtable(fileWaitCons2);
+WaitCons_data2{i+1}.Properties.VariableNames = {'consumer_wait_tme'};
+
+%retrieve the waiting times of corporate costumers
+%CHANGE THE FILEPATH TO THE DESIRED FILEPATH OF ALL RELEVANT CSV FILES
+fileWaitCorp2 = ['Strategy2waitingTimesCorporate',num2str(i),'.csv'];
+WaitCorp_data2{i+1} = readtable(fileWaitCorp2);
+WaitCorp_data2{i+1}.Properties.VariableNames = {'corporate_wait_tme'};
+end
 
 
 
