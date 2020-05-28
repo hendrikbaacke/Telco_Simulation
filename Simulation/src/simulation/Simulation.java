@@ -26,6 +26,8 @@ public class Simulation {
         //3. agent -> flexible corporate CSA
         int[][] roster = {{2,2,2},{2,2,2},{2,2,2}};
 
+        String strategy_name = "Mixed";
+
         // n is the number of runs
         int n = 1;
         //number of days a single simulation is run
@@ -62,9 +64,9 @@ public class Simulation {
             l.start(start_time + sim_duration);
 
             //save the data
-            si.toMatrixFile("informationCalls" +  i + ".csv");
-            si.toWaitTimeFileConsumer("waitingTimesConsumer" + i + ".csv");
-            si.toWaitTimeFileCorporate("waitingTimesCorporate" + i + ".csv");
+            si.toMatrixFile(strategy_name+" informationCalls" +  i + ".csv");
+            si.toWaitTimeFileConsumer(strategy_name+" waitingTimesConsumer" + i + ".csv");
+            si.toWaitTimeFileCorporate(strategy_name+" waitingTimesCorporate" + i + ".csv");
 
             int cost = (roster[0][0]  + roster[1][0] + roster[2][0])* 8 * 35 + (roster[0][1] + roster[1][1] + roster[2][1]) * 8 * 60;
             System.out.println("________________________"+"Cost per day: "+cost+"________________________");
