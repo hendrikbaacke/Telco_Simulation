@@ -283,26 +283,6 @@ end
 %grid on
 
 %%
-% st = 0;
-% 
-% wtTmeDays = cell(length(dayDivisions{1}),1);
-% 
-% for i = 1:length(dayDivisions{1}-5)   
-%     if (i == length(dayDivisions{1}))
-%         dayDivisions{1}(length(dayDivisions{1})) = dayDivisions{1}(i)-2000;    %we discard the last 2000 sec for computational purposes
-%     end
-% wtTmeDays{i} = SortedC_data{1}{st:dayDivisions{1}(i),4}-SortedC_data{1}{st:dayDivisions{1}(i),3};
-% st = dayDivisions{1}(i)
-% end
-% 
-% splits = SortedC_data{1}.
-% SortedC_data{1}
-
-
-
-%%
-
-%%
 % %Fig.6,7 and 8,9 plot the waiting time of each individual customer of the two
 % specific groups (consumer,corporate). The time (x) is in each case the
 % arrival time of the specific customer to the system.
@@ -1135,7 +1115,7 @@ pVal =2*(1-pctTl)
 % We do a paired t-test for the individual waiting times to check for a
 % significant difference:
 disp('_______________________________________________Waiting Time Consumers:________________________________________________________________');
-disp('_____________________________________________________________________________________________________________________________________');
+disp('______________________________________________________________________________________________________________________________________');
 disp('Value of the paired t-test test statistic: ');
 t_statVal2 = abs(zetaBar2/sqrt(var(zeta2/k)))
 %we have the same dof as for the CI of difference computed above
