@@ -18,7 +18,7 @@ i = i-1;
 %retrieve the call data
 %CHANGE THE FILEPATH TO THE DESIRED FILEPATH OF ALL RELEVANT CSV FILES
 %The .csv files are the output of the Simulation written in Java code, project name 'Telco_Simulation'
-fileN = ['Strategy1informationCalls',num2str(i),'.csv'];
+fileN = ['/Users/HendrikS/Documents/GitHub/Telco_Simulation/Strategy1informationCalls',num2str(i),'.csv']; 
 C_data{i+1} = readtable(fileN);
 C_data{i+1}.Properties.VariableNames = {'cstm_tp' 'CSA_tp' 'tme_incoming' 'tme_start' 'tme_end'};
 
@@ -27,13 +27,13 @@ SortedC_data{i+1} = sortrows(C_data{i+1},3);
 
 %retrieve the waiting times of consumer costumers
 %CHANGE THE FILEPATH TO THE DESIRED FILEPATH OF ALL RELEVANT CSV FILES
-fileWaitCons = ['Strategy1waitingTimesConsumer',num2str(i),'.csv'];
+fileWaitCons = ['/Users/HendrikS/Documents/GitHub/Telco_Simulation/Strategy1waitingTimesConsumer',num2str(i),'.csv'];
 WaitCons_data{i+1} = readtable(fileWaitCons);
 WaitCons_data{i+1}.Properties.VariableNames = {'consumer_wait_tme'};
 
 %retrieve the waiting times of corporate costumers
 %CHANGE THE FILEPATH TO THE DESIRED FILEPATH OF ALL RELEVANT CSV FILES
-fileWaitCorp = ['Strategy1waitingTimesCorporate',num2str(i),'.csv'];
+fileWaitCorp = ['/Users/HendrikS/Documents/GitHub/Telco_Simulation/Strategy1waitingTimesCorporate',num2str(i),'.csv'];
 WaitCorp_data{i+1} = readtable(fileWaitCorp);
 WaitCorp_data{i+1}.Properties.VariableNames = {'corporate_wait_tme'};
 end
@@ -582,6 +582,8 @@ d10 = ['The fraction of corporates that have been assisted within 7 minutes, ave
 disp(d10);
 disp(mean(pct_corp_asstdSeven));
 
+
+
 %% Confidence intervals: System Configuration 1
 % t-confidence intervals of the mean
 % The runs are independent
@@ -711,6 +713,8 @@ disp('The confidence interval for the percentage of corporate customers assisted
 disp(ci_perf_m_4);
 
 
+
+
 %% Comparing Two different systems 
 % NOTE: all data analysis until now is performed with System configuration 1 .
 %%
@@ -735,7 +739,7 @@ i = i-1;
 %retrieve the call data
 %CHANGE THE FILEPATH TO THE DESIRED FILEPATH OF ALL RELEVANT CSV FILES
 %The .csv files are the output of the Simulation written in Java code, project name 'Telco_Simulation'
-fileN2 = ['Strategy2informationCalls',num2str(i),'.csv'];
+fileN2 = ['/Users/HendrikS/Documents/GitHub/Telco_Simulation/Strategy2informationCalls',num2str(i),'.csv'];
 C_data2{i+1} = readtable(fileN2);
 C_data2{i+1}.Properties.VariableNames = {'cstm_tp' 'CSA_tp' 'tme_incoming' 'tme_start' 'tme_end'};
 
@@ -744,13 +748,13 @@ SortedC_data2{i+1} = sortrows(C_data2{i+1},3);
 
 %retrieve the waiting times of consumer costumers
 %CHANGE THE FILEPATH TO THE DESIRED FILEPATH OF ALL RELEVANT CSV FILES
-fileWaitCons2 = ['Strategy2waitingTimesConsumer',num2str(i),'.csv'];
+fileWaitCons2 = ['/Users/HendrikS/Documents/GitHub/Telco_Simulation/Strategy2waitingTimesConsumer',num2str(i),'.csv'];
 WaitCons_data2{i+1} = readtable(fileWaitCons2);
 WaitCons_data2{i+1}.Properties.VariableNames = {'consumer_wait_tme'};
 
 %retrieve the waiting times of corporate costumers
 %CHANGE THE FILEPATH TO THE DESIRED FILEPATH OF ALL RELEVANT CSV FILES
-fileWaitCorp2 = ['Strategy2waitingTimesCorporate',num2str(i),'.csv'];
+fileWaitCorp2 = ['/Users/HendrikS/Documents/GitHub/Telco_Simulation/Strategy2waitingTimesCorporate',num2str(i),'.csv'];
 WaitCorp_data2{i+1} = readtable(fileWaitCorp2);
 WaitCorp_data2{i+1}.Properties.VariableNames = {'corporate_wait_tme'};
 end
@@ -1040,12 +1044,14 @@ disp(ci_perf_m_4_2);
 % Do the Paired confidence interval approach as n1==n2
 disp('_____________________________________________________________________________________________________________________________________');
 disp('________________________________________________Confidence Interval of Difference:___________________________________________________');
+disp('______________________________________________________Waiting Time:__________________________________________________________________');
 %Compute the paired means zeta
 zeta = (Mean_waitingTmeComb-Mean_waitingTmeComb2);
 zetaBar = sum(zeta)/k;
 
-%We want to get 0.95 confidence interval of difference
-alpha2=0.05;
+%We want to get 3 0.95 confidence interval of difference, by bonferroni to
+%have overall confidence level of 95 percent: alpha=0.05/3 ~ 0.01666 
+alpha2=0.01666;
 gamma2=(1-alpha2/2);
 %get the degrees of freedom
 dof2 = k-1;
@@ -1057,27 +1063,68 @@ t_dff = tinv(gamma2,dof2);
 ci_difference(1,1) = zetaBar - t_dff*sqrt(var(zeta)/k);
 ci_difference(1,2) = zetaBar + t_dff*sqrt(var(zeta)/k);
 disp('_____________________________________________________________________________________________________________________________________');
-disp('The confidence interval for the difference of expected waiting time of System 1 and 2: ');
+disp('The confidence interval for the difference of expected waiting time between System 1 and 2: ');
 disp(ci_difference);
+
+
+disp('______________________________________________________Waiting Time Consumers:_________________________________________________________');
+
+%Compute the paired means of Consumer waiting time zeta2
+zeta2 = (Mean_waitingTmeCons-Mean_waitingTmeCons2);
+zetaBar2 = sum(zeta2)/k;
+
+%Compute the upper and lower bound of the confidence interval, if 0 is not
+%part of this interval, we have a significant difference of the two systems
+ci_differenceCons(1,1) = zetaBar2 - t_dff*sqrt(var(zeta2)/k);
+ci_differenceCons(1,2) = zetaBar2 + t_dff*sqrt(var(zeta2)/k);
+disp('_____________________________________________________________________________________________________________________________________');
+disp('The confidence interval for the difference of expected waiting time of Consumers between System 1 and 2: ');
+disp(ci_differenceCons);
+
+disp('______________________________________________________Waiting Time Corporates:_______________________________________________________');
+
+%Compute the paired means of Corporate waiting time zeta3
+zeta3 = (Mean_waitingTmeCorp-Mean_waitingTmeCorp2);
+zetaBar3 = sum(zeta2)/k;
+
+%Compute the upper and lower bound of the confidence interval, if 0 is not
+%part of this interval, we have a significant difference of the two systems
+ci_differenceCorp(1,1) = zetaBar3 - t_dff*sqrt(var(zeta3)/k);
+ci_differenceCorp(1,2) = zetaBar3 + t_dff*sqrt(var(zeta3)/k);
+disp('_____________________________________________________________________________________________________________________________________');
+disp('The confidence interval for the difference of expected waiting time of Corporates between System 1 and 2: ');
+disp(ci_differenceCorp);
+
+
 %%
 % We want to reduce/minimize waiting time, therefore if only values <0 , then System 1
 % has significantly less waiting time than System 2. For the converse case when there are only values >0, then
 % System 2 has significantly less waiting time than System 1.
 
 
-%% 2. Paired T-test 
+%% 2. Paired T-tests
 % Null hypothesis H_0: 
 % 
 % 
 % * The expected waiting times for the customers for system configuration
 % 1 (flexible) and  2 (mixed) does not significantly differ from one to
 % another. (Mean_waitingTmeComb = Mean_waitingTmeComb2)
-disp('_____________________________________________________________________________________________________________________________________');
-disp('________________________________________________Paired t-test:_______________________________________________________________________');
+% With similar null hypothesis, the t-tests for these performance measures
+% are computed:
+% # Average waiting time 
+% # Average consumer waiting time
+% # Average corporate waiting time
+% # Performance measure 1: percentage of consumers assisted within 5
+% # Performance measure 2: percentage of consumers assisted within 10
+% # Performance measure 3: percentage of corporate customers assisted within 3 minutes
+% # Performance meaure 4: percentage of corporate customers assisted within 7 minutes
 
 disp('_____________________________________________________________________________________________________________________________________');
-disp('Value of the paired t-test test statistic: ');
-t_statVal = abs(zetaBar/sqrt(var(zeta/k)))
+disp('________________________________________________Paired t-tests:______________________________________________________________________');
+disp('_________________________________________________Waiting Time:_______________________________________________________________________');
+disp('_____________________________________________________________________________________________________________________________________');
+%disp('Value of the paired t-test test statistic: ');
+t_statVal = abs(zetaBar/sqrt(var(zeta/k)));
 %we have the same dof as for the CI of difference computed above
 %Note:allowed to use 'tcdf' and 'tinv' according to requirements 
 pctTl = tcdf(t_statVal,dof2); 
@@ -1087,9 +1134,83 @@ pVal =2*(1-pctTl)
 %%
 % If pVal <0.05 then we reject the null hypothesis that the average waiting time of costumers in the two systems
 % is not significantly difference, otherwise we cannot reject H_0.
+% We do a paired t-test for the individual waiting times to check for a
+% significant difference:
+disp('________________________________________________Waiting Time Consumers:______________________________________________________________');
+disp('_____________________________________________________________________________________________________________________________________');
+%disp('Value of the paired t-test test statistic: ');
+t_statVal2 = abs(zetaBar2/sqrt(var(zeta2/k)));
+%we have the same dof as for the CI of difference computed above
+%Note:allowed to use 'tcdf' and 'tinv' according to requirements 
+pctTl2 = tcdf(t_statVal2,dof2); 
+disp('_____________________________________________________________________________________________________________________________________');
+disp('Obtained p-value of the paired t-test: ');
+pVal2 =2*(1-pctTl2)
+
+disp('_______________________________________________Waiting Time Corporates:______________________________________________________________');
+disp('_____________________________________________________________________________________________________________________________________');
+%disp('Value of the paired t-test test statistic: ');
+t_statVal3 = abs(zetaBar3/sqrt(var(zeta3/k)));
+%we have the same dof as for the CI of difference computed above
+%Note:allowed to use 'tcdf' and 'tinv' according to requirements 
+pctTl3 = tcdf(t_statVal3,dof2); 
+disp('_____________________________________________________________________________________________________________________________________');
+disp('Obtained p-value of the paired t-test: ');
+pVal3 =2*(1-pctTl3)
+
+
+disp('______________________________Paired t-tests for the fractions of customers (Performance Measures)____________________________________');
+disp('__________________________________________________Consumer within 5min________________________________________________________________');
+
+zetaCons5 = (pct_cons_asstdFive-pct_cons_asstdFive2)
+zetaBarCons5 = sum(zetaCons5)/k;
+
+t_statValCons5 = abs(zetaBarCons5/sqrt(var(zetaCons5/k)));
+pctTlCons5 = tcdf(t_statValCons5,dof2); 
+disp('_____________________________________________________________________________________________________________________________________');
+disp('Obtained p-value of the paired t-test: ');
+pValCons5 =2*(1-pctTlCons5)
+
+disp('__________________________________________________Consumer within 10min________________________________________________________________');
+
+zetaCons10 = (pct_cons_asstdTen-pct_cons_asstdTen2)
+zetaBarCons10 = sum(zetaCons10)/k;
+
+t_statValCons10 = abs(zetaBarCons10/sqrt(var(zetaCons10/k)));
+pctTlCons10 = tcdf(t_statValCons10,dof2); 
+disp('_____________________________________________________________________________________________________________________________________');
+disp('Obtained p-value of the paired t-test: ');
+pValCons10 =2*(1-pctTlCons10)
+
+
+disp('__________________________________________________Corporate within 3min______________________________________________________________');
+
+zetaCorp3 = (pct_corp_asstdThree-pct_corp_asstdThree2)
+zetaBarCorp3 = sum(zetaCorp3)/k;
+
+t_statValCorp3 = abs(zetaBarCorp3/sqrt(var(zetaCorp3/k)));
+pctTlCorp3 = tcdf(t_statValCorp3,dof2); 
+disp('_____________________________________________________________________________________________________________________________________');
+disp('Obtained p-value of the paired t-test: ');
+pValCorp3 =2*(1-pctTlCorp3)
+
+
+disp('__________________________________________________Corporate within 7min______________________________________________________________');
+
+zetaCorp7 = (pct_corp_asstdSeven-pct_corp_asstdSeven2)
+zetaBarCorp7 = sum(zetaCorp7)/k;
+
+t_statValCorp7 = abs(zetaBarCorp7/sqrt(var(zetaCorp7/k)));
+pctTlCorp7 = tcdf(t_statValCorp7,dof2); 
+disp('_____________________________________________________________________________________________________________________________________');
+disp('Obtained p-value of the paired t-test: ');
+pValCorp7 =2*(1-pctTlCorp7)
+
 
 load handel
 sound(y,Fs)
 
 
-%Version2 29/05/20 09:20 H.Baacke
+
+
+%Version3 29/05/20 12:07 H.Baacke
