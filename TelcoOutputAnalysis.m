@@ -8,7 +8,7 @@
 
 %make sure that k matches the number of runs n in the Java code of the
 %Simulation, k cannot be larger than n 
-k = 15;                                                               %<----------------
+k = 20;                                                               %<----------------
 C_data = cell(k,1);
 SortedC_data = cell(k,1);
 WaitCons_data = cell(k,1);
@@ -42,7 +42,7 @@ end
 %% Data Retrieval System Configuration 1
 
 %specify amount of runs we want to use for distribution validation
-repVal = 15; %repVal <=k                                              %<----------------
+repVal = 20; %repVal <=k                                              %<----------------
 %%
 if k~=repVal
     disp('_____________________________________');
@@ -102,7 +102,8 @@ for j = 1:(height(corpData{i})-1)
 interTmeCorp{i}(j+1) = (corpData{i}{j+1:j+1,{'tme_incoming'}}-corpData{i}{j:j,{'tme_incoming'}});
 end
 end
-
+beep on
+beep
 
 %% Validation of Simulation - Visualization of the Service Time Distribution
 %print the data
@@ -217,8 +218,8 @@ else
     replications = 1;
 end
 if k~=replications
-    disp('_____________________________________');
-    disp('Warning: replications is different from k');
+    disp('________________________________');
+    disp('Replications is different from k');   %5 runs of k are used to visually estimate a transient if existent
 end
 
 if (repVal<replications)
@@ -712,9 +713,6 @@ disp('__________________________________________________________________________
 disp('The confidence interval for the percentage of corporate customers assisted within 7 minutes is: ');
 disp(ci_perf_m_4);
 
-
-
-
 %% Comparing Two different systems 
 % NOTE: all data analysis until now is performed with System configuration 1 .
 %%
@@ -1043,7 +1041,7 @@ disp(ci_perf_m_4_2);
 %% 1. 95 percent paired confidence interval on the difference in expected waiting time
 % Do the Paired confidence interval approach as n1==n2
 disp('_____________________________________________________________________________________________________________________________________');
-disp('________________________________________________Confidence Interval of Difference:___________________________________________________');
+disp('____________________________________________Confidence Interval of Difference:_______________________________________________________');
 disp('______________________________________________________Waiting Time:__________________________________________________________________');
 %Compute the paired means zeta
 zeta = (Mean_waitingTmeComb-Mean_waitingTmeComb2);
@@ -1067,7 +1065,7 @@ disp('The confidence interval for the difference of expected waiting time betwee
 disp(ci_difference);
 
 
-disp('______________________________________________________Waiting Time Consumers:_________________________________________________________');
+disp('_______________________________________________Waiting Time Consumers:________________________________________________________________');
 
 %Compute the paired means of Consumer waiting time zeta2
 zeta2 = (Mean_waitingTmeCons-Mean_waitingTmeCons2);
@@ -1081,7 +1079,7 @@ disp('__________________________________________________________________________
 disp('The confidence interval for the difference of expected waiting time of Consumers between System 1 and 2: ');
 disp(ci_differenceCons);
 
-disp('______________________________________________________Waiting Time Corporates:_______________________________________________________');
+disp('______________________________________________Waiting Time Corporates:________________________________________________________________');
 
 %Compute the paired means of Corporate waiting time zeta3
 zeta3 = (Mean_waitingTmeCorp-Mean_waitingTmeCorp2);
@@ -1123,23 +1121,23 @@ disp('__________________________________________________________________________
 disp('________________________________________________Paired t-tests:______________________________________________________________________');
 disp('_________________________________________________Waiting Time:_______________________________________________________________________');
 disp('_____________________________________________________________________________________________________________________________________');
-%disp('Value of the paired t-test test statistic: ');
-t_statVal = abs(zetaBar/sqrt(var(zeta/k)));
+disp('Value of the paired t-test test statistic: ');
+t_statVal = abs(zetaBar/sqrt(var(zeta/k)))
 %we have the same dof as for the CI of difference computed above
 %Note:allowed to use 'tcdf' and 'tinv' according to requirements 
 pctTl = tcdf(t_statVal,dof2); 
 disp('_____________________________________________________________________________________________________________________________________');
 disp('Obtained p-value of the paired t-test: ');
 pVal =2*(1-pctTl)
-%%
+
 % If pVal <0.05 then we reject the null hypothesis that the average waiting time of costumers in the two systems
 % is not significantly difference, otherwise we cannot reject H_0.
 % We do a paired t-test for the individual waiting times to check for a
 % significant difference:
-disp('________________________________________________Waiting Time Consumers:______________________________________________________________');
+disp('_______________________________________________Waiting Time Consumers:________________________________________________________________');
 disp('_____________________________________________________________________________________________________________________________________');
-%disp('Value of the paired t-test test statistic: ');
-t_statVal2 = abs(zetaBar2/sqrt(var(zeta2/k)));
+disp('Value of the paired t-test test statistic: ');
+t_statVal2 = abs(zetaBar2/sqrt(var(zeta2/k)))
 %we have the same dof as for the CI of difference computed above
 %Note:allowed to use 'tcdf' and 'tinv' according to requirements 
 pctTl2 = tcdf(t_statVal2,dof2); 
@@ -1149,8 +1147,8 @@ pVal2 =2*(1-pctTl2)
 
 disp('_______________________________________________Waiting Time Corporates:______________________________________________________________');
 disp('_____________________________________________________________________________________________________________________________________');
-%disp('Value of the paired t-test test statistic: ');
-t_statVal3 = abs(zetaBar3/sqrt(var(zeta3/k)));
+disp('Value of the paired t-test test statistic: ');
+t_statVal3 = abs(zetaBar3/sqrt(var(zeta3/k)))
 %we have the same dof as for the CI of difference computed above
 %Note:allowed to use 'tcdf' and 'tinv' according to requirements 
 pctTl3 = tcdf(t_statVal3,dof2); 
@@ -1159,56 +1157,58 @@ disp('Obtained p-value of the paired t-test: ');
 pVal3 =2*(1-pctTl3)
 
 
-disp('______________________________Paired t-tests for the fractions of customers (Performance Measures)____________________________________');
-disp('__________________________________________________Consumer within 5min________________________________________________________________');
 
-zetaCons5 = (pct_cons_asstdFive-pct_cons_asstdFive2)
-zetaBarCons5 = sum(zetaCons5)/k;
+%% Paired T-tests for Additional Performance Measures
+% disp('______________________________Paired t-tests for the fractions of customers (Performance Measures)____________________________________');
+% disp('__________________________________________________Consumer within 5min________________________________________________________________');
+% 
+% zetaCons5 = (pct_cons_asstdFive-pct_cons_asstdFive2);
+% zetaBarCons5 = sum(zetaCons5)/k;
+% 
+% t_statValCons5 = abs(zetaBarCons5/sqrt(var(zetaCons5/k)));
+% pctTlCons5 = tcdf(t_statValCons5,dof2); 
+% disp('_____________________________________________________________________________________________________________________________________');
+% disp('Obtained p-value of the paired t-test: ');
+% pValCons5 =2*(1-pctTlCons5)
+% 
+% disp('__________________________________________________Consumer within 10min________________________________________________________________');
+% 
+% zetaCons10 = (pct_cons_asstdTen-pct_cons_asstdTen2);
+% zetaBarCons10 = sum(zetaCons10)/k;
+% 
+% t_statValCons10 = abs(zetaBarCons10/sqrt(var(zetaCons10/k)));
+% pctTlCons10 = tcdf(t_statValCons10,dof2); 
+% disp('_____________________________________________________________________________________________________________________________________');
+% disp('Obtained p-value of the paired t-test: ');
+% pValCons10 =2*(1-pctTlCons10)
+% 
+% 
+% disp('__________________________________________________Corporate within 3min______________________________________________________________');
+% 
+% zetaCorp3 = (pct_corp_asstdThree-pct_corp_asstdThree2);
+% zetaBarCorp3 = sum(zetaCorp3)/k;
+% 
+% t_statValCorp3 = abs(zetaBarCorp3/sqrt(var(zetaCorp3/k)));
+% pctTlCorp3 = tcdf(t_statValCorp3,dof2); 
+% disp('_____________________________________________________________________________________________________________________________________');
+% disp('Obtained p-value of the paired t-test: ');
+% pValCorp3 =2*(1-pctTlCorp3)
+% 
+% 
+% disp('__________________________________________________Corporate within 7min______________________________________________________________');
+% 
+% zetaCorp7 = (pct_corp_asstdSeven-pct_corp_asstdSeven2);
+% zetaBarCorp7 = sum(zetaCorp7)/k;
+% 
+% t_statValCorp7 = abs(zetaBarCorp7/sqrt(var(zetaCorp7/k)));
+% pctTlCorp7 = tcdf(t_statValCorp7,dof2); 
+% disp('_____________________________________________________________________________________________________________________________________');
+% disp('Obtained p-value of the paired t-test: ');
+% pValCorp7 =2*(1-pctTlCorp7)
 
-t_statValCons5 = abs(zetaBarCons5/sqrt(var(zetaCons5/k)));
-pctTlCons5 = tcdf(t_statValCons5,dof2); 
-disp('_____________________________________________________________________________________________________________________________________');
-disp('Obtained p-value of the paired t-test: ');
-pValCons5 =2*(1-pctTlCons5)
 
-disp('__________________________________________________Consumer within 10min________________________________________________________________');
-
-zetaCons10 = (pct_cons_asstdTen-pct_cons_asstdTen2)
-zetaBarCons10 = sum(zetaCons10)/k;
-
-t_statValCons10 = abs(zetaBarCons10/sqrt(var(zetaCons10/k)));
-pctTlCons10 = tcdf(t_statValCons10,dof2); 
-disp('_____________________________________________________________________________________________________________________________________');
-disp('Obtained p-value of the paired t-test: ');
-pValCons10 =2*(1-pctTlCons10)
-
-
-disp('__________________________________________________Corporate within 3min______________________________________________________________');
-
-zetaCorp3 = (pct_corp_asstdThree-pct_corp_asstdThree2)
-zetaBarCorp3 = sum(zetaCorp3)/k;
-
-t_statValCorp3 = abs(zetaBarCorp3/sqrt(var(zetaCorp3/k)));
-pctTlCorp3 = tcdf(t_statValCorp3,dof2); 
-disp('_____________________________________________________________________________________________________________________________________');
-disp('Obtained p-value of the paired t-test: ');
-pValCorp3 =2*(1-pctTlCorp3)
-
-
-disp('__________________________________________________Corporate within 7min______________________________________________________________');
-
-zetaCorp7 = (pct_corp_asstdSeven-pct_corp_asstdSeven2)
-zetaBarCorp7 = sum(zetaCorp7)/k;
-
-t_statValCorp7 = abs(zetaBarCorp7/sqrt(var(zetaCorp7/k)));
-pctTlCorp7 = tcdf(t_statValCorp7,dof2); 
-disp('_____________________________________________________________________________________________________________________________________');
-disp('Obtained p-value of the paired t-test: ');
-pValCorp7 =2*(1-pctTlCorp7)
-
-
-load handel
-sound(y,Fs)
+beep on
+beep
 
 
 
