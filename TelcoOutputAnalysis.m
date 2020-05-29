@@ -144,7 +144,6 @@ plot(x_st2,280000*pdf(T_pd_serviceTmeCorp,x_st2),'Color','red','LineWidth',2)
 hold off
 xlabel('service time in sec'),ylabel('amount of occurrence');
 title('Corporate data: Fitting normal to observed service times');
-
 %note: the superimposed truncated normal distribution in both figures will
 %not be to scale in case the length of the simulation run is changed. The
 %provided scalars are heuristically chosen and match 15 days of simulation runtime
@@ -282,6 +281,25 @@ xline(dayDivisions{1}(i),'-.b',{'End of Day ',num2str(i)});
 end
 %grid on
 
+%%
+% st = 0;
+% 
+% wtTmeDays = cell(length(dayDivisions{1}),1);
+% 
+% for i = 1:length(dayDivisions{1}-5)   
+%     if (i == length(dayDivisions{1}))
+%         dayDivisions{1}(length(dayDivisions{1})) = dayDivisions{1}(i)-2000;    %we discard the last 2000 sec for computational purposes
+%     end
+% wtTmeDays{i} = SortedC_data{1}{st:dayDivisions{1}(i),4}-SortedC_data{1}{st:dayDivisions{1}(i),3};
+% st = dayDivisions{1}(i)
+% end
+% 
+% splits = SortedC_data{1}.
+% SortedC_data{1}
+
+
+
+%%
 
 %%
 % %Fig.6,7 and 8,9 plot the waiting time of each individual customer of the two
@@ -375,20 +393,21 @@ end
 
 %% Conclusion Replication-Deletion
 % The result of the replication/deletion procedure is that the cut-off
-% point l is defined to be the end of the first day at 86400 seconds into
-% the simulation after the simulation has run for 86400-21600==64800
-% seconds. To identify the transient it is sufficient in this case to plot
-% the waiting times of customers for 5 runs and visually/heuristically estimate
-% the point l. The reason for this being that the cutoff point is very
-% pronounced, eliminating the need for averaging over the 5 runs and
-% additionally performing a low-pass filter procedure.
+% point l is defined to be the end of the second day at 86400*2 seconds simulation time
+% (keep in mind that the simulation starts at 6 a.m. so the truncation point is 
+% after the simulation has run for 86400*2-21600=151200s.
+% seconds. This truncation point l is defined somewhat heuristically,
+% because for the implementation of the simulation and with the
+% investigated system configurations, no clear transient period can be made
+% out. 2 days of data are disregarded nonetheless, just to be on the safe
+% side.
 % As discussed in the report, after identifying the truncation point l, we
 % might want to change the roster based on the aggregate values generated
 % from only the desired steady-state.
 
 %% Retrieve the steady-state data of System Configuration 1
 % Truncating the first 2 days of data until we can assume that the
-% simulation reached its steady-state.
+% simulation reached its steady-state. 
 % Therefore do not choose a simulation runtime <15 days to have at least 10
 % days of usable data.
 % This decision is based on the findings in the previous Section
@@ -565,12 +584,14 @@ disp(mean(pct_corp_asstdSeven));
 
 %% Confidence intervals: System Configuration 1
 % t-confidence intervals of the mean
-% It is a small sample size: 20
 % The runs are independent
 % As this concerns means, the data is normally distributed
 
 % We want to have a probability of 95% of all the means falling in the
-% confidence intervals simultaneously.
+% confidence intervals simultaneously. 
+% We have 5 confidence intervals. As the combined probability needs to
+% 95%, due to the Bonferroni inequality, the alpha for each of these will
+% be 0.01
 
 % The confidence intervals that are created:
 % - Average waiting time
@@ -583,9 +604,6 @@ disp(mean(pct_corp_asstdSeven));
 % Performance meaure 4: percentage of corporate customers assisted within 7
 % minutes
 
-% This are 5 confidence intervals. As the combined probability needs to
-% 95%, due to the Bonferroni inequality, the alpha for each of these will
-% be 0.01
 
                                                           
 % We have 5 CIs, to have overall confidence level of 95% have individual
