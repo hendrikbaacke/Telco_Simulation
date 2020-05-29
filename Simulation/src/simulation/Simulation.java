@@ -22,10 +22,10 @@ public class Simulation {
         //roster: agents for each shift 6-14 14-22 22-6 and
         //1. -> consumer CSA
         //2. -> flexible corporate CSA
-        int[][] roster = {{7,7},{7,7},{7,6}};
+        int[][] roster = {{5,6},{8,8},{5,6}};
 
         //number of CSA corporate to kept idle to handle incoming corporate calls
-        CSA.minIdle = 2;
+        CSA.minIdle = 3;
         String strategy_name = "Strategy1";  //Strategy1 flexible
 
         if(CSA.minIdle>0) {

@@ -178,6 +178,8 @@ ylabel('amount of occurrence');
 xlabel('interarrival time in sec');
 title('Corporate data: Fitting exponential to observed interarrvial tmes(s)');
 
+%Note that scale is off for Fig.4, the thinning algorithm works as desired
+%though as can be seen in the following Figures.
 
 %% Replication-Deletion: Visual Procedure
 % For the replication deletion the heuristically evaluated 'best' roster (int[][] roster = {{0,5},{2,5},{0,5}};)
@@ -259,7 +261,7 @@ end
 %Fig.5 plotting the waiting times of all customers with time on the x-axis
 %and output on the y-axis
 %xvalues: tme_incoming | yvalues: waiting tme of customer
-C = ['.-b','.-y','.-r','.-g','.-k']; % Cell array of colors. length 5, see below reason
+C = ['b','y','r','g','k']; % Cell array of colors. length 5, see below reason
 ts = cell(replications,1);
 figure(5)
 for i=1:replications  %plot u INDEPENDENT runs of the simulation
@@ -610,6 +612,19 @@ disp(ci_average_waiting_time);
 mean_perf_m_1 = mean(pct_cons_asstdFive);
 var_perf_m_1 = var(pct_cons_asstdFive);
 ci_perf_m_1 = [(mean_perf_m_1 - t_crit * sqrt(var_perf_m_1/k)),( mean_perf_m_1 + t_crit * sqrt(var_perf_m_1/k))];
+%cut off at 0 and 1 
+if (ci_perf_m_1(1,1) < 0)
+   ci_perf_m_1(1,1) = 0;
+end
+if (ci_perf_m_1(1,2) < 0)
+   ci_perf_m_1(1,2) = 0;
+end
+if (ci_perf_m_1(1,1) > 1)
+   ci_perf_m_1(1,1) = 1;
+end
+if (ci_perf_m_1(1,2) > 1)
+   ci_perf_m_1(1,2) = 1;
+end
 disp('_____________________________________________________________________________________________________________________________________');
 disp('The confidence interval for the percentage of consumers assisted within 5 minutes is: ');
 disp(ci_perf_m_1);
@@ -618,6 +633,19 @@ disp(ci_perf_m_1);
 mean_perf_m_2 = mean(pct_cons_asstdTen);
 var_perf_m_2 = var(pct_cons_asstdTen);
 ci_perf_m_2 = [(mean_perf_m_2 - t_crit * sqrt(var_perf_m_2/k)),( mean_perf_m_2 + t_crit * sqrt(var_perf_m_2/k))];
+%cut off at 0 and 1 
+if (ci_perf_m_2(1,1) < 0)
+   ci_perf_m_2(1,1) = 0;
+end
+if (ci_perf_m_2(1,2) < 0)
+   ci_perf_m_2(1,2) = 0;
+end
+if (ci_perf_m_2(1,1) > 1)
+   ci_perf_m_2(1,1) = 1;
+end
+if (ci_perf_m_2(1,2) > 1)
+   ci_perf_m_2(1,2) = 1;
+end
 disp('_____________________________________________________________________________________________________________________________________');
 disp('The confidence interval for the percentage of consumers assisted within 10 minutes is: ');
 disp(ci_perf_m_2);
@@ -626,6 +654,19 @@ disp(ci_perf_m_2);
 mean_perf_m_3 = mean(pct_corp_asstdThree);
 var_perf_m_3 = var(pct_corp_asstdThree);
 ci_perf_m_3 = [(mean_perf_m_3 - t_crit * sqrt(var_perf_m_3/k)),( mean_perf_m_3 + t_crit * sqrt(var_perf_m_3/k))];
+%cut off at 0 and 1 
+if (ci_perf_m_3(1,1) < 0)
+   ci_perf_m_3(1,1) = 0;
+end
+if (ci_perf_m_3(1,2) < 0)
+   ci_perf_m_3(1,2) = 0;
+end
+if (ci_perf_m_3(1,1) > 1)
+   ci_perf_m_3(1,1) = 1;
+end
+if (ci_perf_m_3(1,2) > 1)
+   ci_perf_m_3(1,2) = 1;
+end
 disp('_____________________________________________________________________________________________________________________________________');
 disp('The confidence interval for the percentage of corporate customers assisted within 3 minutes is: ');
 disp(ci_perf_m_3);
@@ -634,6 +675,19 @@ disp(ci_perf_m_3);
 mean_perf_m_4 = mean(pct_corp_asstdSeven);
 var_perf_m_4 = var(pct_corp_asstdSeven);
 ci_perf_m_4 = [(mean_perf_m_4 - t_crit * sqrt(var_perf_m_4/k)),( mean_perf_m_4 + t_crit * sqrt(var_perf_m_4/k))];
+%cut off at 0 and 1 
+if (ci_perf_m_4(1,1) < 0)
+   ci_perf_m_2(1,1) = 0;
+end
+if (ci_perf_m_4(1,2) < 0)
+   ci_perf_m_4(1,2) = 0;
+end
+if (ci_perf_m_4(1,1) > 1)
+   ci_perf_m_4(1,1) = 1;
+end
+if (ci_perf_m_4(1,2) > 1)
+   ci_perf_m_4(1,2) = 1;
+end
 disp('_____________________________________________________________________________________________________________________________________');
 disp('The confidence interval for the percentage of corporate customers assisted within 7 minutes is: ');
 disp(ci_perf_m_4);
@@ -880,6 +934,19 @@ disp(ci_average_waiting_time2);
 mean_perf_m_1_2 = mean(pct_cons_asstdFive2);
 var_perf_m_1_2 = var(pct_cons_asstdFive2);
 ci_perf_m_1_2 = [(mean_perf_m_1_2 - t_crit * sqrt(var_perf_m_1_2/k)),( mean_perf_m_1_2 + t_crit * sqrt(var_perf_m_1_2/k))];
+%cut off at 0 and 1 
+if (ci_perf_m_1_2(1,1) < 0)
+   ci_perf_m_1_2(1,1) = 0;
+end
+if (ci_perf_m_1_2(1,2) < 0)
+   ci_perf_m_1_2(1,2) = 0;
+end
+if (ci_perf_m_1_2(1,1) > 1)
+   ci_perf_m_1_2(1,1) = 1;
+end
+if (ci_perf_m_1_2(1,2) > 1)
+   ci_perf_m_1_2(1,2) = 1;
+end
 disp('_____________________________________________________________________________________________________________________________________');
 disp('The confidence interval for the percentage of consumers assisted within 5 minutes is: ');
 disp(ci_perf_m_1_2);
@@ -888,6 +955,19 @@ disp(ci_perf_m_1_2);
 mean_perf_m_2_2 = mean(pct_cons_asstdTen2);
 var_perf_m_2_2 = var(pct_cons_asstdTen2);
 ci_perf_m_2_2 = [(mean_perf_m_2_2 - t_crit * sqrt(var_perf_m_2_2/k)),( mean_perf_m_2_2 + t_crit * sqrt(var_perf_m_2_2/k))];
+%cut off at 0 and 1 
+if (ci_perf_m_2_2(1,1) < 0)
+   ci_perf_m_2_2(1,1) = 0;
+end
+if (ci_perf_m_2_2(1,2) < 0)
+   ci_perf_m_2_2(1,2) = 0;
+end
+if (ci_perf_m_2_2(1,1) > 1)
+   ci_perf_m_2_2(1,1) = 1;
+end
+if (ci_perf_m_2_2(1,2) > 1)
+   ci_perf_m_2_2(1,2) = 1;
+end
 disp('_____________________________________________________________________________________________________________________________________');
 disp('The confidence interval for the percentage of consumers assisted within 10 minutes is: ');
 disp(ci_perf_m_2_2);
@@ -896,6 +976,19 @@ disp(ci_perf_m_2_2);
 mean_perf_m_3_2 = mean(pct_corp_asstdThree2);
 var_perf_m_3_2 = var(pct_corp_asstdThree2);
 ci_perf_m_3_2 = [(mean_perf_m_3_2 - t_crit * sqrt(var_perf_m_3_2/k)),( mean_perf_m_3_2 + t_crit * sqrt(var_perf_m_3_2/k))];
+%cut off at 0 and 1 
+if (ci_perf_m_3_2(1,1) < 0)
+   ci_perf_m_3_2(1,1) = 0;
+end
+if (ci_perf_m_3_2(1,2) < 0)
+   ci_perf_m_3_2(1,2) = 0;
+end
+if (ci_perf_m_3_2(1,1) > 1)
+   ci_perf_m_3_2(1,1) = 1;
+end
+if (ci_perf_m_3_2(1,2) > 1)
+   ci_perf_m_3_2(1,2) = 1;
+end
 disp('_____________________________________________________________________________________________________________________________________');
 disp('The confidence interval for the percentage of corporate customers assisted within 3 minutes is: ');
 disp(ci_perf_m_3_2);
@@ -904,6 +997,19 @@ disp(ci_perf_m_3_2);
 mean_perf_m_4_2 = mean(pct_corp_asstdSeven2);
 var_perf_m_4_2 = var(pct_corp_asstdSeven2);
 ci_perf_m_4_2 = [(mean_perf_m_4_2 - t_crit * sqrt(var_perf_m_4_2/k)),( mean_perf_m_4_2 + t_crit * sqrt(var_perf_m_4_2/k))];
+%cut off at 0 and 1 
+if (ci_perf_m_4_2(1,1) < 0)
+   ci_perf_m_4_2(1,1) = 0;
+end
+if (ci_perf_m_4_2(1,2) < 0)
+   ci_perf_m_4_2(1,2) = 0;
+end
+if (ci_perf_m_4_2(1,1) > 1)
+   ci_perf_m_4_2(1,1) = 1;
+end
+if (ci_perf_m_4_2(1,2) > 1)
+   ci_perf_m_4_2(1,2) = 1;
+end
 disp('_____________________________________________________________________________________________________________________________________');
 disp('The confidence interval for the percentage of corporate customers assisted within 7 minutes is: ');
 disp(ci_perf_m_4_2);
@@ -933,7 +1039,7 @@ t_dff = tinv(gamma2,dof2);
 ci_difference(1,1) = zetaBar - t_dff*sqrt(var(zeta)/k);
 ci_difference(1,2) = zetaBar + t_dff*sqrt(var(zeta)/k);
 disp('_____________________________________________________________________________________________________________________________________');
-disp('The confidence interval for the difference of expected waiting time of System 1 and 2 is: ');
+disp('The confidence interval for the difference of expected waiting time of System 1 and 2: ');
 disp(ci_difference);
 %%
 % We want to reduce/minimize waiting time, therefore if only values <0 , then System 1
@@ -949,6 +1055,9 @@ disp(ci_difference);
 % 1 (flexible) and  2 (mixed) does not significantly differ from one to
 % another. (Mean_waitingTmeComb = Mean_waitingTmeComb2)
 disp('_____________________________________________________________________________________________________________________________________');
+disp('________________________________________________Paired t-test:_______________________________________________________________________');
+
+disp('_____________________________________________________________________________________________________________________________________');
 disp('Value of the paired t-test test statistic: ');
 t_statVal = abs(zetaBar/sqrt(var(zeta/k)))
 %we have the same dof as for the CI of difference computed above
@@ -961,7 +1070,8 @@ pVal =2*(1-pctTl)
 % If pVal <0.05 then we reject the null hypothesis that the average waiting time of costumers in the two systems
 % is not significantly difference, otherwise we cannot reject H_0.
 
+load handel
+sound(y,Fs)
 
 
-
-%Version1 29/05/20 00:08 H.Baacke
+%Version2 29/05/20 09:20 H.Baacke
